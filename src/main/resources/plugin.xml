@@ -29,4 +29,12 @@
       type="extraTab"
       class="com.classcheck.ResultTabView" />
   </extension> 
+
+   <extension point="com.change_vision.astah.ui.view">
+    <view
+      id="com.classcheck.ClassCheck"
+      type="extraTab"
+      class="com.classcheck.CompileTabView" />
+  </extension> 
+
 </plugin>

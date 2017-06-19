@@ -2,13 +2,12 @@ package com.classcheck;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -25,7 +24,9 @@ import com.classcheck.analyzer.source.SourceVisitor;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 
 public class ResultTabView extends JPanel implements IPluginExtraTabView, ProjectEventListener {
@@ -36,6 +37,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	private JPanel bottonPane;
 	private JButton startBtn;
 	private JButton folderBtn;
+	private JButton exeBtn;
+	private TextField textField;
 	private JScrollPane textPane;
 	private JTextArea textArea;
 
@@ -64,6 +67,11 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		bottonPane.add(startBtn);
 		bottonPane.add(folderBtn);
 
+		exeBtn = new JButton("exe");
+		bottonPane.add(exeBtn);
+		textField = new TextField(5);
+		bottonPane.add(textField);
+
 		textArea = new JTextArea(50,20);
 		textPane = new JScrollPane(textArea);
 
@@ -82,6 +90,34 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				selectFolder(getComponent());
 			}
 
+		});
+
+		exeBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ProcessBuilder pb = new ProcessBuilder(textField.getText());
+				try {
+					Process p = pb.start();
+
+					p.waitFor();
+
+					BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+					StringBuilder sb = new StringBuilder();
+
+					for(String line = br.readLine(); line != null ; line = br.readLine()){
+						sb.append(line);
+					}
+
+					textArea.setText(sb.toString());
+				} catch (IOException e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				}
+			}
 		});
 
 		add(bottonPane, BorderLayout.NORTH);
@@ -111,11 +147,10 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		JFileChooser chooser = new JFileChooser();
 		FileNode fileNode = null;
 
+		/*
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(comp);
-
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-
 			Tree tree = new Tree(new FileNode(chooser.getSelectedFile()) , ".java$");
 			StringBuilder sb = new StringBuilder();
 			Iterator<FileNode> it = tree.iterator();
@@ -128,10 +163,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 					try {
 						sa = new SourceAnalyzer(fileNode);
 						visitor = new SourceVisitor();
-						//sa.accept(visitor);
-
+						sa.accept(visitor);
+						
 						sb.append("this file is : " + fileNode + "\n" + visitor.toString());
-
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
@@ -142,6 +176,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			textArea.setText(sb.toString());
 		}
+		*/
 	}
 
 	@Override

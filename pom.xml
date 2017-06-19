@@ -12,7 +12,6 @@
 	<groupId>com.classcheck</groupId>
 	<artifactId>ClassCheck</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>local_astah_repository</id>
@@ -280,6 +279,16 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>3.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.core</artifactId>
+			<version>3.7.1</version>
 		</dependency>
 	</dependencies>
 	<name>SouceCheck</name>
