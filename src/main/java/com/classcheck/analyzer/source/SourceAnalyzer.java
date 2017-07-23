@@ -1,38 +1,46 @@
 package com.classcheck.analyzer.source;
 
 import java.io.File;
-import java.io.FileReader;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
 
 public class SourceAnalyzer {
-	private static final int READ_ERROR = -1;
+	private StringBuilder sbMsg;
+	private CompilationUnit unit;
 
-	ASTParser parser;
-	CompilationUnit unit;
+	//Analyze Signature
+	private MethodVisitor mv;
+	private AttributeVisitor attrV;
 
 	public SourceAnalyzer(File file) throws IOException{
-		StringBuilder sb = new StringBuilder();
-		int data;
-		FileReader fr = new FileReader(file);
+		//StringBuilder Messenger Init
+		sbMsg = new StringBuilder();
+		mv = new MethodVisitor();
+		// creates an input stream for the file to be parsed
+		FileInputStream in = new FileInputStream(file);
 
-		while ((data = fr.read()) != READ_ERROR) {
-			sb.append((char)data);
+		try {
+			unit = JavaParser.parse(in);
+			//All print in Java Code
+			//sbMsg.append(unit.toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-
-		parser = ASTParser.newParser(AST.JLS3);
-		parser.setSource(sb.toString().toCharArray());
-		unit = (CompilationUnit) parser.createAST(new NullProgressMonitor());
-
+		
 	}
 
-	public void accept(ASTVisitor visitor){
-		unit.accept(visitor);
+	public void doAnalyze() {
+		mv.visit(unit,null);
 	}
 
+	public String getMessage() {
+		sbMsg.append(mv.getMessage());
+		
+		return sbMsg.toString();
+	}
 }

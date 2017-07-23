@@ -20,7 +20,6 @@ import com.change_vision.jude.api.inf.project.ProjectEventListener;
 import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
 import com.classcheck.analyzer.source.SourceAnalyzer;
-import com.classcheck.analyzer.source.SourceVisitor;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
 
@@ -143,11 +142,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	 */
 	private void selectFolder(Component comp) {
 		SourceAnalyzer sa = null; 
-		SourceVisitor visitor = null;
 		JFileChooser chooser = new JFileChooser();
 		FileNode fileNode = null;
 
-		/*
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(comp);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -162,10 +159,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 					sb.append(fileNode+"\n");
 					try {
 						sa = new SourceAnalyzer(fileNode);
-						visitor = new SourceVisitor();
-						sa.accept(visitor);
 						
-						sb.append("this file is : " + fileNode + "\n" + visitor.toString());
+						sa.doAnalyze();
+						sb.append("this file is : " + fileNode + "\n" + sa.getMessage());
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
@@ -176,7 +172,6 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			textArea.setText(sb.toString());
 		}
-		*/
 	}
 
 	@Override
