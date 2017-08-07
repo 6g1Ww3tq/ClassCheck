@@ -1,0 +1,6 @@
+ASTParser関連は
+eclispe_indigo/pluginsフォルダに
+
+ドキュメントやソースコード類はこのフォルダに格納する
+
+必要なライブラリはASTParser_need_library.txtに記載
