@@ -15,12 +15,14 @@ public class SourceAnalyzer {
 
 	//Analyze Signature
 	private MethodVisitor mv;
+	private SampleMethodVisitor sample_mv;
 	private AttributeVisitor attrV;
 
 	public SourceAnalyzer(File file) throws IOException{
 		//StringBuilder Messenger Init
 		sbMsg = new StringBuilder();
-		mv = new MethodVisitor();
+//		mv = new MethodVisitor();
+		sample_mv = new SampleMethodVisitor();
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(file);
 
@@ -35,11 +37,13 @@ public class SourceAnalyzer {
 	}
 
 	public void doAnalyze() {
-		mv.visit(unit,null);
+//		mv.visit(unit,null);
+		sample_mv.visit(unit,null);
 	}
 
 	public String getMessage() {
-		sbMsg.append(mv.getMessage());
+//		sbMsg.append(mv.getMessage());
+		sbMsg.append(sample_mv.getMessage());
 		
 		return sbMsg.toString();
 	}
