@@ -60,7 +60,7 @@ public class ConfigView extends JFrame implements ActionListener {
 
 	JFrame window;//astahのフレーム
 
-	ConfigView(Config c,JFrame w){
+	public ConfigView(Config c,JFrame w){
 		config = c;
 		this.setSize(440, 330);
 		this.setTitle("Config");

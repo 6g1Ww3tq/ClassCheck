@@ -28,7 +28,7 @@ public class Config {
 
 	String classCollection;
 
-	Config(){
+	public Config(){
 		addDebugPrint = false;
 		autoInstanceGenerate = true;
 		addAssert = false;

@@ -7,11 +7,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import com.change_vision.jude.api.inf.AstahAPI;
+import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IDependency;
@@ -29,8 +31,12 @@ import com.change_vision.jude.api.inf.ui.IPluginActionDelegate.UnExpectedExcepti
 import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
 import com.classcheck.analyzer.source.SourceAnalyzer;
-import com.classcheck.autosouce.ProcessBuilder;
+import com.classcheck.autosouce.ClassBuilder;
+import com.classcheck.autosouce.Config;
+import com.classcheck.autosouce.ConfigView;
+import com.classcheck.autosouce.MyClass;
 import com.classcheck.autosouce.SourceGenerator;
+import com.classcheck.config.ConfigJDialog;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
 
@@ -45,7 +51,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel bottonPane;
-	private JButton startBtn;
+	private JButton classChBtn;
 	private JButton folderBtn;
 	private JButton sequenceBtn;
 	private JScrollPane textPane;
@@ -55,12 +61,21 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	List<ISequenceDiagram> diagramList;
 
 	ProjectAccessor projectAccessor;
+	private JButton configBtn;
+	
+	AstahAPI api;
+	
+	Config config;
 
 	public ResultTabView() {
 		initComponents();
 		addProjectEventListener();
 		classList = new ArrayList<IClass>();
 		diagramList = new ArrayList<ISequenceDiagram>();
+
+		config = new Config();
+		config.activate();
+
 	}
 
 
@@ -68,18 +83,29 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		setLayout(new BorderLayout());
 
 		bottonPane = new JPanel();
-		startBtn = new JButton("start");
-		folderBtn = new JButton("folder");
-		bottonPane.add(startBtn);
+		classChBtn = new JButton("class");
+		folderBtn = new JButton("folder..");
+		bottonPane.add(classChBtn);
 		bottonPane.add(folderBtn);
 
 		sequenceBtn = new JButton("seqDiagram");
 		bottonPane.add(sequenceBtn);
 
+		configBtn = new JButton("config");
+		bottonPane.add(configBtn);
+
 		textArea = new JTextArea(50,20);
 		textPane = new JScrollPane(textArea);
 
-		startBtn.addActionListener(new ActionListener() {
+		btnEventInit();
+
+		add(bottonPane, BorderLayout.NORTH);
+		add(textPane, BorderLayout.CENTER);
+		setVisible(true);
+	}
+
+	private void btnEventInit() {
+		classChBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -102,34 +128,17 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			public void actionPerformed(ActionEvent e) {
 				StringBuilder sb = new StringBuilder();
 
+
 				create_class_sequence_list();
 
 				try {
-					List<ProcessBuilder> operationList = new SourceGenerator().run(classList, diagramList);
-					IOperation operation;
-					ILifeline lifeLine;
+					ClassBuilder cb = new SourceGenerator().run(classList, diagramList);
+					MyClass myClass = null;
 
-					for (ProcessBuilder processBuilder : operationList) {
+					for(int i=0;i<cb.getclasslistsize();i++){
+						myClass = cb.getClass(i);
 
-						/*
-						sb.append(processBuilder.getIClass()+"\n");
-						sb.append(processBuilder.getCallOperation()+"\n");
-						sb.append(processBuilder.getProcess()+"\n");
-						 */
-
-						lifeLine = processBuilder.getBaselifeline();
-						sb.append(lifeLine + ":");
-
-						operation = processBuilder.getCallOperation();
-						sb.append(operation.getTypeModifier()+" ");
-						sb.append(operation.getReturnTypeExpression()+" ");
-						sb.append(operation.getName()+"(");
-						for (IParameter param : operation.getParameters()) {
-							sb.append(param.getType()+" ");
-							sb.append(param.getName());
-							sb.append(",");
-						}
-						sb.append(")\n");
+						sb.append(myClass.toString()+"\n\n");
 					}
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
@@ -140,11 +149,22 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			}
 		});
 
-		add(bottonPane, BorderLayout.NORTH);
-		add(textPane, BorderLayout.CENTER);
-		setVisible(true);
-	}
+		configBtn.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//ConfigJDialog configDialog = new ConfigJDialog(true);
+				try {
+					ConfigView cv = new ConfigView(config,api.getViewManager().getMainFrame());
+					cv.setVisible(true);
+				} catch (InvalidUsingException e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				}
+			}
+		});
+
+	}
 
 	private void createLabelPane() {
 		Analyze analyze;
@@ -168,7 +188,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 	private void addProjectEventListener() {
 		try {
-			AstahAPI api = AstahAPI.getAstahAPI();
+			api = AstahAPI.getAstahAPI();
 			projectAccessor = api.getProjectAccessor();
 			projectAccessor.addProjectEventListener(this);
 		} catch (ClassNotFoundException e) {
@@ -192,12 +212,12 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				fileNode = (FileNode) it.next();
 
 				if (fileNode!=null) {
-					sb.append(fileNode+"\n");
 					try {
 						sa = new SourceAnalyzer(fileNode);
 
 						sa.doAnalyze();
-						sb.append("this file is : " + fileNode + "\n" + sa.getMessage());
+						sb.append(fileNode+"\n");
+						sb.append(sa.getMessage());
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();

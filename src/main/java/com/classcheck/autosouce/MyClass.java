@@ -6,6 +6,7 @@ import java.util.List;
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IGeneralization;
 import com.change_vision.jude.api.inf.model.IOperation;
+import com.change_vision.jude.api.inf.model.IParameter;
 import com.change_vision.jude.api.inf.model.IRealization;
 
 /**
@@ -133,6 +134,7 @@ public class MyClass {
 			return s;
 
 		}else{
+			
 			s+="class "+name;
 			if(!generalization.equals("")){
 				s+=" extends "+generalization;
@@ -148,15 +150,18 @@ public class MyClass {
 			for(int i=0;i<fields.size();i++){
 				s+=fields.get(i).toString()+"\r\n";
 			}
+
 			for(int i=0;i<methods.size();i++){
 				s+=methods.get(i).toString()+"\r\n";
 			}
+
 			for(int i=0;i<realizations.length;i++){
 				IOperation o[] = realizations[i].getOperations();
 				for(int j=0;j<o.length;j++){
 					s+= new Method(o[j]).toString()+"\r\n";
 				}
 			}
+
 			s+="}";
 			return s;
 		}

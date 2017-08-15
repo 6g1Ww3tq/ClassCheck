@@ -133,11 +133,12 @@ public class SourceGenerator {
 	/*
 	 * シーケンス図を読み取る!!!!
 	 */
-	public  List<ProcessBuilder> run(List<IClass> classList, List<ISequenceDiagram> diagramList) throws UnExpectedException {
+	public  ClassBuilder run(List<IClass> classList, List<ISequenceDiagram> diagramList) throws UnExpectedException {
 		List<ProcessBuilder> methodList = null;
+		ClassBuilder cb =new ClassBuilder();
+
 		try {
 			DiagramChecker dc = new DiagramChecker();
-			ClassBuilder cb =new ClassBuilder();
 			for(int i=0;i<classList.size();i++){
 
 				IClass c= classList.get(i);
@@ -172,14 +173,14 @@ public class SourceGenerator {
 
 				//JOptionPane.showMessageDialog(window.getParent(),"ok");
 
-			/*
-	        if(output(cb,projectAccessor)){
-	        	JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_SUCCESS");
-	        }else{
-	        	JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_FAILURE");
+				/*
+				if(output(cb,projectAccessor)){
+					JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_SUCCESS");
+				}else{
+					JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_FAILURE");
 
-	        }
-			 */
+				}
+				*/
 
 			}
 
@@ -194,7 +195,7 @@ public class SourceGenerator {
 			e.printStackTrace();
 		}
 
-		return methodList;
+		return cb;
 
 	}
 
