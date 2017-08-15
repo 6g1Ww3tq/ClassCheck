@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -16,13 +15,6 @@ import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
-import com.change_vision.jude.api.inf.model.IDependency;
-import com.change_vision.jude.api.inf.model.ILifeline;
-import com.change_vision.jude.api.inf.model.ILifelineLink;
-import com.change_vision.jude.api.inf.model.IMessage;
-import com.change_vision.jude.api.inf.model.INamedElement;
-import com.change_vision.jude.api.inf.model.IOperation;
-import com.change_vision.jude.api.inf.model.IParameter;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
 import com.change_vision.jude.api.inf.project.ProjectEvent;
@@ -36,7 +28,6 @@ import com.classcheck.autosouce.Config;
 import com.classcheck.autosouce.ConfigView;
 import com.classcheck.autosouce.MyClass;
 import com.classcheck.autosouce.SourceGenerator;
-import com.classcheck.config.ConfigJDialog;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
 
@@ -65,7 +56,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	
 	AstahAPI api;
 	
-	Config config;
+	private static Config config;
 
 	public ResultTabView() {
 		initComponents();
@@ -128,7 +119,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			public void actionPerformed(ActionEvent e) {
 				StringBuilder sb = new StringBuilder();
 
-
+				config.activate();
 				create_class_sequence_list();
 
 				try {
@@ -230,64 +221,6 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		}
 	}
 
-	private void printDB_ILifeLines(StringBuilder sb,ILifeline iLifeline) {
-		sb.append("*****Print ILifeLines*****\n");
-		sb.append("----Base----\n");
-		sb.append(iLifeline.getBase()+"\n");
-
-		sb.append("----Fragments----\n");
-		for (INamedElement iname : iLifeline.getFragments()) {
-			sb.append(iname+"\n");
-		}
-
-		sb.append("----LifeLineLinks----\n");
-		for (ILifelineLink link : iLifeline.getLifelineLinks()) {
-			sb.append(iLifeline+"\n");
-		}
-
-		sb.append("**********\n");
-	}
-
-
-	private void printDB_IMessage(StringBuilder sb,IMessage iMessage) {
-		IOperation operation = iMessage.getOperation();
-		/*
-		sb.append("*****Print IMessage*****\n");
-		sb.append("----Activator----\n");
-		sb.append(iMessage.getActivator()+"\n");
-		 */
-
-		sb.append("******Operation******\n");
-		sb.append(operation.getReturnType()+" ");
-		sb.append(operation+" (");
-		for (IParameter param : operation.getParameters()) {
-			sb.append(param.getType() + " " + param.getName() +",");
-		}
-		sb.append(")\n");
-
-		sb.append("**********\n");
-	}
-
-
-	private void printDB_INameElement(StringBuilder sb,INamedElement iNamedElement) {
-		sb.append("*****Print INameElement*****\n");
-		sb.append("----Name----\n");
-		sb.append(iNamedElement.getName()+"\n");
-		sb.append("----Definition----\n");
-		sb.append(iNamedElement.getDefinition()+"\n");
-		sb.append("----Type----\n");
-		sb.append(iNamedElement.getTypeModifier()+"\n");
-		sb.append("----Dependencies----\n");
-		for (IDependency iDependency : iNamedElement.getClientDependencies()) {
-			sb.append("--client--\n");
-			sb.append(iDependency.getClient()+"\n");
-			sb.append("--Supplier--\n");
-			sb.append(iDependency.getSupplier()+"\n");
-		}
-		sb.append("**********\n");
-	}
-
-
 	@Override
 	public void projectChanged(ProjectEvent e) {
 	}
@@ -325,5 +258,10 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 	@Override
 	public void deactivated() {
+	}
+
+
+	public static void setConfig(Config c) {
+		config = c;
 	}
 }

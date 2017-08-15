@@ -113,19 +113,26 @@ public class SourceGenerator {
 	}
 
 	private  static void getAllSequences(INamedElement element, List<ISequenceDiagram> diagramList) {
-		if (element instanceof IPackage) {
+		if(element instanceof IPackage){
 			for(INamedElement ownedNamedElement : ((IPackage)element).getOwnedElements()) {//パッケージ内のモデル要素のみ取得（図は含まない）
 				getAllSequences(ownedNamedElement, diagramList);
 			}
 			for(IDiagram diagrams : element.getDiagrams()){//パッケージ内の図要素を取得
 				getAllSequences(diagrams,diagramList);
 			}
-		} else if (element instanceof ISequenceDiagram) {
+		}else if(element instanceof ISequenceDiagram){
 			diagramList.add((ISequenceDiagram)element);
 
 		}else if( element instanceof IUseCase){
-			for(IDiagram diagrams :((IUseCase)element).getDiagrams()){
-				getAllSequences(diagrams,diagramList);
+			for(IDiagram diagram :((IUseCase)element).getDiagrams()){
+				getAllSequences(diagram,diagramList);
+			}
+		}else if(element instanceof IClass){
+			IClass iClass = (IClass) element;
+			IDiagram[] iDiagrams = iClass.getDiagrams();
+			
+			for (IDiagram iDiagram : iDiagrams) {
+				getAllSequences(iDiagram, diagramList);
 			}
 		}
 	}
@@ -180,7 +187,7 @@ public class SourceGenerator {
 					JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_FAILURE");
 
 				}
-				*/
+				 */
 
 			}
 
