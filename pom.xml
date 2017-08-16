@@ -279,45 +279,16 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.poi</groupId> <artifactId>poi</artifactId> 
-			<version>3.16</version> </dependency> -->
 		<dependency>
 			<groupId>com.github.javaparser</groupId>
 			<artifactId>javaparser-core</artifactId>
 			<version>2.5.1</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.eclipse.core</groupId> <artifactId>org.eclipse.core.contenttype</artifactId> 
-			<version>3.4.100.v20100505-1235</version> </dependency> <dependency> <groupId>org.eclipse.core</groupId> 
-			<artifactId>org.eclipse.core.jobs</artifactId> <version>3.5.100</version> 
-			</dependency> <dependency> <groupId>org.eclipse.birt.runtime</groupId> <artifactId>org.eclipse.core.resources</artifactId> 
-			<version>3.10.0.v20150423-0755</version> </dependency> <dependency> <groupId>org.eclipse.core</groupId> 
-			<artifactId>org.eclipse.core.runtime</artifactId> <version>3.7.0</version> 
-			</dependency> <dependency> <groupId>org.eclipse.equinox</groupId> <artifactId>org.eclipse.equinox.common</artifactId> 
-			<version>3.6.0.v20100503</version> </dependency> <dependency> <groupId>org.eclipse.equinox</groupId> 
-			<artifactId>org.eclipse.equinox.preferences</artifactId> <version>3.4.1</version> 
-			</dependency> <dependency> <groupId>org.eclipse.jdt</groupId> <artifactId>org.eclipse.jdt.core</artifactId> 
-			<version>3.10.0</version> </dependency> <dependency> <groupId>org.eclipse</groupId> 
-			<artifactId>org.eclipse.osgi</artifactId> <version>3.8.0.v20120529-1548</version> 
-			</dependency> -->
-		<!-- <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.core.jobs_3.5.101.v20120113-1953.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.equinox.common_3.6.0.v20110523.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.equinox.preferences_3.4.2.v20120111-2020.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.jdt.core_3.7.3.v20120119-1537.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/org.eclipse.osgi_3.7.2.v20120110-1415.jar</systemPath> 
-			</dependency> <dependency> <groupId>eclipse</groupId> <artifactId>ASTParser</artifactId> 
-			<version>1.0</version> <systemPath>${basedir}/src/lib/commons-lang3-3.5.jar</systemPath> 
-			</dependency> -->
+		<dependency>
+  			<groupId>org.apache.lucene</groupId>
+  			<artifactId>lucene-spellchecker</artifactId>
+  			<version>3.6.2</version>
+		</dependency>
 	</dependencies>
 	<name>SouceCheck</name>
 	<description>UMLを元にソースコードのチェック</description>

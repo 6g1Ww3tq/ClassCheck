@@ -16,7 +16,6 @@ public class SourceAnalyzer {
 	//Analyze Signature
 	private MethodVisitor mv;
 	private SampleMethodVisitor sample_mv;
-	private AttributeVisitor attrV;
 
 	public SourceAnalyzer(File file) throws IOException{
 		//StringBuilder Messenger Init

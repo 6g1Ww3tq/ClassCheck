@@ -1,10 +1,5 @@
 package com.classcheck.autosouce;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,34 +171,13 @@ public class SourceGenerator {
 
 
 				}
-
-
-				//JOptionPane.showMessageDialog(window.getParent(),"ok");
-
-				/*
-				if(output(cb,projectAccessor)){
-					JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_SUCCESS");
-				}else{
-					JOptionPane.showMessageDialog(window.getParent(),"OUTPUT_FAILURE");
-
-				}
-				 */
-
 			}
-
-
-
-
-
-
-
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(window.getParent(), "Unexpected error has occurred.", "Alert", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
 		return cb;
-
 	}
 
 
@@ -390,41 +364,6 @@ public class SourceGenerator {
 			}
 		}
 		return false;
-	}
-
-	private boolean output(ClassBuilder cb,ProjectAccessor projectAccessor){
-		try{
-			String path = "";
-			String[] paths = projectAccessor.getProjectPath().split("\\\\");
-			for(int i=0;i<paths.length-1;i++){
-				path += paths[i]+"\\\\";
-			}
-
-			for(int i=0;i<cb.getclasslistsize();i++){
-				cb.getClass(i);
-				//	File file = new File("C:\\Users\\1016y\\Documents\\astah_plugin\\AutoSouce\\output\\"+cb.getClass(i).getName()+".java");
-				//File file =new File("D:\\program\\workspace\\astah_plugin\\AutoSouce\\output\\"+cb.getClass(i).getName()+".java");
-
-
-				File file = new File(path+"\\"+cb.getClass(i).getName()+".java");
-
-				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-
-				pw.println(cb.getClass(i).toString());
-
-				pw.close();
-
-
-			}
-			return true;
-		}catch(IOException e){
-
-			return false;
-		} catch (ProjectNotFoundException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 }

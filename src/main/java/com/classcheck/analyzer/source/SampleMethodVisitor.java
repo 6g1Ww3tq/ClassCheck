@@ -4,9 +4,12 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.lang.reflect.Modifier;
 import java.net.Proxy.Type;
+import java.util.List;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -51,12 +54,20 @@ public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 		sbMsg.append("---------------------\n");
 		 */
 
-		//public void *()
-		if (Modifier.isPublic(methodDec.getModifiers()) && methodDec.getParameters().isEmpty() && methodDec.getType().toString().equals("void")) {
-			sbMsg.append(methodDec.getType()+" ");
-			sbMsg.append(methodDec.getName()+"()");
-			sbMsg.append(methodDec.getBody()+"\n");
+		BlockStmt methodBody = methodDec.getBody();
+		List<Statement> stList = methodBody.getStmts();
+		
+		sbMsg.append("Name: "+methodDec.getName()+"\n");
+		for (Statement statement : stList) {
+			sbMsg.append(statement+"\n");
 		}
+//		sbMsg.append(methodDec.toString()+"\n");
+
+//		if (Modifier.isPublic(methodDec.getModifiers()) && methodDec.getParameters().isEmpty() && methodDec.getType().toString().equals("void")) {
+//			sbMsg.append(methodDec.getType()+" ");
+//			sbMsg.append(methodDec.getName()+"()");
+//			sbMsg.append(methodDec.getBody()+"\n");
+//		}
 
 		super.visit(methodDec, arg);
 

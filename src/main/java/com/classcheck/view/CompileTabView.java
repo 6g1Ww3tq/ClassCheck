@@ -1,4 +1,4 @@
-package com.classcheck;
+package com.classcheck.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

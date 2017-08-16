@@ -33,7 +33,7 @@ import com.change_vision.jude.api.inf.model.INamedElement;
 import com.change_vision.jude.api.inf.model.IPackage;
 import com.change_vision.jude.api.inf.model.IUseCase;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
-import com.classcheck.ResultTabView;
+import com.classcheck.view.ResultTabView;
 
 /**
  * @author  

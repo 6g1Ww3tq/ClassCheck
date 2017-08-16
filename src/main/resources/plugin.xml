@@ -27,7 +27,7 @@
     <view
       id="com.classcheck.ClassCheck"
       type="extraTab"
-      class="com.classcheck.ResultTabView" />
+      class="com.classcheck.view.ResultTabView" />
   </extension> 
 
 <!--

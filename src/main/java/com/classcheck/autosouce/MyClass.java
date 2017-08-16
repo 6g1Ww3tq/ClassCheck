@@ -198,4 +198,8 @@ public class MyClass {
 	public void setName(String n){
 		name=n;
 	}
+	
+	public List<Method> getMethods() {
+		return methods;
+	}
 }

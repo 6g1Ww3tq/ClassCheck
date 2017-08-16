@@ -1,20 +1,34 @@
-package com.classcheck;
+package com.classcheck.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.spell.LevensteinDistance;
+import org.apache.lucene.util.Version;
 
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
+import com.change_vision.jude.api.inf.model.IDiagram;
+import com.change_vision.jude.api.inf.model.ILifeline;
+import com.change_vision.jude.api.inf.model.IOperation;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
 import com.change_vision.jude.api.inf.project.ProjectEvent;
@@ -26,15 +40,21 @@ import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosouce.ClassBuilder;
 import com.classcheck.autosouce.Config;
 import com.classcheck.autosouce.ConfigView;
+import com.classcheck.autosouce.Method;
 import com.classcheck.autosouce.MyClass;
 import com.classcheck.autosouce.SourceGenerator;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ResultTabView extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
@@ -46,16 +66,18 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	private JButton folderBtn;
 	private JButton sequenceBtn;
 	private JScrollPane textPane;
+	private JScrollPane textPane_2;
 	private JTextArea textArea;
+	private JTextArea textArea_2;
 
 	List<IClass> classList;
 	List<ISequenceDiagram> diagramList;
 
 	ProjectAccessor projectAccessor;
 	private JButton configBtn;
-	
+
 	AstahAPI api;
-	
+
 	private static Config config;
 
 	public ResultTabView() {
@@ -85,13 +107,17 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		configBtn = new JButton("config");
 		bottonPane.add(configBtn);
 
-		textArea = new JTextArea(50,20);
+		textArea = new JTextArea(40,20);
 		textPane = new JScrollPane(textArea);
+
+		textArea_2 = new JTextArea(40,20);
+		textPane_2 = new JScrollPane(textArea_2);
 
 		btnEventInit();
 
 		add(bottonPane, BorderLayout.NORTH);
 		add(textPane, BorderLayout.CENTER);
+		add(textPane_2, BorderLayout.EAST);
 		setVisible(true);
 	}
 
@@ -100,7 +126,38 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				createLabelPane();
+				try {
+					StringBuilder sb = new StringBuilder();
+					ClassBuilder cb = new SourceGenerator().run(classList, diagramList);
+					MyClass myClass = null;
+					Reader reader = null;
+					Document doc = null;
+
+					/*
+					for(int i=0;i<cb.getclasslistsize();i++){
+						doc = new Document();
+						myClass = cb.getClass(i);
+						reader = new StringReader(myClass.toString());
+					}
+					 */
+
+					LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
+
+					sb.append("結果①:" + levensteinAlgorithm.getDistance("resolution", "revolution")+"\n");
+					sb.append("結果②:" + levensteinAlgorithm.getDistance("take", "sake")+"\n");
+					sb.append("結果③:" + levensteinAlgorithm.getDistance("teacher", "teach")+"\n");
+					sb.append("結果④:" + levensteinAlgorithm.getDistance("let it go", "let's and go")+"\n");
+					sb.append("結果⑤:" + levensteinAlgorithm.getDistance("mountaingorilla", "fish")+"\n");
+
+					TextMessageWindow tmw = new TextMessageWindow();
+					tmw.setTextArea(sb.toString());
+					tmw.setTitle("レーベンシュタイン距離");
+
+				} catch (UnExpectedException e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				}
+
 			}
 		});
 
@@ -118,6 +175,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				StringBuilder sb = new StringBuilder();
+				TextMessageWindow tmw = null;
 
 				config.activate();
 				create_class_sequence_list();
@@ -125,18 +183,28 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				try {
 					ClassBuilder cb = new SourceGenerator().run(classList, diagramList);
 					MyClass myClass = null;
+					List<Method> methodList = null;
+					ISequenceDiagram iSequence = null;
+					ILifeline[] iLifelines = null;
+					IOperation iOperation = null;
+					Map<Method, MyClass> checkTargetMethodList = new HashMap<>();
+					ArrayList<IDiagram> empTargetList = new ArrayList<>();
+					boolean existTarget=false;
 
 					for(int i=0;i<cb.getclasslistsize();i++){
 						myClass = cb.getClass(i);
-
-						sb.append(myClass.toString()+"\n\n");
+						sb.append(myClass.toString());
 					}
+
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
 				}
 
 				textArea.setText(sb.toString());
+				tmw = new TextMessageWindow();
+				tmw.setTextArea(sb.toString());
+				tmw.setTitle("シーケンス図を読み取り");
 			}
 		});
 
@@ -156,20 +224,6 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		});
 
 	}
-
-	private void createLabelPane() {
-		Analyze analyze;
-		try {
-			analyze = new Analyze(AstahAPI.getAstahAPI());
-			analyze.doAnalyze();
-			textArea.setText(analyze.toString());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (ProjectNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
 
 	private void create_class_sequence_list() {
 		classList = SourceGenerator.getClassList();
@@ -191,10 +245,11 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		SourceAnalyzer sa = null; 
 		JFileChooser chooser = new JFileChooser();
 		FileNode fileNode = null;
+		TextMessageWindow tmw = null;
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = chooser.showOpenDialog(comp);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		int rtnVal = chooser.showOpenDialog(comp);
+		if(rtnVal == JFileChooser.APPROVE_OPTION) {
 			Tree tree = new Tree(new FileNode(chooser.getSelectedFile()) , ".java$");
 			StringBuilder sb = new StringBuilder();
 			Iterator<FileNode> it = tree.iterator();
@@ -207,6 +262,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 						sa = new SourceAnalyzer(fileNode);
 
 						sa.doAnalyze();
+
 						sb.append(fileNode+"\n");
 						sb.append(sa.getMessage());
 					} catch (IOException e) {
@@ -217,7 +273,10 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			}
 
-			textArea.setText(sb.toString());
+			textArea_2.setText(sb.toString());
+			tmw = new TextMessageWindow();
+			tmw.setTextArea(sb.toString());
+			tmw.setTitle("コード読み取り");
 		}
 	}
 
