@@ -57,7 +57,7 @@ public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 		BlockStmt methodBody = methodDec.getBody();
 		List<Statement> stList = methodBody.getStmts();
 		
-		sbMsg.append("Name: "+methodDec.getName()+"\n");
+		sbMsg.append("MethodName: "+methodDec.getName()+"\n");
 		for (Statement statement : stList) {
 			sbMsg.append(statement+"\n");
 		}

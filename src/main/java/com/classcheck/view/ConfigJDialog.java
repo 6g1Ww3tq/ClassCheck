@@ -1,4 +1,4 @@
-package com.classcheck.config;
+package com.classcheck.view;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -28,9 +28,6 @@ import java.io.Serializable;
 import java.util.Vector;
 
 public class ConfigJDialog extends JDialog implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String[] columnNames = {"RtnType","MethodName","Param"};
 	private JButton rtnTypeBtn;
@@ -282,7 +279,6 @@ public class ConfigJDialog extends JDialog implements Serializable{
 		try {
 			isCreate = file.createNewFile();
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 

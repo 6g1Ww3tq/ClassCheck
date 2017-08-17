@@ -1,7 +1,9 @@
 package com.classcheck.autosouce;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,7 +20,9 @@ import com.change_vision.jude.api.inf.model.ILifeline;
 import com.change_vision.jude.api.inf.model.IMessage;
 import com.change_vision.jude.api.inf.model.IModel;
 import com.change_vision.jude.api.inf.model.INamedElement;
+import com.change_vision.jude.api.inf.model.IOperation;
 import com.change_vision.jude.api.inf.model.IPackage;
+import com.change_vision.jude.api.inf.model.IParameter;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.model.IUseCase;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
@@ -28,6 +32,7 @@ public class SourceGenerator {
 
 	JFrame window;
 	ProjectAccessor projectAccessor;
+	Map<String, List<IOperation>> seqFlowMap;
 
 	public SourceGenerator(){
 		AstahAPI api;
@@ -125,19 +130,29 @@ public class SourceGenerator {
 		}else if(element instanceof IClass){
 			IClass iClass = (IClass) element;
 			IDiagram[] iDiagrams = iClass.getDiagrams();
-			
+
 			for (IDiagram iDiagram : iDiagrams) {
 				getAllSequences(iDiagram, diagramList);
 			}
 		}
 	}
 
+	StringBuilder sb = new StringBuilder();
+
+	public StringBuilder getSb() {
+		return sb;
+	}
+
+	public Map<String, List<IOperation>> getSeqFlowMap() {
+		return seqFlowMap;
+	}
 	/*
 	 * シーケンス図を読み取る!!!!
 	 */
 	public  ClassBuilder run(List<IClass> classList, List<ISequenceDiagram> diagramList) throws UnExpectedException {
 		List<ProcessBuilder> methodList = null;
 		ClassBuilder cb =new ClassBuilder();
+		seqFlowMap = new HashMap<String, List<IOperation>>();
 
 		try {
 			DiagramChecker dc = new DiagramChecker();
@@ -160,8 +175,10 @@ public class SourceGenerator {
 				JOptionPane.showMessageDialog(window.getParent(),"モデルを修正してください");
 				dc.showIndequateDialog();
 			}else{
+				List<IOperation> messages = null;
 				/*ここからシーケンスを読む*/
 				for(int i=0;i<diagramList.size();i++){
+					messages = new ArrayList<IOperation>();
 
 					//ライフラインから読みたい
 					ILifeline l[] =((ISequenceDiagram) diagramList.get(i)).getInteraction().getLifelines();
@@ -169,7 +186,23 @@ public class SourceGenerator {
 					organizeElement(l,methodList);
 					cb.addProcess(methodList,diagramList.get(i).getName());
 
+					IOperation operation;
+					IParameter params[];
+					for(int j=0;j < methodList.size();j++){
+						operation = methodList.get(j).getCallOperation();
+						messages.add(operation);
+						sb.append(operation.getReturnType()+" " + operation.getName() + "(");
+						params = operation.getParameters();
+						for(int k=0;k<params.length;k++){
+							sb.append(params[k].getType()+" "+params[k].getName());
+							if(k!=params.length-1){
+								sb.append(",");
+							}
+						}
+						sb.append(")\n");
+					}
 
+					seqFlowMap.put(diagramList.get(i).getName(), messages);
 				}
 			}
 		} catch (Exception e) {
