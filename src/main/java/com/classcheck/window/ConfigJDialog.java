@@ -1,4 +1,4 @@
-package com.classcheck.view;
+package com.classcheck.window;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;

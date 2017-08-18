@@ -1,6 +1,7 @@
 package com.classcheck.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.spell.LevensteinDistance;
@@ -17,12 +21,6 @@ import org.apache.lucene.search.spell.LevensteinDistance;
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.model.IClass;
-import com.change_vision.jude.api.inf.model.ICombinedFragment;
-import com.change_vision.jude.api.inf.model.ILifeline;
-import com.change_vision.jude.api.inf.model.IMessage;
-import com.change_vision.jude.api.inf.model.INamedElement;
-import com.change_vision.jude.api.inf.model.IOperation;
-import com.change_vision.jude.api.inf.model.IParameter;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
 import com.change_vision.jude.api.inf.project.ProjectEvent;
@@ -35,13 +33,15 @@ import com.classcheck.autosouce.ClassBuilder;
 import com.classcheck.autosouce.Config;
 import com.classcheck.autosouce.ConfigView;
 import com.classcheck.autosouce.MyClass;
-import com.classcheck.autosouce.ProcessBuilder;
 import com.classcheck.autosouce.SourceGenerator;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
+import com.classcheck.window.TextMessageWindow;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +53,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel bottonPane;
-	private JButton classChBtn;
+	private JButton expBtn;
 	private JButton folderBtn;
 	private JButton sequenceBtn;
 	private JScrollPane textPane;
@@ -87,9 +87,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 		setLayout(new BorderLayout());
 
 		bottonPane = new JPanel();
-		classChBtn = new JButton("れーべん");
+		expBtn = new JButton("実験");
 		folderBtn = new JButton("folder..");
-		bottonPane.add(classChBtn);
+		bottonPane.add(expBtn);
 		bottonPane.add(folderBtn);
 
 		sequenceBtn = new JButton("seqDiagram");
@@ -113,7 +113,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void btnEventInit() {
-		classChBtn.addActionListener(new ActionListener() {
+		expBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -122,94 +122,49 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 					SourceGenerator sg = new SourceGenerator();
 					ClassBuilder cb = sg.run(classList, diagramList);
 					MyClass myClass = null;
-					Reader reader = null;
-					Document doc = null;
-					Map<String, List<IOperation>> seqFlowMap;
+					Reader readArray[] = null;
+					BufferedReader br = null;
+					//Document doc = new Document();
 
-					/*
+					readArray = new StringReader[cb.getclasslistsize()];
 					for(int i=0;i<cb.getclasslistsize();i++){
-						doc = new Document();
 						myClass = cb.getClass(i);
-						reader = new StringReader(myClass.toString());
+						readArray[i] = new StringReader(myClass.toString());
 					}
-					 */
-
-					/*
-					for(int i=0;i<diagramList.size();i++){
-						if(diagramList.get(i) instanceof ISequenceDiagram){
-							ILifeline lifeLines[] =((ISequenceDiagram) diagramList.get(i)).getInteraction().getLifelines();
-							sb.append("SequenceDiagram : " + diagramList.get(i) + "\n");
-							for (ILifeline iLifeline : lifeLines) {
-								INamedElement elements[] = iLifeline.getFragments();
-								for (INamedElement element : elements) {
-									if(element instanceof IMessage){
-										IMessage message = (IMessage) element;
-										IOperation operation = message.getOperation();
-										IParameter params[] = operation.getParameters();
-										sb.append("LifeLine : " + iLifeline + "   " + operation.getReturnType() + " " + operation.getName());
-										sb.append("(");
-										for (int j = 0; j < params.length; j++) {
-											IParameter param = params[j];
-
-											sb.append(param.getType()+ " " + param.getName());
-											if (j != params.length - 1) {
-												sb.append(",");
-											}
-										}
-										sb.append(")\n");
-									}
-								}
-							}
+					
+					for (int j = 0; j < readArray.length; j++) {
+						br = new BufferedReader(readArray[j]);
+						String line = null;
+						
+						while(( line = br.readLine() ) != null){
+							sb.append(line+"\n");
 						}
-					}
-					 */
-
-					sb.append(sg.getSb().toString()+"\n\n");
-					sb.append("+++Map++\n");
-					seqFlowMap = sg.getSeqFlowMap();
-
-					for(String sequenceTitle : seqFlowMap.keySet()){
-						List<IOperation> messages = seqFlowMap.get(sequenceTitle);
-
-						IOperation operation;
-						IParameter params[];
-						sb.append("Sequence : " + sequenceTitle + "\n");
-						for(int j=0;j < messages.size();j++){
-							operation = messages.get(j);
-							sb.append(operation.getReturnType()+" " + operation.getName() + "(");
-							params = operation.getParameters();
-							for(int k=0;k<params.length;k++){
-								sb.append(params[k].getType()+" "+params[k].getName());
-								if(k!=params.length-1){
-									sb.append(",");
-								}
-							}
-							sb.append(")\n");
-						}
-
 					}
 
 					LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
 
-					/*
 					sb.append("結果①:" + levensteinAlgorithm.getDistance("resolution", "revolution")+"\n");
 					sb.append("結果②:" + levensteinAlgorithm.getDistance("take", "sake")+"\n");
 					sb.append("結果③:" + levensteinAlgorithm.getDistance("teacher", "teach")+"\n");
 					sb.append("結果④:" + levensteinAlgorithm.getDistance("let it go", "let's and go")+"\n");
 					sb.append("結果⑤:" + levensteinAlgorithm.getDistance("mountaingorilla", "fish")+"\n");
-					 */
 
 					TextMessageWindow tmw = new TextMessageWindow();
-					tmw.setTextArea(sb.toString());
-					//					tmw.setTitle("レーベンシュタイン距離");
+					MutableAttributeSet attr = new SimpleAttributeSet();
+					StyleConstants.setBold(attr, true);
+					tmw.setTextArea(sb.toString(),attr);
+					tmw.changeStyle(0, 50);
 					tmw.setTitle("実験");
-
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
+				} catch (IOException e2) {
+					// TODO 自動生成された catch ブロック
+					e2.printStackTrace();
 				}
 
 			}
+
 		});
 
 		folderBtn.addActionListener(new ActionListener() {
@@ -247,7 +202,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 				textArea.setText(sb.toString());
 				tmw = new TextMessageWindow();
-				tmw.setTextArea(sb.toString());
+				MutableAttributeSet attr = new SimpleAttributeSet();
+				StyleConstants.setForeground(attr, Color.green);
+				tmw.setTextArea(sb.toString(),attr);
 				tmw.setTitle("シーケンス図を読み取り");
 			}
 		});
@@ -319,7 +276,9 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			textArea_2.setText(sb.toString());
 			tmw = new TextMessageWindow();
-			tmw.setTextArea(sb.toString());
+			MutableAttributeSet attr = new SimpleAttributeSet();
+			StyleConstants.setForeground(attr, Color.yellow);
+			tmw.setTextArea(sb.toString(),attr);
 			tmw.setTitle("コード読み取り");
 		}
 	}
