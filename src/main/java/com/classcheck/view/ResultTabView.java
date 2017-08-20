@@ -28,6 +28,7 @@ import com.change_vision.jude.api.inf.project.ProjectEventListener;
 import com.change_vision.jude.api.inf.ui.IPluginActionDelegate.UnExpectedException;
 import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
+import com.classcheck.analyzer.source.SampleMethodVisitor;
 import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosouce.ClassBuilder;
 import com.classcheck.autosouce.Config;
@@ -69,6 +70,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 	AstahAPI api;
 
+	private ClassBuilder cb;
 	private static Config config;
 
 	public ResultTabView() {
@@ -120,7 +122,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				try {
 					StringBuilder sb = new StringBuilder();
 					SourceGenerator sg = new SourceGenerator();
-					ClassBuilder cb = sg.run(classList, diagramList);
+					cb = sg.run(classList, diagramList);
 					MyClass myClass = null;
 					Reader readArray[] = null;
 					BufferedReader br = null;
@@ -151,9 +153,11 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 					TextMessageWindow tmw = new TextMessageWindow();
 					MutableAttributeSet attr = new SimpleAttributeSet();
-					StyleConstants.setBold(attr, true);
-					tmw.setTextArea(sb.toString(),attr);
-					tmw.changeStyle(0, 50);
+					StyleConstants.setForeground(attr, Color.blue);
+					tmw.appendText(sb.substring(10),attr);
+					attr = new SimpleAttributeSet();
+					StyleConstants.setForeground(attr, Color.yellow);
+					tmw.appendText(sb.substring(20),attr);
 					tmw.setTitle("実験");
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
@@ -171,6 +175,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				SampleMethodVisitor.setClassBuilder(cb);
 				selectFolder(getComponent());
 			}
 
@@ -187,7 +192,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				create_class_sequence_list();
 
 				try {
-					ClassBuilder cb = new SourceGenerator().run(classList, diagramList);
+					cb = new SourceGenerator().run(classList, diagramList);
 					MyClass myClass = null;
 
 					for(int i=0;i<cb.getclasslistsize();i++){
@@ -203,8 +208,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				textArea.setText(sb.toString());
 				tmw = new TextMessageWindow();
 				MutableAttributeSet attr = new SimpleAttributeSet();
-				StyleConstants.setForeground(attr, Color.green);
-				tmw.setTextArea(sb.toString(),attr);
+				tmw.appendText(sb.toString(),attr);
 				tmw.setTitle("シーケンス図を読み取り");
 			}
 		});
@@ -277,9 +281,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			textArea_2.setText(sb.toString());
 			tmw = new TextMessageWindow();
 			MutableAttributeSet attr = new SimpleAttributeSet();
-			StyleConstants.setForeground(attr, Color.yellow);
-			tmw.setTextArea(sb.toString(),attr);
-			tmw.setTitle("コード読み取り");
+			tmw.appendText(sb.toString(),attr);
+			tmw.setTitle("ソースコード読み取り");
 		}
 	}
 

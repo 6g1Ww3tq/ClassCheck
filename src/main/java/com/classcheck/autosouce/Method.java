@@ -284,6 +284,40 @@ public class Method {
 		return s;
 	}
 
+	public String getBody(){
+		String st = new String();
+		if(addDebugPrint){
+			st+="\t\tSystem.out.println(\""+c.getName()+"."+operation.getName()+"\");\t//デバッグプリント **自動追加したコメント**\r\n";
+		}
+
+		String preCondition ="";
+		if(addAssert){//事前条件
+			String pre[] = operation.getPreConditions();
+			for(int i=0;i<pre.length;i++){
+				preCondition += "\t\t//assert "+pre[i]+";\t//事前条件 **自動追加したコメント**\r\n";
+			}
+		}
+		st+=preCondition;
+		for(int i=0;i<process.size();i++){
+			st+=process.get(i);
+		}
+		String postCondition="";
+		if(addAssert){//事後条件
+			String post[] = operation.getPostConditions();
+			for(int i=0;i<post.length;i++){
+				postCondition += "\t\t//assert "+post[i]+";\t//事後条件 **自動追加したコメント**\r\n";
+			}
+		}
+		st+=postCondition;
+		
+		if (returnString.contains("null")) {
+			return st;
+		}else{
+			st+=returnString;
+			return st;
+		}
+	}
+
 	public String toSignature(){
 		String s = "\r\n"+definition+"\t"+returntype+" "+name+"(";
 		for(int i=0;i<params.length;i++){
@@ -329,5 +363,36 @@ public class Method {
 		}else{
 			return tb.getTemplate().getName();
 		}
+	}
+
+	public String getSignature(){
+		String s = new String();
+		if (definition.contains(" ")) {
+			s += definition+" ";
+		}
+		s += returntype+" "+name+"(";
+		for(int i=0;i<params.length;i++){
+			if(i!=0)
+				s+=",";
+			s+=params[i];
+		}
+		s+=")";
+		return s;
+	}
+
+	public String getReturnString() {
+		return returnString;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String[] getParams() {
+		return params;
+	}
+	
+	public String getReturntype() {
+		return returntype;
 	}
 }

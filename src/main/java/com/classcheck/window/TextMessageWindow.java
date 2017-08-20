@@ -44,9 +44,9 @@ public class TextMessageWindow extends JFrame {
 		doc.setCharacterAttributes(start, end, attr, true);
 	}
 	
-	public void setTextArea(String msg,MutableAttributeSet attr){
+	public void appendText(String msg,MutableAttributeSet attr){
 		try {
-			doc.insertString(0, msg, attr);
+			doc.insertString(doc.getLength(), msg, attr);
 		} catch (BadLocationException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

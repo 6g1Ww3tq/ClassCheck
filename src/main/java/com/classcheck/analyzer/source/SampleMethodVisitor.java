@@ -1,20 +1,23 @@
 package com.classcheck.analyzer.source;
 
+import com.classcheck.autosouce.ClassBuilder;
+import com.classcheck.autosouce.Method;
+import com.classcheck.autosouce.MyClass;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.lang.reflect.Modifier;
-import java.net.Proxy.Type;
 import java.util.List;
+
+import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ReferenceType;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 
+	private static ClassBuilder cb;
 	private StringBuilder sbMsg;
 
 	public SampleMethodVisitor() {
@@ -23,51 +26,70 @@ public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 
 	@Override
 	public void visit(MethodDeclaration methodDec, Void arg) {
-		/* here you can access the attributes of the method.
-          this method will be called for all methods in this 
-          CompilationUnit, including inner class methods */
-		/*
-		sbMsg.append("-------Modifiers-----\n");
-		sbMsg.append(Modifier.toString(methodDec.getModifiers())+"\n");
-		sbMsg.append("-------getRange-----\n");
-		sbMsg.append(methodDec.getRange()+"\n");
-		sbMsg.append("-------Parameters-----\n");
-		for (Parameter param : methodDec.getParameters()) {
-			sbMsg.append(param+"\n");
-		}
-		 */
-
-		/*
-		sbMsg.append("-------getThrows-----\n");
-		for (ReferenceType param : methodDec.getThrows()) {
-			sbMsg.append(param+"\n");
-		}
-		 */
-
-		/*
-		sbMsg.append("-------getReturnType-----\n");
-		sbMsg.append(methodDec.getType()+"\n");
-		sbMsg.append("------MethodName------\n");
-		sbMsg.append(methodDec.getName()+"\n");
-		sbMsg.append("--------Body----------\n");
-		sbMsg.append(methodDec.getBody()+"\n");
-		sbMsg.append("---------------------\n");
-		 */
-
 		BlockStmt methodBody = methodDec.getBody();
+		List<Parameter> paramList = methodDec.getParameters();
+		Parameter param;
 		List<Statement> stList = methodBody.getStmts();
+		MyClass myClass = null;
+		List<Method> methodList;
+		Method targetMethod = null;
+		LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
+		float distance;
+		float mostNearDistance = -1;
+
+		for(int i=0;i<cb.getclasslistsize();i++){
+			myClass = cb.getClass(i);
+			methodList = myClass.getMethods();
+
+			for (Method method : methodList) {
+				sbMsg.append("「"+method.getSignature()+"」");
+				sbMsg.append("と");
+				sbMsg.append("「"+methodDec.getDeclarationAsString()+"」"+" の距離:");
+				distance = levensteinAlgorithm.getDistance(method.getSignature(), methodDec.getDeclarationAsString());
+				if (distance > mostNearDistance) {
+					mostNearDistance = distance;
+					targetMethod = method;
+				}
+				sbMsg.append(distance+"\n");
+			}
+		}
 		
-		sbMsg.append("MethodName: "+methodDec.getName()+"\n");
+		sbMsg.append("\n");
+		sbMsg.append("結果(最も近い数値):"+mostNearDistance+"\n");
+		if (targetMethod != null) {
+			sbMsg.append("ソースコード:\n"+methodDec.getDeclarationAsString()+"\n");
+			sbMsg.append("ターゲットシーケンス:\n"+targetMethod.getSignature()+"\n");
+			sbMsg.append("中身の確認：\n");
+			sbMsg.append("-ソースコード-\n");
+			for (Statement statement : stList) {
+				sbMsg.append(statement+"\n");
+			}
+			sbMsg.append("-シーケンス-\n");
+			sbMsg.append(targetMethod.getBody());
+			/*
+			sbMsg.append("中身の比較数値:"+levensteinAlgorithm.getDistance(stList.toString(), targetMethod.getBody())+"\n");
+			sbMsg.append("ソースコードがシーケンスのステートメントを含んでいるかの判定:"+stList.toString().contains(targetMethod.getBody())+"\n");
+			*/
+		}
+
+		//メソッドすべてを取得する
+		/*
+		sbMsg.append(methodDec.getDeclarationAsString()+"{\n");
 		for (Statement statement : stList) {
 			sbMsg.append(statement+"\n");
 		}
-//		sbMsg.append(methodDec.toString()+"\n");
 
-//		if (Modifier.isPublic(methodDec.getModifiers()) && methodDec.getParameters().isEmpty() && methodDec.getType().toString().equals("void")) {
-//			sbMsg.append(methodDec.getType()+" ");
-//			sbMsg.append(methodDec.getName()+"()");
-//			sbMsg.append(methodDec.getBody()+"\n");
-//		}
+		sbMsg.append("}\n");
+		 */
+
+		//メソッドの指定
+		/*
+		if (Modifier.isPublic(methodDec.getModifiers()) && methodDec.getParameters().isEmpty() && methodDec.getType().toString().equals("void")) {
+			sbMsg.append(methodDec.getType()+" ");
+			sbMsg.append(methodDec.getName()+"()");
+			sbMsg.append(methodDec.getBody()+"\n");
+		}
+		*/
 
 		super.visit(methodDec, arg);
 
@@ -75,5 +97,9 @@ public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 
 	public String getMessage() {
 		return sbMsg.toString();
+	}
+
+	public static void setClassBuilder(ClassBuilder cb) {
+		SampleMethodVisitor.cb = cb;
 	}
 }
