@@ -1,4 +1,4 @@
-package com.classcheck.view;
+package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -27,7 +27,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompileTabView extends JPanel implements IPluginExtraTabView, ProjectEventListener {
+public class CompileTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel bottonPane;
@@ -42,7 +42,7 @@ public class CompileTabView extends JPanel implements IPluginExtraTabView, Proje
 	private JTextArea msgTextArea;
 	private File compileFolder;
 
-	public CompileTabView() {
+	public CompileTabPanel() {
 		initComponents();
 		addEvent();
 		addProjectEventListener();

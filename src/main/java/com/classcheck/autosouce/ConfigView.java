@@ -33,7 +33,7 @@ import com.change_vision.jude.api.inf.model.INamedElement;
 import com.change_vision.jude.api.inf.model.IPackage;
 import com.change_vision.jude.api.inf.model.IUseCase;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
-import com.classcheck.view.ResultTabView;
+import com.classcheck.panel.ResultTabPanel;
 
 /**
  * @author  
@@ -229,7 +229,7 @@ public class ConfigView extends JFrame implements ActionListener {
 					(String)tableModel.getValueAt(2, 3), //set
 					(String)tableModel.getValueAt(3, 3), //orderedset
 					(String)tableModel.getValueAt(4, 3));//sequeance
-			ResultTabView.setConfig(config);
+			ResultTabPanel.setConfig(config);
 			//System.out.println(config.toString());
 			this.setVisible(false);
 

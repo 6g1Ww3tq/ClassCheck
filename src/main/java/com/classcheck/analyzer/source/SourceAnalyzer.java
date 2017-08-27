@@ -10,18 +10,18 @@ import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 
 public class SourceAnalyzer {
-	private StringBuilder sbMsg;
+	//private StringBuilder sbMsg;
 	private CompilationUnit unit;
 
 	//Analyze Signature
-	private MethodVisitor mv;
+	private CodeVisitor codeVisitor;
 	private SampleMethodVisitor sample_mv;
 
 	public SourceAnalyzer(File file) throws IOException{
 		//StringBuilder Messenger Init
-		sbMsg = new StringBuilder();
-//		mv = new MethodVisitor();
-		sample_mv = new SampleMethodVisitor();
+		//sbMsg = new StringBuilder();
+		codeVisitor = new CodeVisitor();
+//		sample_mv = new SampleMethodVisitor();
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(file);
 
@@ -36,14 +36,11 @@ public class SourceAnalyzer {
 	}
 
 	public void doAnalyze() {
-//		mv.visit(unit,null);
-		sample_mv.visit(unit,null);
+		codeVisitor.visit(unit,null);
+//		sample_mv.visit(unit,null);
 	}
-
-	public String getMessage() {
-//		sbMsg.append(mv.getMessage());
-		sbMsg.append(sample_mv.getMessage());
-		
-		return sbMsg.toString();
+	
+	public CodeVisitor getCodeVisitor() {
+		return codeVisitor;
 	}
 }

@@ -1,4 +1,4 @@
-package com.classcheck.view;
+package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.change_vision.jude.api.inf.AstahAPI;
@@ -28,6 +27,7 @@ import com.change_vision.jude.api.inf.project.ProjectEventListener;
 import com.change_vision.jude.api.inf.ui.IPluginActionDelegate.UnExpectedException;
 import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
+import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.analyzer.source.SampleMethodVisitor;
 import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosouce.ClassBuilder;
@@ -37,6 +37,7 @@ import com.classcheck.autosouce.MyClass;
 import com.classcheck.autosouce.SourceGenerator;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.Tree;
+import com.classcheck.window.ClassTreeWindow;
 import com.classcheck.window.TextMessageWindow;
 
 import java.io.BufferedReader;
@@ -46,9 +47,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-public class ResultTabView extends JPanel implements IPluginExtraTabView, ProjectEventListener {
+public class ResultTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
 	 * 
 	 */
@@ -61,6 +61,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	private JScrollPane textPane_2;
 	private JTextArea textArea;
 	private JTextArea textArea_2;
+	
+	private List<CodeVisitor> codeVisitorList;
 
 	List<IClass> classList;
 	List<ISequenceDiagram> diagramList;
@@ -73,7 +75,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 	private ClassBuilder cb;
 	private static Config config;
 
-	public ResultTabView() {
+	public ResultTabPanel() {
 		initComponents();
 		addProjectEventListener();
 		classList = new ArrayList<IClass>();
@@ -81,6 +83,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 		config = new Config();
 		config.activate();
+		
+		codeVisitorList = new ArrayList<CodeVisitor>();
 
 	}
 
@@ -175,7 +179,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SampleMethodVisitor.setClassBuilder(cb);
+				//SampleMethodVisitor.setClassBuilder(cb);
 				selectFolder(getComponent());
 			}
 
@@ -187,6 +191,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 			public void actionPerformed(ActionEvent e) {
 				StringBuilder sb = new StringBuilder();
 				TextMessageWindow tmw = null;
+				ClassTreeWindow ctw = null;
 
 				config.activate();
 				create_class_sequence_list();
@@ -200,6 +205,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 						sb.append(myClass.toString());
 					}
 
+					ctw = new ClassTreeWindow(cb,codeVisitorList);
+					ctw.setTitle("シーケンス図を読み取り");
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
@@ -210,6 +217,7 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 				MutableAttributeSet attr = new SimpleAttributeSet();
 				tmw.appendText(sb.toString(),attr);
 				tmw.setTitle("シーケンス図を読み取り");
+				
 			}
 		});
 
@@ -269,7 +277,8 @@ public class ResultTabView extends JPanel implements IPluginExtraTabView, Projec
 						sa.doAnalyze();
 
 						sb.append(fileNode+"\n");
-						sb.append(sa.getMessage());
+						//sb.append("sa---:"+sa.getCodeVisitor().getClassName()+"\n");
+						codeVisitorList.add(sa.getCodeVisitor());
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
