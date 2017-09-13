@@ -26,7 +26,7 @@ public class TextMessageWindow extends JFrame {
 		setVisible(true);
 	}
 	
-	private void initComponents() {
+	protected void initComponents() {
 		textPane = new JTextPane();
 		sc = new StyleContext();
 		doc = new DefaultStyledDocument(sc);

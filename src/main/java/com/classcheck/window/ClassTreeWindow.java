@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -15,7 +17,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosouce.ClassBuilder;
 import com.classcheck.autosouce.MyClass;
-import com.classcheck.panel.ClassNodePanel;
+import com.classcheck.panel.AstahAndSoucePanel;
+import com.classcheck.panel.StatuBar;
 
 public class ClassTreeWindow extends JFrame {
 
@@ -24,11 +27,15 @@ public class ClassTreeWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	//左:Tree,右:astahとソースコード
+	JSplitPane holizontalSplitePane;
+	//上:Tree,astahとソースコード,下:ソースコード
+	JSplitPane verticalSplitePane;
 	JTree jtree;
 	DefaultMutableTreeNode root;
 	ClassBuilder cb;
 	JTextArea textArea;
-	ClassNodePanel classPanel;
+	AstahAndSoucePanel astahAndSoucePanel;
 	List<CodeVisitor> codeVisitorList;
 	
 	public ClassTreeWindow(ClassBuilder cb,List<CodeVisitor> codeVisitorList) {
@@ -44,8 +51,10 @@ public class ClassTreeWindow extends JFrame {
 		root = new DefaultMutableTreeNode("root");
 		jtree = new JTree(root);
 		jtree.setSize(new Dimension(200,200));
-		classPanel = new ClassNodePanel(cb,codeVisitorList);
+		astahAndSoucePanel = new AstahAndSoucePanel(cb,codeVisitorList);
 		textArea = new JTextArea(20, 20);
+		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		MyClass myClass = null;
 		ClassNode child = null;
@@ -55,16 +64,53 @@ public class ClassTreeWindow extends JFrame {
 			child = new ClassNode(myClass);
 			root.add(child);
 		}
+		
+//		JScrollPane treeScrollPane = new JScrollPane(jtree);
+//	    treeScrollPane.setPreferredSize(new Dimension(180, 150));	
+//		JScrollPane textAreaScrollPane = new JScrollPane(textArea);
+//	    textAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
+//	    textAreaScrollPane.add(new StatuBar(textAreaScrollPane, "souce code from astah"));
+//		JScrollPane astahSourceScrollPane = new JScrollPane(astahAndSoucePanel);
+//	    astahSourceScrollPane.setPreferredSize(new Dimension(180, 150));	
+//	    astahSourceScrollPane.add(new StatuBar(astahSourceScrollPane, "astahとソースコードの設定"));
+//	    holizontalSplitePane.setLeftComponent(treeScrollPane);
+//	    holizontalSplitePane.setRightComponent(astahSourceScrollPane);
+//	    holizontalSplitePane.setContinuousLayout(true);
+//	    add(holizontalSplitePane,BorderLayout.NORTH);
+//	    verticalSplitePane.setTopComponent(holizontalSplitePane);
+//	    verticalSplitePane.setBottomComponent(textAreaScrollPane);
+//	    verticalSplitePane.setContinuousLayout(true);
+//		add(verticalSplitePane,BorderLayout.CENTER);
 
-		JScrollPane treeScrollPane = new JScrollPane(jtree);
+		JPanel p;
+
+		p = new JPanel(new BorderLayout());
+		p.add(jtree,BorderLayout.CENTER);
+		p.add(new StatuBar(p, "Astah"),BorderLayout.SOUTH);
+		JScrollPane treeScrollPane = new JScrollPane(p);
 	    treeScrollPane.setPreferredSize(new Dimension(180, 150));	
-		JScrollPane classScrollPane = new JScrollPane(textArea);
-	    classScrollPane.setPreferredSize(new Dimension(180, 150));	
-		JScrollPane textScrollPane = new JScrollPane(classPanel);
-	    textScrollPane.setPreferredSize(new Dimension(180, 150));	
-		add(treeScrollPane,BorderLayout.WEST);
-		add(textScrollPane,BorderLayout.SOUTH);
-		add(classScrollPane,BorderLayout.CENTER);
+
+		p = new JPanel(new BorderLayout());
+		p.add(textArea,BorderLayout.CENTER);
+		p.add(new StatuBar(p, "souce code from astah"),BorderLayout.SOUTH);
+		JScrollPane textAreaScrollPane = new JScrollPane(p);
+	    textAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
+
+		p = new JPanel(new BorderLayout());
+		p.add(astahAndSoucePanel,BorderLayout.CENTER);
+		p.add(new StatuBar(p, "souce code from astah"),BorderLayout.SOUTH);
+		JScrollPane astahSourceScrollPane = new JScrollPane(p);
+
+	    astahSourceScrollPane.setPreferredSize(new Dimension(180, 150));	
+	    astahSourceScrollPane.add(new StatuBar(astahSourceScrollPane, "astahとソースコードの設定"));
+	    holizontalSplitePane.setLeftComponent(treeScrollPane);
+	    holizontalSplitePane.setRightComponent(astahSourceScrollPane);
+	    holizontalSplitePane.setContinuousLayout(true);
+	    add(holizontalSplitePane,BorderLayout.NORTH);
+	    verticalSplitePane.setTopComponent(holizontalSplitePane);
+	    verticalSplitePane.setBottomComponent(textAreaScrollPane);
+	    verticalSplitePane.setContinuousLayout(true);
+		add(verticalSplitePane,BorderLayout.CENTER);
 	}
 	
 	private void initActionEvent() {
@@ -80,10 +126,13 @@ public class ClassTreeWindow extends JFrame {
 					if (userObj instanceof MyClass) {
 						MyClass myClass = (MyClass) userObj;
 						textArea.setText(myClass.toString());
-						classPanel.initComponent(myClass);
+						astahAndSoucePanel.removeAll();
+						astahAndSoucePanel.revalidate();
+						astahAndSoucePanel.initComponent(myClass);
 					}
 				}
 			}
 		});
+		
 	}
 }
