@@ -1,4 +1,4 @@
-package com.classcheck.autosouce;
+package com.classcheck.autosource;
 
 /*
  * @author  

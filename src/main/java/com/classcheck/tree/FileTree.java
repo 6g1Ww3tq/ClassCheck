@@ -5,16 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Tree implements Aggregate {
+public class FileTree implements Aggregate {
 	private FileNode root;
 	private Pattern pattern;
 	
-	public Tree(FileNode root,Pattern pattern){
+	public FileTree(FileNode root,Pattern pattern){
 		this.root = root;
 		this.pattern = pattern;
 	}
 
-	public Tree(FileNode root,String regex) {
+	public FileTree(FileNode root,String regex) {
 		this(root,Pattern.compile(regex));
 	}
 

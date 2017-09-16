@@ -21,14 +21,14 @@ import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.analyzer.source.SourceAnalyzer;
-import com.classcheck.autosouce.ClassBuilder;
-import com.classcheck.autosouce.Config;
-import com.classcheck.autosouce.ConfigView;
-import com.classcheck.autosouce.MyClass;
-import com.classcheck.autosouce.SourceGenerator;
+import com.classcheck.autosource.ClassBuilder;
+import com.classcheck.autosource.Config;
+import com.classcheck.autosource.ConfigView;
+import com.classcheck.autosource.MyClass;
+import com.classcheck.autosource.SourceGenerator;
 import com.classcheck.tree.FileNode;
-import com.classcheck.tree.Tree;
-import com.classcheck.window.ClassTreeWindow;
+import com.classcheck.tree.FileTree;
+import com.classcheck.window.MatcherWindow;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.TextMessageWindow;
 
@@ -49,6 +49,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	private JButton sequenceBtn;
 
 	private List<CodeVisitor> codeVisitorList;
+	FileTree fileTree;
 
 	List<IClass> classList;
 	List<ISequenceDiagram> diagramList;
@@ -109,9 +110,9 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				DebugMessageWindow.clearText();
 				System.out.println("実験しました。。。");
 				DebugMessageWindow.msgToOutPutTextArea();
-				DebugMessageWindow.clearText();
 			}
 		});
 
@@ -130,7 +131,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				StringBuilder sb = new StringBuilder();
-				ClassTreeWindow ctw = null;
+				MatcherWindow ctw = null;
 
 				config.activate();
 				create_class_sequence_list();
@@ -144,7 +145,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 						sb.append(myClass.toString());
 					}
 
-					ctw = new ClassTreeWindow(cb,codeVisitorList);
+					ctw = new MatcherWindow(cb,codeVisitorList,fileTree);
 					ctw.setTitle("シーケンス図を読み取り");
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
@@ -195,9 +196,9 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int rtnVal = chooser.showOpenDialog(comp);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
-			Tree tree = new Tree(new FileNode(chooser.getSelectedFile()) , ".java$");
+			fileTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
 			StringBuilder sb = new StringBuilder();
-			Iterator<FileNode> it = tree.iterator();
+			Iterator<FileNode> it = fileTree.iterator();
 
 			while (it.hasNext()) {
 				fileNode = (FileNode) it.next();
@@ -209,8 +210,11 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 						sa.doAnalyze();
 
 						sb.append(fileNode+"\n");
-						//sb.append("sa---:"+sa.getCodeVisitor().getClassName()+"\n");
 						codeVisitorList.add(sa.getCodeVisitor());
+
+						DebugMessageWindow.clearText();
+						System.out.println(sb.toString());
+						DebugMessageWindow.msgToOutPutTextArea();
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.classcheck.autosouce;
+package com.classcheck.autosource;
 
 import com.change_vision.jude.api.inf.model.IMessage;
 import com.change_vision.jude.api.inf.model.INamedElement;

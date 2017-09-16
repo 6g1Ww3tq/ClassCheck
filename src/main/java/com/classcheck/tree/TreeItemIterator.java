@@ -11,7 +11,7 @@ public class TreeItemIterator implements Iterator<FileNode> {
 	private LinkedList<FileNode> stack;
 	private Pattern pattern;
 
-	public TreeItemIterator(Tree tree) {
+	public TreeItemIterator(FileTree tree) {
 		this.root = tree.getRoot();
 		this.stack = new LinkedList<FileNode>();
 		stack.push(root);

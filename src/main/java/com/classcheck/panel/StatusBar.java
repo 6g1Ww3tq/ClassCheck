@@ -9,16 +9,20 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
-public class StatuBar extends JPanel {
+public class StatusBar extends JPanel {
 	Component parentFrame;
 	JLabel statusLabel;
 	
-	public StatuBar(Component parentComp,String text) {
+	public StatusBar(Component parentComp) {
 		this.parentFrame = parentComp;
 		initLayout();
 		initComponent();
-		setText(text);
 		setVisible(true);
+	}
+	
+	public StatusBar(Component parentComp,String text) {
+		this(parentComp);
+		setText(text);
 	}
 	
 	private void initComponent() {

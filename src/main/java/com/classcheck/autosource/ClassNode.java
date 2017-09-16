@@ -1,8 +1,7 @@
-package com.classcheck.window;
+package com.classcheck.autosource;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.classcheck.autosouce.MyClass;
 
 public class ClassNode extends DefaultMutableTreeNode{
 

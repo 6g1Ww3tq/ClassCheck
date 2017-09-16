@@ -171,7 +171,7 @@ public class ConfigJDialog extends JDialog implements Serializable{
 			public void actionPerformed(ActionEvent e) {
 				int addRowNum = methodTable.getSelectedRow();
 				if (addRowNum != -1) {
-					tableModel.insertRow(addRowNum,new Vector<>());
+					tableModel.insertRow(addRowNum,new Vector());
 				}
 			}
 		});

@@ -1,8 +1,8 @@
 package com.classcheck.analyzer.source;
 
-import com.classcheck.autosouce.ClassBuilder;
-import com.classcheck.autosouce.Method;
-import com.classcheck.autosouce.MyClass;
+import com.classcheck.autosource.ClassBuilder;
+import com.classcheck.autosource.Method;
+import com.classcheck.autosource.MyClass;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.util.List;

@@ -13,20 +13,20 @@ import javax.swing.JPanel;
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.classcheck.analyzer.source.CodeVisitor;
-import com.classcheck.autosouce.ClassBuilder;
-import com.classcheck.autosouce.Method;
-import com.classcheck.autosouce.MyClass;
+import com.classcheck.autosource.ClassBuilder;
+import com.classcheck.autosource.Method;
+import com.classcheck.autosource.MyClass;
 import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-public class AstahAndSoucePanel extends JPanel {
+public class AstahAndSourcePanel extends JPanel {
 	List<MyClass> classList;
 	List<JPanel> panelList;
 	private List<CodeVisitor> codeVisitorList;
 	private ClassBuilder cb;
 
-	public AstahAndSoucePanel() {
+	public AstahAndSourcePanel() {
 		classList = new ArrayList<MyClass>();
 		panelList = new ArrayList<JPanel>();
 
@@ -35,7 +35,7 @@ public class AstahAndSoucePanel extends JPanel {
 		setVisible(true);
 	}
 
-	public AstahAndSoucePanel(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
+	public AstahAndSourcePanel(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
 		this();
 		this.cb = cb;
 		this.codeVisitorList = codeVisitorList;
