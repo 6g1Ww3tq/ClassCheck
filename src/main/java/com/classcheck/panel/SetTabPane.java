@@ -47,6 +47,9 @@ public class SetTabPane extends JPanel{
 		setVisible(true);
 	}
 
+	public void setTableEditable(boolean isEditable){
+		tablePane.setTableEditable(isEditable);
+	}
 	private void initComponent(){
 		JPanel panel;
 		MyClass myClass = null;

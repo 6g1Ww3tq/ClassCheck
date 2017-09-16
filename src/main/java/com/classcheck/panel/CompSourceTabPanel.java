@@ -48,19 +48,22 @@ public class CompSourceTabPanel extends JPanel{
 	StatusBar astahSourceStatus;
 	StatusBar astahAndUserSouceStatus;
 
-	CompTablePane ctp;
 	ClassBuilder cb;
 	FileTree userFileTree;
 
-	public CompSourceTabPanel(CompTablePane ctp, ClassBuilder cb,
+	public CompSourceTabPanel(ClassBuilder cb,
 			FileTree userFileTree) {
-		this.ctp = ctp;
 		this.cb = cb;
 		this.userFileTree = userFileTree;
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
 		setVisible(true);
+	}
+	
+	public void setTextAreaEditable(boolean isEditable){
+		astahTextArea.setEditable(isEditable);
+		userTextArea.setEditable(isEditable);
 	}
 
 	private void makeFileNodeTree(){
@@ -178,6 +181,7 @@ public class CompSourceTabPanel extends JPanel{
 					try {
 						userTextArea.setText(FileUtils.readFileToString(fileNode));
 						userSourceStatus.setText("Your Source Code : " + fileNode.getName());
+						userTreeStatus.setText("Your-Class : " + fileNode.getName()) ;
 					} catch (IOException e1) {
 						DebugMessageWindow.clearText();
 						System.out.println(e1);
@@ -199,6 +203,8 @@ public class CompSourceTabPanel extends JPanel{
 					if (userObj instanceof MyClass) {
 						MyClass myClass = (MyClass) userObj;
 						astahTextArea.setText(myClass.toString());
+						astahSourceStatus.setText("Astah Source Code : " + myClass.getName());
+						astahTreeStatus.setText("Astah-Class : " + myClass.getName()) ;
 					}
 				}
 			}

@@ -13,8 +13,6 @@ public class MatcherTabbedPane extends JTabbedPane {
 	SetTabPane astp;
 	CompSourceTabPanel ustp;
 	
-	CompTablePane csuc;
-
 	//２つのタブで共有
 	ClassBuilder cb;
 	List<CodeVisitor> codeVisitorList;
@@ -35,11 +33,12 @@ public class MatcherTabbedPane extends JTabbedPane {
 
 	private void initComponent(){
 		astahAndSourcePane = new AstahAndSourcePanel(codeVisitorList);
-		csuc = new CompTablePane(cb,codeVisitorList);
-
+		 
 		//２つのタブを生成
-		ustp = new CompSourceTabPanel(csuc,cb,userFileTree);
+		ustp = new CompSourceTabPanel(cb,userFileTree);
+		ustp.setTextAreaEditable(false);
 		astp = new SetTabPane(astahAndSourcePane, cb);
+		astp.setTableEditable(true);
 
 		//２つのタブを加える
 		addTab("Astah", astp);

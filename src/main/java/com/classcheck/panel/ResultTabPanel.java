@@ -28,6 +28,7 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.SourceGenerator;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.FileTree;
+import com.classcheck.window.ConfigJDialog;
 import com.classcheck.window.MatcherWindow;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.TextMessageWindow;
@@ -111,6 +112,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugMessageWindow.clearText();
+//				new ConfigJDialog(false);
 				System.out.println("実験しました。。。");
 				DebugMessageWindow.msgToOutPutTextArea();
 			}
