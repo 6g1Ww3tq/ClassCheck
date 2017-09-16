@@ -38,6 +38,10 @@ public class AstahAndSourcePanel extends JPanel {
 		this();
 		this.codeVisitorList = codeVisitorList;
 	}
+	
+	public List<CodeVisitor> getCodeVisitorList() {
+		return codeVisitorList;
+	}
 
 	public void initComponent(MyClass myClass){
 		panelList.clear();
@@ -55,7 +59,6 @@ public class AstahAndSourcePanel extends JPanel {
 		CodeVisitor visitor = null;
 		JLabel l = null;
 		JPanel p = null;
-		methodList.toArray();
 		JComboBox<String> methodComboBox = null;
 
 		int targetIndex;
@@ -71,7 +74,7 @@ public class AstahAndSourcePanel extends JPanel {
 		//説明のパネルを加える
 		//（左）astah	:（右)	ソースコード
 		p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		l = new JLabel("(左)astah : (右)ソースコード");
+		l = new JLabel("(左)astahのメソッド,コンストラクタのシグネチャ : (右)ソースコードのシグネチャ");
 		l.setFont(new Font("SansSerif", Font.BOLD, 20));
 		l.setAlignmentX(CENTER_ALIGNMENT);
 		p.add(l);
@@ -108,7 +111,7 @@ public class AstahAndSourcePanel extends JPanel {
 				}
 				methodComboBox.setSelectedItem(keyStr);
 				p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-				l = new JLabel(method.getName()+" : ");
+				l = new JLabel(method.getSignature() + " : ");
 				l.setAlignmentX(CENTER_ALIGNMENT);
 
 				p.add(l);

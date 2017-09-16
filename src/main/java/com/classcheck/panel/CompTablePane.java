@@ -14,17 +14,16 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.MyClass;
 
-public class CompAstahUserClass extends JPanel implements Serializable{
+public class CompTablePane extends JPanel implements Serializable{
 
 	DefaultTableModel tableModel;
 	JTable methodTable;
 	private ClassBuilder cb;
 	private List<CodeVisitor> codeVisitorList;
 
-	public CompAstahUserClass(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
+	public CompTablePane(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
 		this.cb = cb;
 		this.codeVisitorList = codeVisitorList;
-		setSize(450,300);
 		setLayout(new BorderLayout());
 		initComponent();
 		setVisible(true);
@@ -43,7 +42,7 @@ public class CompAstahUserClass extends JPanel implements Serializable{
 
 		methodTable = new JTable(tableModel);
 		tableScrollPane = new JScrollPane(methodTable);
-		tableScrollPane.setPreferredSize(new Dimension(430, 280));
+		tableScrollPane.setPreferredSize(null);
 		add(tableScrollPane);
 
 		insertData();

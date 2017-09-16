@@ -10,10 +10,10 @@ import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
-	AstahSourceTabPane astp;
-	UserSourceTabPanel ustp;
+	SetTabPane astp;
+	CompSourceTabPanel ustp;
 	
-	CompAstahUserClass csuc;
+	CompTablePane csuc;
 
 	//２つのタブで共有
 	ClassBuilder cb;
@@ -30,18 +30,19 @@ public class MatcherTabbedPane extends JTabbedPane {
 		this.cb = cb;
 		this.userFileTree = fileTree;
 		initComponent();
+		setVisible(true);
 	}
 
 	private void initComponent(){
 		astahAndSourcePane = new AstahAndSourcePanel(codeVisitorList);
-		csuc = new CompAstahUserClass(cb,codeVisitorList);
+		csuc = new CompTablePane(cb,codeVisitorList);
 
 		//２つのタブを生成
-		ustp = new UserSourceTabPanel(csuc,userFileTree);
-		astp = new AstahSourceTabPane(astahAndSourcePane, cb);
+		ustp = new CompSourceTabPanel(csuc,cb,userFileTree);
+		astp = new SetTabPane(astahAndSourcePane, cb);
 
 		//２つのタブを加える
 		addTab("Astah", astp);
-		addTab("Your Codes",ustp);
+		addTab("Compare",ustp);
 	}
 }

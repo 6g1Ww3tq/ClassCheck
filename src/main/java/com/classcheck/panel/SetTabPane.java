@@ -18,7 +18,7 @@ import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 
-public class AstahSourceTabPane extends JPanel{
+public class SetTabPane extends JPanel{
 	/**
 	 * 
 	 */
@@ -29,17 +29,18 @@ public class AstahSourceTabPane extends JPanel{
 	JSplitPane holizontalSplitePane;
 	JSplitPane verticalSplitePane;
 	JTree jtree;
-	DefaultMutableTreeNode root;
+	DefaultMutableTreeNode astahRoot;
 	ClassBuilder cb;
-	JTextArea textArea;
 
-	StatusBar astahStatus;
-	StatusBar astahSourceStatus;
+	StatusBar astahTreeStatus;
 	StatusBar astahAndSourceStatus;
+	
+	CompTablePane tablePane;
 
-	public AstahSourceTabPane(AstahAndSourcePanel astahAndSourcePane,ClassBuilder cb) {
+	public SetTabPane(AstahAndSourcePanel astahAndSourcePane,ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.cb = cb;
+		this.tablePane = new CompTablePane(cb, astahAndSourcePane.getCodeVisitorList());
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -47,55 +48,49 @@ public class AstahSourceTabPane extends JPanel{
 	}
 
 	private void initComponent(){
-		JPanel statusPanel;
-
-		root = new DefaultMutableTreeNode("Astah");
-		jtree = new JTree(root);
-		jtree.setSize(new Dimension(200,200));
-		textArea = new JTextArea(20, 20);
+		JPanel panel;
+		MyClass myClass = null;
+		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-		MyClass myClass = null;
-		ClassNode child = null;
+		astahRoot = new DefaultMutableTreeNode("Astah");
+		jtree = new JTree(astahRoot);
+		jtree.setSize(new Dimension(200,200));
 
 		for(int i=0;i<cb.getclasslistsize();i++){
 			myClass = cb.getClass(i);
 			child = new ClassNode(myClass);
-			root.add(child);
+			astahRoot.add(child);
 		}
 
 		//上の左右パネル
-		statusPanel = new JPanel(new BorderLayout());
-		statusPanel.add(jtree,BorderLayout.CENTER);
-		astahStatus = new StatusBar(statusPanel, "Astah-Class");
-		statusPanel.add(astahStatus,BorderLayout.SOUTH);
-		JScrollPane treeScrollPane = new JScrollPane(statusPanel);
+		//astah tree(左)
+		panel = new JPanel(new BorderLayout());
+		panel.add(jtree,BorderLayout.CENTER);
+		astahTreeStatus = new StatusBar(panel, "Astah-Class");
+		panel.add(astahTreeStatus,BorderLayout.SOUTH);
+		JScrollPane treeScrollPane = new JScrollPane(panel);
 		treeScrollPane.setPreferredSize(new Dimension(180, 150));	
 
-		statusPanel = new JPanel(new BorderLayout());
-		statusPanel.add(textArea,BorderLayout.CENTER);
-		astahSourceStatus = new StatusBar(statusPanel, "Souce Code From Astah");
-		statusPanel.add(astahSourceStatus,BorderLayout.SOUTH);
-		JScrollPane textAreaScrollPane = new JScrollPane(statusPanel);
-		textAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
+		//astah and source panel(右）
+		panel = new JPanel(new BorderLayout());
+		panel.add(astahAndSourcePane,BorderLayout.CENTER);
+		astahAndSourceStatus = new StatusBar(panel, "Compare Astah And Your Code");
+		panel.add(astahAndSourceStatus,BorderLayout.SOUTH);
+		JScrollPane astahAndSourceScrollPane = new JScrollPane(panel);
+		astahAndSourceScrollPane.setPreferredSize(null);	
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
-		holizontalSplitePane.setRightComponent(textAreaScrollPane);
+		holizontalSplitePane.setRightComponent(astahAndSourceScrollPane);
 		holizontalSplitePane.setContinuousLayout(true);
-		add(holizontalSplitePane,BorderLayout.NORTH);
 
-		//下の設定パネル
-		statusPanel = new JPanel(new BorderLayout());
-		statusPanel.add(astahAndSourcePane,BorderLayout.CENTER);
-		astahAndSourceStatus = new StatusBar(statusPanel, "Compare Astah And Your Code");
-		statusPanel.add(astahAndSourceStatus,BorderLayout.SOUTH);
-		JScrollPane astahSourceScrollPane = new JScrollPane(statusPanel);
-
-		astahSourceScrollPane.setPreferredSize(new Dimension(180, 150));	
-		astahSourceScrollPane.add(new StatusBar(astahSourceScrollPane, "astahとソースコードの設定"));
+		//下のテーブル
+		JScrollPane tableScrollPane = new JScrollPane(tablePane);
+		tableScrollPane.setPreferredSize(null);	
+		tableScrollPane.add(new StatusBar(tableScrollPane, "クラスの対応関係の設定"));
 		verticalSplitePane.setTopComponent(holizontalSplitePane);
-		verticalSplitePane.setBottomComponent(astahSourceScrollPane);
+		verticalSplitePane.setBottomComponent(tableScrollPane);
 		verticalSplitePane.setContinuousLayout(true);
 		add(verticalSplitePane,BorderLayout.CENTER);
 
@@ -113,13 +108,10 @@ public class AstahSourceTabPane extends JPanel{
 					Object userObj = selectedNode.getUserObject();
 					if (userObj instanceof MyClass) {
 						MyClass myClass = (MyClass) userObj;
-						textArea.setText(myClass.toString());
 						astahAndSourcePane.removeAll();
 						astahAndSourcePane.revalidate();
 						astahAndSourcePane.initComponent(myClass);
-
-						astahSourceStatus.setText("Astah-Class-Source : "+myClass.getName());
-						astahStatus.setText("Astah-Class:"+myClass.getName());
+						astahTreeStatus.setText("Astah-Class:"+myClass.getName());
 					}
 				}
 			}
