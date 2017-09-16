@@ -33,8 +33,8 @@ public class MatcherTabbedPane extends JTabbedPane {
 	}
 
 	private void initComponent(){
-		astahAndSourcePane = new AstahAndSourcePanel(cb,codeVisitorList);
-		csuc = new CompAstahUserClass();
+		astahAndSourcePane = new AstahAndSourcePanel(codeVisitorList);
+		csuc = new CompAstahUserClass(cb,codeVisitorList);
 
 		//２つのタブを生成
 		ustp = new UserSourceTabPanel(csuc,userFileTree);

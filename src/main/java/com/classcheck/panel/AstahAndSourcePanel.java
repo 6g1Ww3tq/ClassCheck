@@ -24,7 +24,6 @@ public class AstahAndSourcePanel extends JPanel {
 	List<MyClass> classList;
 	List<JPanel> panelList;
 	private List<CodeVisitor> codeVisitorList;
-	private ClassBuilder cb;
 
 	public AstahAndSourcePanel() {
 		classList = new ArrayList<MyClass>();
@@ -35,16 +34,9 @@ public class AstahAndSourcePanel extends JPanel {
 		setVisible(true);
 	}
 
-	public AstahAndSourcePanel(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
+	public AstahAndSourcePanel(List<CodeVisitor> codeVisitorList) {
 		this();
-		this.cb = cb;
 		this.codeVisitorList = codeVisitorList;
-	}
-
-	public void setMyClass(MyClass myClass) {
-		if(!classList.contains(myClass)){
-			classList.add(myClass);
-		}
 	}
 
 	public void initComponent(MyClass myClass){
@@ -64,7 +56,6 @@ public class AstahAndSourcePanel extends JPanel {
 		JLabel l = null;
 		JPanel p = null;
 		methodList.toArray();
-		//		JComboBox<MethodDeclaration> methodComboBox = null;
 		JComboBox<String> methodComboBox = null;
 
 		int targetIndex;
@@ -101,10 +92,7 @@ public class AstahAndSourcePanel extends JPanel {
 			}
 
 			for (Method method : methodList) {
-				//TODO
-				//Adapterパターン？を使ってMethodDeclaration(finalクラス)をどうにかする
-				//methodComboBox = new JComboBox<MethodDeclaration>(codeMethodList.toArray(new MethodDeclaration[codeMethodList.size()]));
-
+				
 				methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 				//レーベンシュタイン距離を初期化
 				distance = 0;

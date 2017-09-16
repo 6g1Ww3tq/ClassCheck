@@ -49,7 +49,7 @@ public class AstahSourceTabPane extends JPanel{
 	private void initComponent(){
 		JPanel statusPanel;
 
-		root = new DefaultMutableTreeNode("root");
+		root = new DefaultMutableTreeNode("Astah");
 		jtree = new JTree(root);
 		jtree.setSize(new Dimension(200,200));
 		textArea = new JTextArea(20, 20);
