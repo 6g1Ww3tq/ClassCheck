@@ -38,7 +38,7 @@ public class MatcherTabbedPane extends JTabbedPane {
 		ustp = new CompSourceTabPanel(cb,userFileTree);
 		ustp.setTextAreaEditable(false);
 		astp = new SetTabPane(astahAndSourcePane, cb);
-		astp.setTableEditable(true);
+		astp.setTableEditable(false);
 
 		//２つのタブを加える
 		addTab("Astah", astp);

@@ -27,7 +27,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	private List<CodeVisitor> codeVisitorList;
 
 	boolean isTableEditable = false;
-	
+
 	int rowLength;
 
 	public CompTablePane(ClassBuilder cb, List<CodeVisitor> codeVisitorList) {
@@ -40,10 +40,6 @@ public class CompTablePane extends JPanel implements Serializable{
 
 	public void setTableEditable(boolean isEditable){
 		isTableEditable = isEditable;
-
-		if (!isEditable) {
-			tableModel.isCellEditable(rowLength, 0);
-		}
 	}
 
 	private void initComponent() {
@@ -57,7 +53,12 @@ public class CompTablePane extends JPanel implements Serializable{
 			tableModel = new DefaultTableModel(null, columnNames){
 				@Override
 				public boolean isCellEditable(int row, int column) {
-					return isTableEditable;
+
+					if(column==0){
+						return isTableEditable;
+					}else{
+						return true;
+					}
 				}
 			};
 			tableModel.setColumnCount(2);
@@ -91,9 +92,9 @@ public class CompTablePane extends JPanel implements Serializable{
 			tableModel.insertRow(i, rowData);
 			rowLength++;
 		}
-		
+
 		rowLength--;
-		
+
 		if (rowLength == -1) {
 			rowLength++;
 		}
