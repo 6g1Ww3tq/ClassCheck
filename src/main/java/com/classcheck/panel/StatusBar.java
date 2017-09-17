@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -39,5 +40,9 @@ public class StatusBar extends JPanel {
 	
 	public void setText(String text){
 		statusLabel.setText(text);
+	}
+	
+	public void setStatusLabelFont(Font font){
+		statusLabel.setFont(font);
 	}
 }

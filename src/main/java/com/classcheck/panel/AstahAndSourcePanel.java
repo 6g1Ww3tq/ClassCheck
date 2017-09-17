@@ -62,6 +62,10 @@ public class AstahAndSourcePanel extends JPanel {
 	public void setMyClassList(List<MyClass> myClassList) {
 		this.myClassList = myClassList;
 	}
+	
+	public Map<MyClass, CodeVisitor> getCodeMap() {
+		return codeMap;
+	}
 
 	public void initComponent(MyClass myClass){
 		panelList.clear();

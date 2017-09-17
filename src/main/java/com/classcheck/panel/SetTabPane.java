@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,8 @@ public class SetTabPane extends JPanel{
 		//astah and source panel(右）
 		panel = new JPanel(new BorderLayout());
 		panel.add(astahAndSourcePane,BorderLayout.CENTER);
-		astahAndSourceStatus = new StatusBar(panel, "Compare Astah And Your Code");
+		astahAndSourceStatus = new StatusBar(panel, "対応付けしてください");
+		astahAndSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(astahAndSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahAndSourceScrollPane = new JScrollPane(panel);
 		astahAndSourceScrollPane.setPreferredSize(null);	

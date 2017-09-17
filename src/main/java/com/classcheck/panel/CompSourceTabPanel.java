@@ -46,7 +46,6 @@ public class CompSourceTabPanel extends JPanel{
 	StatusBar userSourceStatus;
 	StatusBar astahTreeStatus;
 	StatusBar astahSourceStatus;
-	StatusBar astahAndUserSouceStatus;
 
 	List<MyClass> myClassList;
 	FileTree userFileTree;
