@@ -3,7 +3,9 @@ package com.classcheck.panel;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -21,26 +23,44 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class AstahAndSourcePanel extends JPanel {
-	List<MyClass> classList;
 	List<JPanel> panelList;
-	private List<CodeVisitor> codeVisitorList;
+	List<MyClass> myClassList;
+	List<CodeVisitor> codeVisitorList;
+	Map<MyClass, CodeVisitor> codeMap;
 
 	public AstahAndSourcePanel() {
-		classList = new ArrayList<MyClass>();
 		panelList = new ArrayList<JPanel>();
+		codeMap = new HashMap<MyClass, CodeVisitor>();
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
-
 		setVisible(true);
 	}
 
-	public AstahAndSourcePanel(List<CodeVisitor> codeVisitorList) {
+	public AstahAndSourcePanel(ClassBuilder cb,
+			List<CodeVisitor> codeVisitorList) {
 		this();
+		this.myClassList = cb.getClasslist();
 		this.codeVisitorList = codeVisitorList;
+
+		for (MyClass myClass : myClassList) {
+			for (CodeVisitor codeVisitor : codeVisitorList) {
+				if(myClass.getName().equals(codeVisitor.getClassName())){
+					codeMap.put(myClass, codeVisitor);
+				}
+			}
+		}
 	}
-	
+
 	public List<CodeVisitor> getCodeVisitorList() {
 		return codeVisitorList;
+	}
+
+	public void setCodeVisitorList(List<CodeVisitor> codeVisitorList) {
+		this.codeVisitorList = codeVisitorList;
+	}
+
+	public void setMyClassList(List<MyClass> myClassList) {
+		this.myClassList = myClassList;
 	}
 
 	public void initComponent(MyClass myClass){
@@ -56,20 +76,10 @@ public class AstahAndSourcePanel extends JPanel {
 		List<Method> methodList = myClass.getMethods();
 		List<MethodDeclaration> codeMethodList = null;
 		List<ConstructorDeclaration> codeConstructorList = null;
-		CodeVisitor visitor = null;
+		CodeVisitor visitor = codeMap.get(myClass);
 		JLabel l = null;
 		JPanel p = null;
 		JComboBox<String> methodComboBox = null;
-
-		int targetIndex;
-		boolean isSourceClassExist = false;
-
-		for(targetIndex = 0 ; targetIndex < codeVisitorList.size() ; targetIndex++){
-			if(myClass.getName().equals(codeVisitorList.get(targetIndex).getClassName())){
-				isSourceClassExist = true;
-				break;
-			}
-		}
 
 		//説明のパネルを加える
 		//（左）astah	:（右)	ソースコード
@@ -80,8 +90,7 @@ public class AstahAndSourcePanel extends JPanel {
 		p.add(l);
 		panelList.add(p);
 
-		if (isSourceClassExist){
-			visitor = codeVisitorList.get(targetIndex);
+		if (visitor != null){
 			codeMethodList = visitor.getMethodList();
 			codeConstructorList = visitor.getConstructorList();
 			ArrayList<String> strList = new ArrayList<String>();
@@ -95,7 +104,7 @@ public class AstahAndSourcePanel extends JPanel {
 			}
 
 			for (Method method : methodList) {
-				
+
 				methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 				//レーベンシュタイン距離を初期化
 				distance = 0;
@@ -130,11 +139,12 @@ public class AstahAndSourcePanel extends JPanel {
 		for (JPanel panel : panelList) {
 			add(panel);
 		}
-		
+
 		DebugMessageWindow.clearText();
 		for (JPanel panel : panelList) {
 			System.out.println(panel);
 		}
 		DebugMessageWindow.msgToOutPutTextArea();
 	}
+
 }

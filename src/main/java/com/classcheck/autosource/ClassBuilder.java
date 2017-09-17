@@ -50,5 +50,8 @@ public class ClassBuilder {
 	public int getclasslistsize(){
 		return classlist.size();
 	}
-
+	
+	public List<MyClass> getClasslist() {
+		return classlist;
+	}
 }

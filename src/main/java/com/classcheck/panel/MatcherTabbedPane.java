@@ -1,20 +1,23 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
+import com.classcheck.autosource.MyClass;
 import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
-	SetTabPane astp;
-	CompSourceTabPanel ustp;
+	SetTabPane stp;
+	CompSourceTabPanel cstp;
 	
 	//２つのタブで共有
 	ClassBuilder cb;
+	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
 	//右上のパネル
 	AstahAndSourcePanel astahAndSourcePane;
@@ -24,24 +27,24 @@ public class MatcherTabbedPane extends JTabbedPane {
 
 	public MatcherTabbedPane(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList, FileTree fileTree) {
-		this.codeVisitorList = codeVisitorList;
 		this.cb = cb;
+		this.codeVisitorList = codeVisitorList;
 		this.userFileTree = fileTree;
 		initComponent();
 		setVisible(true);
 	}
 
 	private void initComponent(){
-		astahAndSourcePane = new AstahAndSourcePanel(codeVisitorList);
+		astahAndSourcePane = new AstahAndSourcePanel(cb,codeVisitorList);
 		 
 		//２つのタブを生成
-		ustp = new CompSourceTabPanel(cb,userFileTree);
-		ustp.setTextAreaEditable(false);
-		astp = new SetTabPane(astahAndSourcePane, cb);
-		astp.setTableEditable(false);
+		cstp = new CompSourceTabPanel(cb,userFileTree);
+		cstp.setTextAreaEditable(false);
+		stp = new SetTabPane(astahAndSourcePane, cb);
+		stp.setTableEditable(false);
 
 		//２つのタブを加える
-		addTab("Astah", astp);
-		addTab("Compare",ustp);
+		addTab("Set", stp);
+		addTab("View",cstp);
 	}
 }

@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -30,17 +31,17 @@ public class SetTabPane extends JPanel{
 	JSplitPane verticalSplitePane;
 	JTree jtree;
 	DefaultMutableTreeNode astahRoot;
-	ClassBuilder cb;
+	List<MyClass> myClassList;
 
 	StatusBar astahTreeStatus;
 	StatusBar astahAndSourceStatus;
 	
 	CompTablePane tablePane;
 
-	public SetTabPane(AstahAndSourcePanel astahAndSourcePane,ClassBuilder cb) {
+	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
-		this.cb = cb;
-		this.tablePane = new CompTablePane(cb, astahAndSourcePane.getCodeVisitorList());
+		this.myClassList = cb.getClasslist();
+		this.tablePane = new CompTablePane(myClassList, astahAndSourcePane);
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -52,7 +53,6 @@ public class SetTabPane extends JPanel{
 	}
 	private void initComponent(){
 		JPanel panel;
-		MyClass myClass = null;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -61,8 +61,7 @@ public class SetTabPane extends JPanel{
 		jtree = new JTree(astahRoot);
 		jtree.setSize(new Dimension(200,200));
 
-		for(int i=0;i<cb.getclasslistsize();i++){
-			myClass = cb.getClass(i);
+		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 		}

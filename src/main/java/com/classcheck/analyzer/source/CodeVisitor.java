@@ -51,5 +51,10 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 	public List<MethodDeclaration> getMethodList() {
 		return methodList;
 	}
+	
+	@Override
+	public String toString() {
+		return getClassName();
+	}
 
 }

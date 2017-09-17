@@ -48,19 +48,18 @@ public class CompSourceTabPanel extends JPanel{
 	StatusBar astahSourceStatus;
 	StatusBar astahAndUserSouceStatus;
 
-	ClassBuilder cb;
+	List<MyClass> myClassList;
 	FileTree userFileTree;
 
-	public CompSourceTabPanel(ClassBuilder cb,
-			FileTree userFileTree) {
-		this.cb = cb;
+	public CompSourceTabPanel(ClassBuilder cb, FileTree userFileTree) {
+		this.myClassList = cb.getClasslist();
 		this.userFileTree = userFileTree;
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
 		setVisible(true);
 	}
-	
+
 	public void setTextAreaEditable(boolean isEditable){
 		astahTextArea.setEditable(isEditable);
 		userTextArea.setEditable(isEditable);
@@ -88,7 +87,6 @@ public class CompSourceTabPanel extends JPanel{
 
 	private void initComponent(){
 		JPanel panel;
-		MyClass myClass = null;
 		ClassNode child = null;
 		userHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		astahHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -96,18 +94,17 @@ public class CompSourceTabPanel extends JPanel{
 		userTextArea = new JTextArea(20, 20);
 		astahTextArea = new JTextArea(20, 20);
 
-		
+
 		//astah tree logic
 		astahRoot = new DefaultMutableTreeNode("Astah");
 		astahJTree = new JTree(astahRoot);
 		astahJTree.setSize(new Dimension(200,200));
 
-		for(int i=0;i<cb.getclasslistsize();i++){
-			myClass = cb.getClass(i);
+		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 		}
-		
+
 		//user file tree logic
 		userRoot = new MutableFileNode(userFileTree.getRoot());
 		userJtree = new JTree(userRoot);
@@ -158,7 +155,7 @@ public class CompSourceTabPanel extends JPanel{
 		astahHolizontalSplitePane.setRightComponent(astahTextAreaScrollPane);
 		astahHolizontalSplitePane.setContinuousLayout(true);
 
-		
+
 		//アスタとユーザーソースの上下をセット
 		verticalSplitePane.setTopComponent(userHolizontalSplitePane);
 		verticalSplitePane.setBottomComponent(astahHolizontalSplitePane);
