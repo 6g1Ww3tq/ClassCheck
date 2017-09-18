@@ -56,6 +56,7 @@ public class SetTabPane extends JPanel{
 		JPanel panel;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		holizontalSplitePane.setSize(new Dimension(400, 400));
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		astahRoot = new DefaultMutableTreeNode("Astah");
@@ -74,7 +75,7 @@ public class SetTabPane extends JPanel{
 		astahTreeStatus = new StatusBar(panel, "Astah-Class");
 		panel.add(astahTreeStatus,BorderLayout.SOUTH);
 		JScrollPane treeScrollPane = new JScrollPane(panel);
-		treeScrollPane.setPreferredSize(new Dimension(180, 150));	
+		treeScrollPane.setSize(new Dimension(200, 300));	
 
 		//astah and source panel(右）
 		panel = new JPanel(new BorderLayout());
@@ -83,7 +84,7 @@ public class SetTabPane extends JPanel{
 		astahAndSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(astahAndSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahAndSourceScrollPane = new JScrollPane(panel);
-		astahAndSourceScrollPane.setPreferredSize(null);	
+		astahAndSourceScrollPane.setSize(new Dimension(200,300));	
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
 		holizontalSplitePane.setRightComponent(astahAndSourceScrollPane);
@@ -91,7 +92,7 @@ public class SetTabPane extends JPanel{
 
 		//下のテーブル
 		JScrollPane tableScrollPane = new JScrollPane(tablePane);
-		tableScrollPane.setPreferredSize(null);	
+		tableScrollPane.setSize(new Dimension(200, 200));	
 		tableScrollPane.add(new StatusBar(tableScrollPane, "クラスの対応関係の設定"));
 		verticalSplitePane.setTopComponent(holizontalSplitePane);
 		verticalSplitePane.setBottomComponent(tableScrollPane);

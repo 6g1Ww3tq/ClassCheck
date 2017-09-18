@@ -2,6 +2,7 @@ package com.classcheck.window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -32,7 +33,8 @@ public class MatcherWindow extends JFrame {
 	public MatcherWindow(ClassBuilder cb, List<CodeVisitor> codeVisitorList,
 			FileTree fileTree) {
 		initComponent(cb,codeVisitorList,fileTree);
-		setSize(new Dimension(400,400));
+		setSize(new Dimension(500,500));
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 

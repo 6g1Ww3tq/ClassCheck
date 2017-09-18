@@ -1,7 +1,6 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +17,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import com.classcheck.analyzer.source.CodeVisitor;
-import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
 import com.classcheck.window.DebugMessageWindow;
 
 public class CompTablePane extends JPanel implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JScrollPane tableScrollPane;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
@@ -57,6 +59,11 @@ public class CompTablePane extends JPanel implements Serializable{
 		}else{
 			//編集不可にする
 			tableModel = new DefaultTableModel(null, columnNames){
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public boolean isCellEditable(int row, int column) {
 
@@ -66,13 +73,14 @@ public class CompTablePane extends JPanel implements Serializable{
 						return true;
 					}
 				}
+
 			};
 			tableModel.setColumnCount(2);
 		}
 
 		classCompTable = new JTable(tableModel);
 		tableScrollPane = new JScrollPane(classCompTable);
-		tableScrollPane.setPreferredSize(null);
+		//tableScrollPane.setPreferredSize(null);
 		add(tableScrollPane);
 
 		insertData();
@@ -83,37 +91,56 @@ public class CompTablePane extends JPanel implements Serializable{
 		tableScrollPane.setEnabled(isEditable);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void insertData(){
 		TableColumn userClassColumn = null;
 		MyClassCell myClassCell;
 		MyClass myClass;
 		Object[] rowObjects;
-
+		Object obj;
+		String defaultVal = "- Select Class -";
 		CodeVisitor codeVisitor = null;
-		JComboBox<CodeVisitor> comboBox = new JComboBox<CodeVisitor>();
-
-		for(int i=0;i<myClassList.size();i++){
-			myClass = myClassList.get(i);
-			myClassCell = new MyClassCell(myClass);
-			rowObjects = new Object[1];
-			tableModel.insertRow(i, rowObjects);
-			tableModel.setValueAt(myClassCell, i, 0);
-		}
+		ClonableJComboBox<Object> comboBox = new ClonableJComboBox<Object>();
 
 		for (int i = 0; i < codeVisitorList.size(); i++) {
 			codeVisitor = codeVisitorList.get(i);
 			comboBox.addItem(codeVisitor);
+		}
+		comboBox.addItem(defaultVal);
+		comboBox.setSelectedItem(defaultVal);
+
+		for(int i=0;i<myClassList.size();i++){
+			myClass = myClassList.get(i);
+			myClassCell = new MyClassCell(myClass);
+			rowObjects = new Object[2];
+			tableModel.insertRow(i, rowObjects);
+			tableModel.setValueAt(myClassCell, i, 0);
+			try {
+				tableModel.setValueAt(comboBox.clone(), i, 1);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		userClassColumn = classCompTable.getColumnModel().getColumn(1);
 		comboBox.setBorder(BorderFactory.createEmptyBorder());
 		userClassColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
-		//セルのデフォルト値を設定
+		//セル(JComboBox)のデフォルト値を設定
+		JComboBox o;
 		for (int i = 0; i < tableModel.getRowCount(); i++) {
-			comboBox = (JComboBox<CodeVisitor>)tableModel.getValueAt(i, 1);
-			//comboBox.setSelectedItem(anObject);
+			obj = tableModel.getValueAt(i, 1);
+			System.out.println("obj-Class:"+obj.getClass());
+			if (obj instanceof JComboBox<?>) {
+				o = (JComboBox) obj;
+				System.out.println(o);
+//				o.setSelectedItem(astahAndSourcePane.getCodeMap().get(tableModel.getValueAt(i, 0)));
+			}else{
+				System.out.println("137:");
+			}
 		}
+		DebugMessageWindow.msgToOutPutTextArea();
+		
 	}
 
 	private void initActionEvent() {
@@ -167,5 +194,42 @@ public class CompTablePane extends JPanel implements Serializable{
 	private boolean isConfigFileExist() {
 		// TODO 自動生成されたメソッド・スタブ
 		return false;
+	}
+
+	public class ClonableJComboBox<E> extends JComboBox<E> implements Cloneable{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public ClonableJComboBox() {
+			super();
+		}
+
+		@Override
+		public String toString(){
+			return getSelectedItem().toString();
+		}
+
+		@Override
+		public Object clone() throws CloneNotSupportedException {
+			JComboBox<E> jcomboBox = new JComboBox<E>(){
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public String toString() {
+					return getSelectedItem().toString();
+				}
+			};
+
+			for (int i = 0; i < getItemCount(); i++) {
+				jcomboBox.addItem(this.getItemAt(i));
+			}
+			return  jcomboBox;
+		}
 	}
 }
