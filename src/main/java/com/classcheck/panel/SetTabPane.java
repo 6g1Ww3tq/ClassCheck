@@ -36,13 +36,13 @@ public class SetTabPane extends JPanel{
 
 	StatusBar astahTreeStatus;
 	StatusBar astahAndSourceStatus;
-	
+
 	CompTablePane tablePane;
 
 	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.myClassList = cb.getClasslist();
-		this.tablePane = new CompTablePane(myClassList, astahAndSourcePane);
+		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -106,21 +106,25 @@ public class SetTabPane extends JPanel{
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Object obj = jtree.getLastSelectedPathComponent();
-
-				if (obj instanceof ClassNode) {
-					ClassNode selectedNode = (ClassNode) obj;
-					Object userObj = selectedNode.getUserObject();
-					if (userObj instanceof MyClass) {
-						MyClass myClass = (MyClass) userObj;
-						astahAndSourcePane.removeAll();
-						astahAndSourcePane.revalidate();
-						astahAndSourcePane.initComponent(myClass);
-						astahTreeStatus.setText("Astah-Class:"+myClass.getName());
-					}
-				}
+				reLoadAstahAndSourcePane();
 			}
 		});
+	}
+
+	public void reLoadAstahAndSourcePane(){
+		Object obj = jtree.getLastSelectedPathComponent();
+
+		if (obj instanceof ClassNode) {
+			ClassNode selectedNode = (ClassNode) obj;
+			Object userObj = selectedNode.getUserObject();
+			if (userObj instanceof MyClass) {
+				MyClass myClass = (MyClass) userObj;
+				astahAndSourcePane.removeAll();
+				astahAndSourcePane.revalidate();
+				astahAndSourcePane.initComponent(myClass);
+				astahTreeStatus.setText("Astah-Class:"+myClass.getName());
+			}
+		}
 	}
 
 }

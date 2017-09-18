@@ -156,8 +156,8 @@ public class CompSourceTabPanel extends JPanel{
 
 
 		//アスタとユーザーソースの上下をセット
-		verticalSplitePane.setTopComponent(userHolizontalSplitePane);
-		verticalSplitePane.setBottomComponent(astahHolizontalSplitePane);
+		verticalSplitePane.setTopComponent(astahHolizontalSplitePane);
+		verticalSplitePane.setBottomComponent(userHolizontalSplitePane);
 		verticalSplitePane.setContinuousLayout(true);
 		add(verticalSplitePane,BorderLayout.CENTER);
 

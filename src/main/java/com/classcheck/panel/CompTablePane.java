@@ -30,6 +30,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	JScrollPane tableScrollPane;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
+	SetTabPane setTabPane;
 	List<MyClass> myClassList;
 	AstahAndSourcePanel astahAndSourcePane;
 	List<CodeVisitor> codeVisitorList;
@@ -38,6 +39,11 @@ public class CompTablePane extends JPanel implements Serializable{
 
 	public CompTablePane(List<MyClass> myClassList,
 			AstahAndSourcePanel astahAndSourcePane) {
+	}
+
+	public CompTablePane(SetTabPane setTabPane, List<MyClass> myClassList,
+			AstahAndSourcePanel astahAndSourcePane) {
+		this.setTabPane = setTabPane;
 		this.myClassList = myClassList;
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.codeVisitorList = astahAndSourcePane.getCodeVisitorList();
@@ -98,16 +104,17 @@ public class CompTablePane extends JPanel implements Serializable{
 		MyClass myClass;
 		Object[] rowObjects;
 		Object obj;
-		String defaultVal = "- Select Class -";
+		String defaultVal = "- Choose Class -";
 		CodeVisitor codeVisitor = null;
-		ClonableJComboBox<Object> comboBox = new ClonableJComboBox<Object>();
+		JComboBox comboBox;
+		ClonableJComboBox<Object> clComboBox = new ClonableJComboBox<Object>();
 
 		for (int i = 0; i < codeVisitorList.size(); i++) {
 			codeVisitor = codeVisitorList.get(i);
-			comboBox.addItem(codeVisitor);
+			clComboBox.addItem(codeVisitor);
 		}
-		comboBox.addItem(defaultVal);
-		comboBox.setSelectedItem(defaultVal);
+		clComboBox.addItem(defaultVal);
+		clComboBox.setSelectedItem(defaultVal);
 
 		for(int i=0;i<myClassList.size();i++){
 			myClass = myClassList.get(i);
@@ -116,31 +123,35 @@ public class CompTablePane extends JPanel implements Serializable{
 			tableModel.insertRow(i, rowObjects);
 			tableModel.setValueAt(myClassCell, i, 0);
 			try {
-				tableModel.setValueAt(comboBox.clone(), i, 1);
+				tableModel.setValueAt(clComboBox.clone(), i, 1);
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
 		}
 
 		userClassColumn = classCompTable.getColumnModel().getColumn(1);
-		comboBox.setBorder(BorderFactory.createEmptyBorder());
-		userClassColumn.setCellEditor(new DefaultCellEditor(comboBox));
+		clComboBox.setBorder(BorderFactory.createEmptyBorder());
+		userClassColumn.setCellEditor(new DefaultCellEditor(clComboBox));
 
 		//セル(JComboBox)のデフォルト値を設定
-		JComboBox o;
 		for (int i = 0; i < tableModel.getRowCount(); i++) {
 			obj = tableModel.getValueAt(i, 1);
 			System.out.println("obj-Class:"+obj.getClass());
 			if (obj instanceof JComboBox<?>) {
-				o = (JComboBox) obj;
-				System.out.println(o);
-//				o.setSelectedItem(astahAndSourcePane.getCodeMap().get(tableModel.getValueAt(i, 0)));
+				comboBox = (JComboBox) obj;
+				codeVisitor = astahAndSourcePane.getCodeMap().get(myClassList.get(i));
+				if (codeVisitor == null) {
+					comboBox.setSelectedItem(defaultVal);
+				}else{
+					comboBox.setSelectedItem(astahAndSourcePane.getCodeMap().get(myClassList.get(i)));
+				}
 			}else{
-				System.out.println("137:");
+				StackTraceElement throwableStackTraceElement = new Throwable().getStackTrace()[0];
+		        System.out.println(throwableStackTraceElement.getClassName() + "#" + throwableStackTraceElement.getMethodName() + "(" + throwableStackTraceElement.getLineNumber() + ")");
 			}
 		}
 		DebugMessageWindow.msgToOutPutTextArea();
-		
+
 	}
 
 	private void initActionEvent() {
@@ -181,6 +192,9 @@ public class CompTablePane extends JPanel implements Serializable{
 							+ tableModel.getValueAt(tme.getFirstRow(),
 									tme.getColumn()));	
 					DebugMessageWindow.msgToOutPutTextArea();
+					
+					//AstahAndSourcePaneの更新
+					setTabPane.reLoadAstahAndSourcePane();
 				}
 			}
 		});
