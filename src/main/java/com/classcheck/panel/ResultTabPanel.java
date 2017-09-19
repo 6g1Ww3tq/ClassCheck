@@ -50,7 +50,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	private JButton sequenceBtn;
 
 	private List<CodeVisitor> codeVisitorList;
-	FileTree fileTree;
+	FileTree baseDirTree;
 
 	List<IClass> classList;
 	List<ISequenceDiagram> diagramList;
@@ -147,8 +147,8 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 						sb.append(myClass.toString());
 					}
 
-					ctw = new MatcherWindow(cb,codeVisitorList,fileTree);
-					ctw.setTitle("シーケンス図を読み取り");
+					ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);
+					ctw.setTitle("テストプログラムの生成");
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
@@ -198,9 +198,9 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int rtnVal = chooser.showOpenDialog(comp);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
-			fileTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
+			baseDirTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
 			StringBuilder sb = new StringBuilder();
-			Iterator<FileNode> it = fileTree.iterator();
+			Iterator<FileNode> it = baseDirTree.iterator();
 
 			while (it.hasNext()) {
 				fileNode = (FileNode) it.next();
