@@ -1,5 +1,7 @@
 package com.classcheck.window;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
@@ -22,8 +24,10 @@ public class DebugMessageWindow extends JFrame {
 	static private JTextPane textPane;
 	static private JScrollPane scrollPane;
 	static private StyleContext sc;
+	static private boolean isDebugMode = false;
 
-	public DebugMessageWindow(String title) {
+	public DebugMessageWindow(String title,boolean isDebugMode) {
+		this.isDebugMode = isDebugMode;
 		setSize(new Dimension(800, 600));
 		initComponents();
 		setTitle(title);
@@ -49,17 +53,22 @@ public class DebugMessageWindow extends JFrame {
 	}
 
 	public static void msgToOutPutTextArea(){
-		MutableAttributeSet attr = new SimpleAttributeSet();
-		StyleConstants.setForeground(attr, Color.black);
-		setText(getOutputMsg(),attr);
+		if(isDebugMode){
+			MutableAttributeSet attr = new SimpleAttributeSet();
+			StyleConstants.setForeground(attr, Color.black);
+			setText(getOutputMsg(),attr);
+		}
 	}
-	
+
 	public static void clearText(){
-		try {
-			doc.remove(0, doc.getLength());
-		} catch (BadLocationException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+		if(isDebugMode){
+			try {
+				doc.remove(0, doc.getLength());
+			} catch (BadLocationException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+
 		}
 	}
 

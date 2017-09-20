@@ -62,15 +62,13 @@ public class AstahAndSourcePanel extends JPanel {
 	public Map<MyClass, CodeVisitor> getCodeMap() {
 		return codeMap;
 	}
-	
+
 	public Map<MyClass, List<JPanel>> getMapPanelList() {
 		return mapPanelList;
 	}
 
-	public void initComponent(MyClass myClass){
+	public void initComponent(MyClass myClass,boolean isAllChange){
 		List<JPanel> panelList = mapPanelList.get(myClass);
-		panelList.clear();
-
 		LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
 		//tmp
 		double distance = 0;
@@ -81,63 +79,69 @@ public class AstahAndSourcePanel extends JPanel {
 		List<Method> methodList = myClass.getMethods();
 		List<MethodDeclaration> codeMethodList = null;
 		List<ConstructorDeclaration> codeConstructorList = null;
-		CodeVisitor visitor = codeMap.get(myClass);
+		CodeVisitor codeVisitor = codeMap.get(myClass);
 		JLabel l = null;
 		JPanel p = null;
 		JComboBox<String> methodComboBox = null;
 
-		//説明のパネルを加える
-		//（左）astah	:（右)	ソースコード
-		p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		l = new JLabel("(左)astahのメソッド,コンストラクタのシグネチャ : (右)ソースコードのシグネチャ");
-		l.setFont(new Font("SansSerif", Font.BOLD, 20));
-		l.setAlignmentX(CENTER_ALIGNMENT);
-		p.add(l);
-		panelList.add(p);
+		if (isAllChange) {
+			panelList.clear();
 
-		if (visitor != null){
-			codeMethodList = visitor.getMethodList();
-			codeConstructorList = visitor.getConstructorList();
-			ArrayList<String> strList = new ArrayList<String>();
+			//説明のパネルを加える
+			//（左）astah	:（右)	ソースコード
+			p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			l = new JLabel("(左)astahのメソッド,コンストラクタのシグネチャ : (右)ソースコードのシグネチャ");
+			l.setFont(new Font("SansSerif", Font.BOLD, 20));
+			l.setAlignmentX(CENTER_ALIGNMENT);
+			p.add(l);
+			panelList.add(p);
 
-			for (MethodDeclaration methodDeclaration : codeMethodList) {
-				strList.add(methodDeclaration.getDeclarationAsString());
-			}
+			if (codeVisitor != null){
+				codeMethodList = codeVisitor.getMethodList();
+				codeConstructorList = codeVisitor.getConstructorList();
+				ArrayList<String> strList = new ArrayList<String>();
 
-			for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
-				strList.add(constructorDeclaration.getDeclarationAsString());
-			}
-
-			for (Method method : methodList) {
-
-				methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
-				//レーベンシュタイン距離を初期化
-				distance = 0;
-				maxDistance = 0;
-				keyStr = null;
-				for (String str : strList) {
-
-					distance = levensteinAlgorithm.getDistance(method.toSignature(), str);
-					if(maxDistance < distance){
-						maxDistance = distance;
-						keyStr = str;
-					}
+				for (MethodDeclaration methodDeclaration : codeMethodList) {
+					strList.add(methodDeclaration.getDeclarationAsString());
 				}
-				methodComboBox.setSelectedItem(keyStr);
-				p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-				l = new JLabel(method.getSignature() + " : ");
-				l.setAlignmentX(CENTER_ALIGNMENT);
 
-				p.add(l);
-				p.add(methodComboBox);
+				for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
+					strList.add(constructorDeclaration.getDeclarationAsString());
+				}
+
+				for (Method method : methodList) {
+
+					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
+					//レーベンシュタイン距離を初期化
+					distance = 0;
+					maxDistance = 0;
+					keyStr = null;
+					for (String str : strList) {
+
+						distance = levensteinAlgorithm.getDistance(method.toSignature(), str);
+						if(maxDistance < distance){
+							maxDistance = distance;
+							keyStr = str;
+						}
+					}
+					methodComboBox.setSelectedItem(keyStr);
+					p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+					l = new JLabel(method.getSignature() + " : ");
+					l.setAlignmentX(CENTER_ALIGNMENT);
+
+					p.add(l);
+					p.add(methodComboBox);
+					panelList.add(p);
+				}
+
+			}else{
+				p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				l = new JLabel("該当するクラスがソースコードの中にありません");
+				l.setAlignmentX(CENTER_ALIGNMENT);
 				panelList.add(p);
 			}
 
-		}else{
-			p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			l = new JLabel("該当するクラスがソースコードの中にありません");
-			l.setAlignmentX(CENTER_ALIGNMENT);
-			panelList.add(p);
+
 		}
 
 		//描画
@@ -150,6 +154,10 @@ public class AstahAndSourcePanel extends JPanel {
 			System.out.println(panel);
 		}
 		DebugMessageWindow.msgToOutPutTextArea();
+		
+		//ツリーアイテムを押してもうまく表示されないので
+		//常に早く表示させるよう対策
+		repaint();
 	}
 
 }

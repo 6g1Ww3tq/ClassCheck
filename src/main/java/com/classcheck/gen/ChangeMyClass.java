@@ -46,8 +46,10 @@ public class ChangeMyClass {
 				//astah sig : code sig を取得完了
 
 				if (astahSigLabel != null && codeSigBox != null) {
-					System.out.println(astahSigLabel.getText() +
-							" : " + codeSigBox.getSelectedItem());
+					if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
+						System.out.println(astahSigLabel.getText() +
+								" : " + codeSigBox.getSelectedItem());
+					}
 				}
 			}
 		}

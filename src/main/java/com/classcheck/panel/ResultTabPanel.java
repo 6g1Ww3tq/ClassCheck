@@ -79,7 +79,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	}
 
 	private void initDebugWindow(){
-		new DebugMessageWindow("Debug");
+		new DebugMessageWindow("Debug",true);
 	}
 
 	private void initVariables() {

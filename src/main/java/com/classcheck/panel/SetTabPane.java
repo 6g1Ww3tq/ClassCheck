@@ -66,7 +66,13 @@ public class SetTabPane extends JPanel{
 		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
+			//デフォルトでパネルに初期値データを入れる
+			astahAndSourcePane.initComponent(myClass,true);
 		}
+		//デフォルトでパネルに初期値データを入れる
+		//->表示させないようにする
+		astahAndSourcePane.removeAll();
+		astahAndSourcePane.revalidate();
 
 		//上の左右パネル
 		//astah tree(左)
@@ -106,12 +112,12 @@ public class SetTabPane extends JPanel{
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				reLoadAstahAndSourcePane();
+				reLoadAstahAndSourcePane(false);
 			}
 		});
 	}
 
-	public void reLoadAstahAndSourcePane(){
+	public void reLoadAstahAndSourcePane(boolean isAllChange){
 		Object obj = jtree.getLastSelectedPathComponent();
 
 		if (obj instanceof ClassNode) {
@@ -121,7 +127,7 @@ public class SetTabPane extends JPanel{
 				MyClass myClass = (MyClass) userObj;
 				astahAndSourcePane.removeAll();
 				astahAndSourcePane.revalidate();
-				astahAndSourcePane.initComponent(myClass);
+				astahAndSourcePane.initComponent(myClass,isAllChange);
 				astahTreeStatus.setText("Astah-Class:"+myClass.getName());
 			}
 		}
