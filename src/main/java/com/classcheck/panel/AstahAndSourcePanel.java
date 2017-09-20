@@ -23,13 +23,12 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class AstahAndSourcePanel extends JPanel {
-	List<JPanel> panelList;
-	List<MyClass> myClassList;
+	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
 	Map<MyClass, CodeVisitor> codeMap;
 
 	public AstahAndSourcePanel() {
-		panelList = new ArrayList<JPanel>();
+		mapPanelList = new HashMap<MyClass, List<JPanel>>();
 		codeMap = new HashMap<MyClass, CodeVisitor>();
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
@@ -39,15 +38,16 @@ public class AstahAndSourcePanel extends JPanel {
 	public AstahAndSourcePanel(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
-		this.myClassList = cb.getClasslist();
 		this.codeVisitorList = codeVisitorList;
 
-		for (MyClass myClass : myClassList) {
+		for (MyClass myClass : cb.getClasslist()) {
 			for (CodeVisitor codeVisitor : codeVisitorList) {
 				if(myClass.getName().equals(codeVisitor.getClassName())){
 					codeMap.put(myClass, codeVisitor);
 				}
 			}
+
+			mapPanelList.put(myClass, new ArrayList<JPanel>());
 		}
 	}
 
@@ -59,15 +59,16 @@ public class AstahAndSourcePanel extends JPanel {
 		this.codeVisitorList = codeVisitorList;
 	}
 
-	public void setMyClassList(List<MyClass> myClassList) {
-		this.myClassList = myClassList;
-	}
-	
 	public Map<MyClass, CodeVisitor> getCodeMap() {
 		return codeMap;
 	}
+	
+	public Map<MyClass, List<JPanel>> getMapPanelList() {
+		return mapPanelList;
+	}
 
 	public void initComponent(MyClass myClass){
+		List<JPanel> panelList = mapPanelList.get(myClass);
 		panelList.clear();
 
 		LevensteinDistance levensteinAlgorithm = new LevensteinDistance();

@@ -38,6 +38,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ResultTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
@@ -112,7 +119,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugMessageWindow.clearText();
-//				new ConfigJDialog(false);
+				//				new ConfigJDialog(false);
 				System.out.println("実験しました。。。");
 				DebugMessageWindow.msgToOutPutTextArea();
 			}
@@ -147,8 +154,10 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 						sb.append(myClass.toString());
 					}
 
-					ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);
-					ctw.setTitle("テストプログラムの生成");
+					if (baseDirTree!=null) {
+						ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);
+						ctw.setTitle("テストプログラムの生成");
+					}
 				} catch (UnExpectedException e1) {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
@@ -191,40 +200,65 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	}
 
 	private void selectFolder(Component comp) {
-		SourceAnalyzer sa = null; 
-		JFileChooser chooser = new JFileChooser();
-		FileNode fileNode = null;
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<?> future;
+		final JFileChooser chooser = new JFileChooser();
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int rtnVal = chooser.showOpenDialog(comp);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
-			baseDirTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
-			StringBuilder sb = new StringBuilder();
-			Iterator<FileNode> it = baseDirTree.iterator();
+			future = executor.submit(new Callable<String>() {
 
-			while (it.hasNext()) {
-				fileNode = (FileNode) it.next();
+				@Override
+				public String call() throws Exception {
+					SourceAnalyzer sa = null; 
+					FileNode fileNode = null;
+					baseDirTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
+					StringBuilder sb = new StringBuilder();
+					Iterator<FileNode> it = baseDirTree.iterator();
 
-				if (fileNode!=null) {
-					try {
-						sa = new SourceAnalyzer(fileNode);
+					while (it.hasNext()) {
+						fileNode = (FileNode) it.next();
 
-						sa.doAnalyze();
+						if (fileNode!=null) {
+							try {
+								sa = new SourceAnalyzer(fileNode);
 
-						sb.append(fileNode+"\n");
-						codeVisitorList.add(sa.getCodeVisitor());
+								sa.doAnalyze();
 
-						DebugMessageWindow.clearText();
-						System.out.println(sb.toString());
-						DebugMessageWindow.msgToOutPutTextArea();
-					} catch (IOException e) {
-						// TODO 自動生成された catch ブロック
-						e.printStackTrace();
+								sb.append(fileNode+"\n");
+								codeVisitorList.add(sa.getCodeVisitor());
+
+							} catch (IOException e) {
+								// TODO 自動生成された catch ブロック
+								e.printStackTrace();
+							}
+						}
+
 					}
+
+					System.out.println(sb.toString());
+
+					return null;
 				}
-
+			});
+			try {
+				future.get(3, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (TimeoutException e) {
+				// TODO 自動生成された catch ブロック
+				System.out.println("time out!!");
+				future.cancel(true);
+				baseDirTree = null;
+				e.printStackTrace();
 			}
-
+			executor.shutdownNow();
+			DebugMessageWindow.msgToOutPutTextArea();
 		}
 	}
 

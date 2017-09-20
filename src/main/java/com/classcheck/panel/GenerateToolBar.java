@@ -14,6 +14,7 @@ import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 
 import com.classcheck.gen.GenerateTestProgram;
+import com.classcheck.tree.FileNode;
 import com.classcheck.window.DebugMessageWindow;
 
 public class GenerateToolBar extends JToolBar {
@@ -21,11 +22,14 @@ public class GenerateToolBar extends JToolBar {
 	Action genAction;
 	ImageIcon genIcon;
 	private File baseDir;
+	private AstahAndSourcePanel astahAndSourcePane;
 
-	public GenerateToolBar(String name,int operation,File baseDir){
+	public GenerateToolBar(String name, int operation, File baseDir,
+			AstahAndSourcePanel astahAndSourcePane) {
 		super(name, operation);
 		
 		this.baseDir = baseDir;
+		this.astahAndSourcePane = astahAndSourcePane;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
 		add(Box.createHorizontalGlue());
 		setBorder(new LineBorder(Color.LIGHT_GRAY,1));
@@ -48,7 +52,7 @@ public class GenerateToolBar extends JToolBar {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
 				DebugMessageWindow.msgToOutPutTextArea();
-				new GenerateTestProgram(baseDir);
+				new GenerateTestProgram(baseDir,astahAndSourcePane.getMapPanelList());
 			}
 		};
 		System.out.println("Image : " + genIcon.toString());

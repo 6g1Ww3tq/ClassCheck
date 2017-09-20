@@ -47,4 +47,8 @@ public class MatcherTabbedPane extends JTabbedPane {
 		addTab("Set", stp);
 		addTab("View",cstp);
 	}
+	
+	public AstahAndSourcePanel getAstahAndSourcePane() {
+		return astahAndSourcePane;
+	}
 }

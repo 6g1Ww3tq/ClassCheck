@@ -28,7 +28,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	JScrollPane tableScrollPane;
-	DefaultTableModel tableModel;
+	static DefaultTableModel tableModel;
 	JTable classCompTable;
 	SetTabPane setTabPane;
 	List<MyClass> myClassList;
@@ -56,18 +56,20 @@ public class CompTablePane extends JPanel implements Serializable{
 	public void setTableEditable(boolean isEditable){
 		isTableEditable = isEditable;
 	}
+	
+	public static DefaultTableModel getTableModel(){
+		return tableModel;
+	}
 
 	private void initComponent() {
 		String[] columnNames = {"AstahClass","YourClass"};
-
+		tableModel = null;
+		
 		if (isConfigFileExist()) {
 			tableModel = loadTableModel();
 		}else{
 			//編集不可にする
 			tableModel = new DefaultTableModel(null, columnNames){
-				/**
-				 * 
-				 */
 				private static final long serialVersionUID = 1L;
 
 				@Override
