@@ -1,11 +1,17 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -19,6 +25,7 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.basic.Pocket;
 
 public class SetTabPane extends JPanel{
 	/**
@@ -33,6 +40,7 @@ public class SetTabPane extends JPanel{
 	JTree jtree;
 	DefaultMutableTreeNode astahRoot;
 	List<MyClass> myClassList;
+	Map<MyClass, Pocket<SelectedType>> selectedSameSigMap;
 
 	StatusBar astahTreeStatus;
 	StatusBar astahAndSourceStatus;
@@ -42,6 +50,7 @@ public class SetTabPane extends JPanel{
 	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.myClassList = cb.getClasslist();
+		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
 		setLayout(new BorderLayout());
 		initComponent();
@@ -52,6 +61,7 @@ public class SetTabPane extends JPanel{
 	public void setTableEditable(boolean isEditable){
 		tablePane.setTableEditable(isEditable);
 	}
+
 	private void initComponent(){
 		JPanel panel;
 		ClassNode child = null;
@@ -59,16 +69,19 @@ public class SetTabPane extends JPanel{
 		holizontalSplitePane.setSize(new Dimension(400, 400));
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-		astahRoot = new DefaultMutableTreeNode("Astah");
+		astahRoot = new DefaultMutableTreeNode("AstahClass");
 		jtree = new JTree(astahRoot);
 		jtree.setSize(new Dimension(200,200));
 
+		//比較パネルの初期化
 		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 			//デフォルトでパネルに初期値データを入れる
 			astahAndSourcePane.initComponent(myClass,true);
+			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 		}
+
 		//デフォルトでパネルに初期値データを入れる
 		//->表示させないようにする
 		astahAndSourcePane.removeAll();
@@ -112,25 +125,93 @@ public class SetTabPane extends JPanel{
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				reLoadAstahAndSourcePane(false);
+				Object obj = jtree.getLastSelectedPathComponent();
+
+				if (obj instanceof ClassNode) {
+					ClassNode selectedNode = (ClassNode) obj;
+					Object userObj = selectedNode.getUserObject();
+
+					if (userObj instanceof MyClass) {
+						MyClass myClass = (MyClass) userObj;
+						//パネルの更新
+						reLoadAstahAndSourcePane(myClass,false);
+					}
+				}
 			}
 		});
 	}
 
-	public void reLoadAstahAndSourcePane(boolean isAllChange){
-		Object obj = jtree.getLastSelectedPathComponent();
+	public void reLoadAstahAndSourcePane(MyClass myClass,boolean isAllChange){
+		Map<MyClass, List<JPanel>> mapPanelList = astahAndSourcePane.getMapPanelList();
+		List<JPanel> panelList = mapPanelList.get(myClass);
+		Component component;
+		JLabel astahSigLabel = null;
+		JComboBox<String> codeSigBox = null;
+		List<String> codeSigList = new ArrayList<String>();
+		String codeSig = null;
+		Object obj = null;
+		int sameCount = 0;
+		Pocket<SelectedType> pocket = null;
 
-		if (obj instanceof ClassNode) {
-			ClassNode selectedNode = (ClassNode) obj;
-			Object userObj = selectedNode.getUserObject();
-			if (userObj instanceof MyClass) {
-				MyClass myClass = (MyClass) userObj;
-				astahAndSourcePane.removeAll();
-				astahAndSourcePane.revalidate();
-				astahAndSourcePane.initComponent(myClass,isAllChange);
-				astahTreeStatus.setText("Astah-Class:"+myClass.getName());
+		//パネルの更新
+		astahAndSourcePane.removeAll();
+		astahAndSourcePane.revalidate();
+		astahAndSourcePane.initComponent(myClass,isAllChange);
+		astahTreeStatus.setText("Astah-Class:"+myClass.getName());
+
+		//ステータスバーによるエラーチェック
+		for (JPanel panel : panelList) {
+			for (int i = 0; i < panel.getComponentCount(); i++) {
+				component = panel.getComponent(i);
+
+				if (component instanceof JLabel) {
+					astahSigLabel = (JLabel) component;
+				}
+
+				if (component instanceof JComboBox<?>) {
+					codeSigBox = (JComboBox<String>) component;
+				}
+			}
+			//astah sig : code sig を取得完了
+
+			if (astahSigLabel != null && codeSigBox != null) {
+				if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
+					obj = codeSigBox.getSelectedItem();
+
+					if (obj instanceof String) {
+						codeSig = (String) obj;
+						codeSigList.add(codeSig);
+					}
+				}
 			}
 		}
-	}
 
+		for (String baseSig : codeSigList) {
+			sameCount = 0;
+
+			for (String str : codeSigList) {
+				if (baseSig.equals(str)) {
+					sameCount++;
+				}
+			}
+
+			pocket = selectedSameSigMap.get(myClass);
+
+			if (sameCount > 1) {
+				pocket.set(SelectedType.SAME);
+			}else{
+				pocket.set(SelectedType.NOTSAME);
+			}
+		}
+
+		pocket = selectedSameSigMap.get(myClass);
+
+		if (pocket.get() == SelectedType.SAME) {
+			astahAndSourceStatus.setColor(Color.red);
+			astahAndSourceStatus.setText("同じシグネチャーを選択しないでください");
+		}else if (pocket.get() == SelectedType.NOTSAME) {
+			astahAndSourceStatus.setColor(Color.green);
+			astahAndSourceStatus.setText("OK");
+		}
+	}
 }

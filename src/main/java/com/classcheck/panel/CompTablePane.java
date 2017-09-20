@@ -196,7 +196,7 @@ public class CompTablePane extends JPanel implements Serializable{
 					DebugMessageWindow.msgToOutPutTextArea();
 					
 					//AstahAndSourcePaneの更新
-					setTabPane.reLoadAstahAndSourcePane(true);
+					setTabPane.reLoadAstahAndSourcePane(myClassCell.getMyClass(),true);
 				}
 			}
 		});

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.change_vision.jude.api.inf.AstahAPI;
@@ -54,7 +55,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	private JPanel bottonPane;
 	private JButton expBtn;
 	private JButton folderBtn;
-	private JButton sequenceBtn;
+	private JButton genBtn;
 
 	private List<CodeVisitor> codeVisitorList;
 	FileTree baseDirTree;
@@ -95,17 +96,18 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 
 	private void initComponents() {
 		setLayout(new BorderLayout());
+		baseDirTree = null;
 
 		bottonPane = new JPanel();
 		expBtn = new JButton("実験");
-		folderBtn = new JButton("folder..");
+		folderBtn = new JButton("フォルダ");
 		bottonPane.add(expBtn);
 		bottonPane.add(folderBtn);
 
-		sequenceBtn = new JButton("seqDiagram");
-		bottonPane.add(sequenceBtn);
+		genBtn = new JButton("生成");
+		bottonPane.add(genBtn);
 
-		configBtn = new JButton("seqConfig");
+		configBtn = new JButton("設定");
 		bottonPane.add(configBtn);
 		btnEventInit();
 
@@ -129,13 +131,12 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//SampleMethodVisitor.setClassBuilder(cb);
 				selectFolder(getComponent());
 			}
 
 		});
 
-		sequenceBtn.addActionListener(new ActionListener() {
+		genBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -145,24 +146,33 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 				config.activate();
 				create_class_sequence_list();
 
-				try {
-					cb = new SourceGenerator().run(classList, diagramList);
-					MyClass myClass = null;
+				if (baseDirTree!=null && !classList.isEmpty() && !diagramList.isEmpty()) {
+					try {
+						cb = new SourceGenerator().run(classList, diagramList);
+						MyClass myClass = null;
 
-					for(int i=0;i<cb.getclasslistsize();i++){
-						myClass = cb.getClass(i);
-						sb.append(myClass.toString());
-					}
+						for(int i=0;i<cb.getclasslistsize();i++){
+							myClass = cb.getClass(i);
+							sb.append(myClass.toString());
+						}
 
-					if (baseDirTree!=null) {
 						ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);
 						ctw.setTitle("テストプログラムの生成");
+					} catch (UnExpectedException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
 					}
-				} catch (UnExpectedException e1) {
-					// TODO 自動生成された catch ブロック
-					e1.printStackTrace();
+				}else{
+					if (classList.isEmpty()) {
+						JOptionPane.showMessageDialog(getComponent(), "クラスがありません");
+					}
+					if (diagramList.isEmpty()) {
+						JOptionPane.showMessageDialog(getComponent(), "シーケンス図がありません");
+					}
+					if (baseDirTree == null) {
+						JOptionPane.showMessageDialog(getComponent(), "フォルダの読み込みに失敗しました");
+					}
 				}
-
 			}
 		});
 
@@ -199,13 +209,13 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 		}
 	}
 
-	private void selectFolder(Component comp) {
+	private void selectFolder(Component parentComponent) {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		Future<?> future;
 		final JFileChooser chooser = new JFileChooser();
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int rtnVal = chooser.showOpenDialog(comp);
+		int rtnVal = chooser.showOpenDialog(parentComponent);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
 			future = executor.submit(new Callable<String>() {
 

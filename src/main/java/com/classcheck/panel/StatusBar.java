@@ -1,5 +1,6 @@
 package com.classcheck.panel;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -44,5 +45,9 @@ public class StatusBar extends JPanel {
 	
 	public void setStatusLabelFont(Font font){
 		statusLabel.setFont(font);
+	}
+	
+	public void setColor(Color color){
+		statusLabel.setForeground(color);
 	}
 }
