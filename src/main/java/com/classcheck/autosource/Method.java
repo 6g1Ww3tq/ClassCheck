@@ -367,10 +367,11 @@ public class Method {
 
 	public String getSignature(){
 		String s = new String();
+		
 		if (definition.contains(" ")) {
 			s += definition+" ";
 		}
-		s += returntype+" "+name+"(";
+		s += visibility+isStatic+returntype+" "+name+"(";
 		for(int i=0;i<params.length;i++){
 			if(i!=0)
 				s+=",";

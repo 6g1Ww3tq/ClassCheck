@@ -3,11 +3,16 @@ package com.classcheck.gen;
 import java.awt.Component;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.classcheck.autosource.MyClass;
 import com.classcheck.window.DebugMessageWindow;
@@ -27,10 +32,15 @@ public class ChangeMyClass {
 		Component component;
 		JLabel astahSigLabel = null;
 		JComboBox<String> codeSigBox = null;
+		Pattern pattern = null;
+		Matcher matcher = null;
+		MethodReplace mr = null;
 
+		DebugMessageWindow.clearText();
 		for (MyClass myClass : mapPanelList.keySet()) {
 			panelList = mapPanelList.get(myClass);
 
+			mr = new MethodReplace(myClass.toString());
 			for (JPanel panel : panelList) {
 				for (int i = 0; i < panel.getComponentCount(); i++) {
 					component = panel.getComponent(i);
@@ -47,11 +57,13 @@ public class ChangeMyClass {
 
 				if (astahSigLabel != null && codeSigBox != null) {
 					if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
-						System.out.println(astahSigLabel.getText() +
-								" : " + codeSigBox.getSelectedItem());
+						mr.setBeforeMethodSig(astahSigLabel.getText());
+						mr.setAfterMethodSig(codeSigBox.getSelectedItem().toString());
+						mr.replace();
 					}
 				}
 			}
+			System.out.println(mr.getMyClassStr());
 		}
 
 		DebugMessageWindow.msgToOutPutTextArea();

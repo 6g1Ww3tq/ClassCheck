@@ -47,7 +47,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ResultTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
+public class AddonTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
 	 * 
 	 */
@@ -72,7 +72,7 @@ public class ResultTabPanel extends JPanel implements IPluginExtraTabView, Proje
 	private static Config config;
 
 	ByteArrayOutputStream baos;
-	public ResultTabPanel() {
+	public AddonTabPanel() {
 		initComponents();
 		addProjectEventListener();
 		initVariables();
