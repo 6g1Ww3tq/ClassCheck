@@ -52,7 +52,7 @@ public class GenerateToolBar extends JToolBar {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
 				DebugMessageWindow.msgToOutPutTextArea();
-				new GenerateTestProgram(baseDir,astahAndSourcePane.getMapPanelList());
+				new GenerateTestProgram(baseDir,astahAndSourcePane.getMapPanelList(),astahAndSourcePane.getCodeMap());
 			}
 		};
 		System.out.println("Image : " + genIcon.toString());

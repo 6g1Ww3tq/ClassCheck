@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
 
+import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.CompTablePane;
 import com.classcheck.window.DebugMessageWindow;
@@ -20,11 +21,13 @@ public class GenerateTestProgram {
 	File outDir;
 
 	private Map<MyClass, List<JPanel>> mapPanelList;
+	private Map<MyClass, CodeVisitor> codeMap;
 
 	public GenerateTestProgram(File baseDir,
-			Map<MyClass, List<JPanel>> mapPanelList) {
+			Map<MyClass, List<JPanel>> mapPanelList, Map<MyClass, CodeVisitor> codeMap) {
 		this.baseDir = baseDir;
 		this.mapPanelList = mapPanelList;
+		this.codeMap = codeMap;
 		makeTestDir();
 		makeHelloFile();
 	}
@@ -32,7 +35,7 @@ public class GenerateTestProgram {
 	private void makeHelloFile() {
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
-			new ChangeMyClass(mapPanelList,CompTablePane.getTableModel()).change();
+			new ChangeMyClass(mapPanelList,codeMap,CompTablePane.getTableModel()).change();
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
