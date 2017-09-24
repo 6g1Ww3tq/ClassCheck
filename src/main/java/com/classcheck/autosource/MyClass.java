@@ -62,6 +62,17 @@ public class MyClass {
 		methods=new ArrayList<Method>();
 
 	}
+	
+	public String getClassSig(){
+		String rtnSig = "";
+		
+		rtnSig += c.getTypeModifier();
+		if (!c.getTypeModifier().isEmpty()) {
+			rtnSig += " ";
+		}
+		rtnSig += "class " + c.getName();
+		return rtnSig;
+	}
 
 	public void addField(Field f){
 		fields.add(f);

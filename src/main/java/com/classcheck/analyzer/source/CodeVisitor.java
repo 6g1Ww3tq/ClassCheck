@@ -1,5 +1,6 @@
 package com.classcheck.analyzer.source;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +12,13 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class CodeVisitor extends VoidVisitorAdapter<Void> {
 	private String className;
+	private String classSig;
 	private List<MethodDeclaration> methodList;
 	private List<ConstructorDeclaration> constructorList;
 	
 	public CodeVisitor() {
 		className = null;
+		classSig = "";
 		methodList = new ArrayList<MethodDeclaration>();
 		constructorList = new ArrayList<ConstructorDeclaration>();
 	}
@@ -24,6 +27,12 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 	public void visit(ClassOrInterfaceDeclaration classDec, Void arg1) {
 		List<BodyDeclaration> list = classDec.getMembers();
 		className = classDec.getName();
+		classSig += Modifier.toString(classDec.getModifiers());
+		if (!Modifier.toString(classDec.getModifiers()).isEmpty()) {
+			classSig += " ";
+		}
+		classSig += "class ";
+		classSig += classDec.getName();
 		
 		for (BodyDeclaration bodyDeclaration : list) {
 
@@ -42,6 +51,10 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 	
 	public String getClassName() {
 		return className;
+	}
+	
+	public String getClassSig() {
+		return classSig;
 	}
 	
 	public List<ConstructorDeclaration> getConstructorList() {

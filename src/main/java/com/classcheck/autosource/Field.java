@@ -54,7 +54,7 @@ public class Field {
 		if(a.isPublicVisibility()){
 			visibility="public ";
 		}else if(a.isPackageVisibility()){
-			visibility="package ";
+			visibility="";
 		}else if(a.isProtectedVisibility()){
 			visibility="protected ";
 		}else if(a.isPrivateVisibility()){

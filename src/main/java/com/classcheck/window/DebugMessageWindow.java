@@ -1,7 +1,5 @@
 package com.classcheck.window;
 
-import static org.hamcrest.CoreMatchers.is;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
