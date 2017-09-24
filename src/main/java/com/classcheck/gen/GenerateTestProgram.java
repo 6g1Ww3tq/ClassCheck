@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.panel.AstahAndSourcePanel;
 import com.classcheck.panel.CompTablePane;
 import com.classcheck.window.DebugMessageWindow;
 
@@ -22,12 +23,14 @@ public class GenerateTestProgram {
 
 	private Map<MyClass, List<JPanel>> mapPanelList;
 	private Map<MyClass, CodeVisitor> codeMap;
+	private AstahAndSourcePanel astahAndSourcePane;
 
 	public GenerateTestProgram(File baseDir,
-			Map<MyClass, List<JPanel>> mapPanelList, Map<MyClass, CodeVisitor> codeMap) {
+			AstahAndSourcePanel astahAndSourcePane) {
 		this.baseDir = baseDir;
-		this.mapPanelList = mapPanelList;
-		this.codeMap = codeMap;
+		this.astahAndSourcePane = astahAndSourcePane;
+		this.mapPanelList = astahAndSourcePane.getMapPanelList();
+		this.codeMap = astahAndSourcePane.getCodeMap();
 		makeTestDir();
 		makeHelloFile();
 	}
@@ -35,7 +38,7 @@ public class GenerateTestProgram {
 	private void makeHelloFile() {
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
-			new ChangeMyClass(mapPanelList,codeMap,CompTablePane.getTableModel()).change();
+			new ChangeMyClass(astahAndSourcePane,CompTablePane.getTableModel()).change();
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

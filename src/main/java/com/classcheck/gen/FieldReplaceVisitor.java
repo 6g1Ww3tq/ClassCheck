@@ -1,10 +1,11 @@
 package com.classcheck.gen;
 
-import java.util.List;
-
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class FieldReplaceVisitor extends VoidVisitorAdapter<Void> {
@@ -17,16 +18,27 @@ public class FieldReplaceVisitor extends VoidVisitorAdapter<Void> {
 		this.befClassDecName = befClassDecName;
 		this.aftClassDecName = aftClassDecName;
 	}
+	
+	public void visit(VariableDeclarator n, Void arg) {
+		Expression exp = n.getInit();
+		if (exp instanceof IntegerLiteralExpr) {
+			
+		}
+	}
 
 	@Override
-	public void visit(FieldDeclaration n, Void arg) {
-		List<Node> listNode = n.getChildrenNodes();
+	public void visit(FieldDeclaration field, Void arg) {
+		NameExpr ne = new NameExpr();
+		ne.setName("Hoge");
+		ClassOrInterfaceType aftType = new ClassOrInterfaceType(aftClassDecName);
+		FieldDeclaration fieldDeclaration = null;
 
-		for (Node node : listNode) {
-			System.out.println("node : "+node);
-			node.setData(aftClassDecName);
+		if (field.toString().contains(befClassDecName)) {
+			field.setType(aftType);
+			fieldDeclaration = new FieldDeclaration(field.getModifiers(), aftType, field.getVariables());
+			field = fieldDeclaration;
 		}
-		super.visit(n, arg);
+		super.visit(field, arg);
 	}
 
 }
