@@ -135,10 +135,12 @@ public class AstahAndSourcePanel extends JPanel {
 				}
 
 			}else{
+				/*
 				p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				l = new JLabel("該当するクラスがソースコードの中にありません");
 				l.setAlignmentX(CENTER_ALIGNMENT);
 				panelList.add(p);
+				*/
 			}
 
 

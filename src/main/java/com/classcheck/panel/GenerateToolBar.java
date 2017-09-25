@@ -1,7 +1,6 @@
 package com.classcheck.panel;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -24,7 +23,8 @@ public class GenerateToolBar extends JToolBar {
 	private File baseDir;
 	private AstahAndSourcePanel astahAndSourcePane;
 
-	public GenerateToolBar(String name, int operation, File baseDir,
+	public GenerateToolBar(String name,
+			int operation, FileNode baseDir,
 			AstahAndSourcePanel astahAndSourcePane) {
 		super(name, operation);
 		

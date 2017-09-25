@@ -2,10 +2,8 @@ package com.classcheck.gen;
 
 import java.awt.Component;
 import java.io.ByteArrayInputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -24,16 +22,13 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 public class ChangeMyClass {
 
 	private Map<MyClass, List<JPanel>> mapPanelList;
-	private DefaultTableModel tableModel;
 	private Map<MyClass, CodeVisitor> codeMap;
 	private AstahAndSourcePanel astahAndSourcePane;
 
-	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane,
-			DefaultTableModel tableModel) {
+	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.mapPanelList = astahAndSourcePane.getMapPanelList();
 		this.codeMap = astahAndSourcePane.getCodeMap();
-		this.tableModel = tableModel;
 	}
 
 	public void change() {
@@ -95,6 +90,9 @@ public class ChangeMyClass {
 					sb = new StringBuilder(cr.getBase());
 					//フィールドのクラス名を変更
 					for(MyClass mc : codeMap.keySet()){
+						//フィールドのクラスの変更の前にメッセージ名の変更を行う
+						
+						//フィールドのクラスの変更
 						cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
 						cu.accept(new FieldReplaceVisitor(mc.getName(),codeMap.get(mc).getClassName()), null);
 

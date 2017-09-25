@@ -15,13 +15,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
@@ -60,6 +58,10 @@ public class SetTabPane extends JPanel{
 
 	public void setTableEditable(boolean isEditable){
 		tablePane.setTableEditable(isEditable);
+	}
+	
+	public CompTablePane getTablePane() {
+		return tablePane;
 	}
 
 	private void initComponent(){
