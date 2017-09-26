@@ -150,12 +150,6 @@ public class AstahAndSourcePanel extends JPanel {
 		for (JPanel panel : panelList) {
 			add(panel);
 		}
-
-		DebugMessageWindow.clearText();
-		for (JPanel panel : panelList) {
-			System.out.println(panel);
-		}
-		DebugMessageWindow.msgToOutPutTextArea();
 		
 		//ツリーアイテムを押してもうまく表示されないので
 		//常に早く表示させるよう対策

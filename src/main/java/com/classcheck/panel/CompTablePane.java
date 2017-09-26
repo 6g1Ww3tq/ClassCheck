@@ -189,10 +189,13 @@ public class CompTablePane extends JPanel implements Serializable{
 						codeMap.put(myClassCell.getMyClass(),visitor);
 					}
 
-					System.out.println("Cell " + tme.getFirstRow() + ", "
-							+ tme.getColumn() + " changed. The new value: "
-							+ tableModel.getValueAt(tme.getFirstRow(),
-									tme.getColumn()));	
+//					System.out.println("Cell " + tme.getFirstRow() + ", "
+//							+ tme.getColumn() + " changed. The new value: "
+//							+ tableModel.getValueAt(tme.getFirstRow(),
+//									tme.getColumn()));	
+					
+					System.out.println("visitor : \n"+visitor);
+					System.out.println("myClassCell : \n"+myClassCell);
 					DebugMessageWindow.msgToOutPutTextArea();
 					
 					//AstahAndSourcePaneの更新

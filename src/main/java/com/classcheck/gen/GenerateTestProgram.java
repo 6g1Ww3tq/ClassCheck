@@ -41,14 +41,12 @@ public class GenerateTestProgram {
 		this.mapPanelList = astahAndSourcePane.getMapPanelList();
 		this.codeMap = astahAndSourcePane.getCodeMap();
 		makeChangeMap();
-		testChangeMap();
-		/*
-		makeTestDir();
-		makeHelloFile();
-		 */
+		viewChangeMap();
+//		makeTestDir();
+//		makeHelloFile();
 	}
 
-	private void testChangeMap() {
+	private void viewChangeMap() {
 		Map<String, String> messagesMap = null;
 
 		DebugMessageWindow.clearText();
@@ -97,14 +95,18 @@ public class GenerateTestProgram {
 			obj = tm.getValueAt(i, 1);
 
 			if (obj instanceof JComboBox<?>) {
+				//テーブルが変更されていないデフォルト状態の処理
 				comboBox = (JComboBox) obj;
 
 				if (comboBox.getSelectedItem() instanceof CodeVisitor) {
 					codeVisitor = (CodeVisitor) comboBox.getSelectedItem();
 				}
+			}else if (obj instanceof CodeVisitor) {
+				//テーブルが変更後の処理
+				codeVisitor = (CodeVisitor) obj;
 			}
 
-			if (myClass != null && comboBox != null && codeVisitor != null) {
+			if (myClass != null && codeVisitor != null) {
 				messagesMap = new HashMap<String, String>();
 
 				panelList = mapPanelList.get(myClass);
@@ -158,13 +160,17 @@ public class GenerateTestProgram {
 	private void makeHelloFile() {
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
-			new ChangeMyClass(astahAndSourcePane).change();
+			new ChangeMyClass(astahAndSourcePane,changeMap).change();
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * テストフォルダを作成し、
+	 * テストコードを生成する
+	 */
 	private void makeTestDir() {
 		outDir = new File(baseDir.getPath()+"/test");
 		System.out.println(outDir);

@@ -1,6 +1,5 @@
 package com.classcheck.autosource;
 
-import com.change_vision.jude.api.inf.model.IClass;
 
 public class MyClassCell{
 

@@ -24,6 +24,7 @@ public class ChangeMyClass {
 	private Map<MyClass, List<JPanel>> mapPanelList;
 	private Map<MyClass, CodeVisitor> codeMap;
 	private AstahAndSourcePanel astahAndSourcePane;
+	private Map<MyClass, Map<String, String>> changeMap;
 
 	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane) {
 		this.astahAndSourcePane = astahAndSourcePane;
@@ -31,13 +32,22 @@ public class ChangeMyClass {
 		this.codeMap = astahAndSourcePane.getCodeMap();
 	}
 
+	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane,
+			Map<MyClass, Map<String, String>> changeMap) {
+		this(astahAndSourcePane);
+		this.changeMap = changeMap;
+	}
+
 	public void change() {
 		List<JPanel> panelList = null;
 		Component component;
 		JLabel astahSigLabel = null;
 		JComboBox<String> codeSigBox = null;
-		ClassReplace cr = null;
-		MethodReplace mr = null;
+		ClassNameReplace cnr = null;
+		MethodSigReplace msr = null;
+
+		MessagesReplace mr = null;
+		Map<String, String> messagesMap = null;
 
 		CompilationUnit cu = null;
 		List<BodyDeclaration> members = null;
@@ -48,7 +58,7 @@ public class ChangeMyClass {
 		for (MyClass myClass : mapPanelList.keySet()) {
 			panelList = mapPanelList.get(myClass);
 
-			mr = new MethodReplace(myClass.toString());
+			msr = new MethodSigReplace(myClass.toString());
 
 			//メソッド名の変更
 			for (JPanel panel : panelList) {
@@ -60,37 +70,42 @@ public class ChangeMyClass {
 					}
 
 					if (component instanceof JComboBox<?>) {
-						codeSigBox = (JComboBox<String>) component;
+						codeSigBox = (JComboBox) component;
 					}
 				}
 				//astah sig : code sig を取得完了
 
 				if (astahSigLabel != null && codeSigBox != null) {
 					if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
-						mr.setBefore(astahSigLabel.getText());
-						mr.setAfter(codeSigBox.getSelectedItem().toString());
-						mr.replace();
+						msr.setBefore(astahSigLabel.getText());
+						msr.setAfter(codeSigBox.getSelectedItem().toString());
+						msr.replace();
 					}
 				}
 			}
 
 			//クラス名変更
-			cr = new ClassReplace(mr.getBase());
-			cr.setBefore(myClass.getClassSig());
+			cnr = new ClassNameReplace(msr.getBase());
+			cnr.setBefore(myClass.getClassSig());
 			//System.out.println("before : "+myClass.getClassSig());
-			cr.setAfter(codeMap.get(myClass).getClassSig());
+			cnr.setAfter(codeMap.get(myClass).getClassSig());
 			//System.out.println("after : " + codeMap.get(myClass).getClassSig());
-			cr.replace();
+			cnr.replace();
 			//クラス名とメソッド名の変更
-			//System.out.println(cr.getBase());
+			//System.out.println(cnr.getBase());
 
 
-			if (cr != null) {
+			if (cnr != null) {
 				try {
-					sb = new StringBuilder(cr.getBase());
+					sb = new StringBuilder(cnr.getBase());
 					//フィールドのクラス名を変更
 					for(MyClass mc : codeMap.keySet()){
+						//TODO
 						//フィールドのクラスの変更の前にメッセージ名の変更を行う
+						messagesMap = changeMap.get(mc);
+						mr = new MessagesReplace(sb.toString(),messagesMap);
+						mr.changeMessages();
+						sb = new StringBuilder(mr.getBase());
 						
 						//フィールドのクラスの変更
 						cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));

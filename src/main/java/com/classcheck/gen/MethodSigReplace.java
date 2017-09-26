@@ -1,9 +1,9 @@
 package com.classcheck.gen;
 
 
-public class MethodReplace extends Replace{
+public class MethodSigReplace extends Replace{
 
-	public MethodReplace(String myClassStr) {
+	public MethodSigReplace(String myClassStr) {
 		super(myClassStr);
 	}
 	
