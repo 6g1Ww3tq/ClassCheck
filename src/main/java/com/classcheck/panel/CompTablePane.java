@@ -217,9 +217,6 @@ public class CompTablePane extends JPanel implements Serializable{
 
 	public class ClonableJComboBox<E> extends JComboBox<E> implements Cloneable{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 		public ClonableJComboBox() {
@@ -234,9 +231,6 @@ public class CompTablePane extends JPanel implements Serializable{
 		@Override
 		public Object clone() throws CloneNotSupportedException {
 			JComboBox<E> jcomboBox = new JComboBox<E>(){
-				/**
-				 * 
-				 */
 				private static final long serialVersionUID = 1L;
 
 				@Override

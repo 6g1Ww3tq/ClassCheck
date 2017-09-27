@@ -42,8 +42,8 @@ public class GenerateTestProgram {
 		this.codeMap = astahAndSourcePane.getCodeMap();
 		makeChangeMap();
 		viewChangeMap();
-//		makeTestDir();
-//		makeHelloFile();
+		makeTestDir();
+		makeHelloFile();
 	}
 
 	private void viewChangeMap() {

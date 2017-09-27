@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
@@ -46,11 +45,9 @@ public class ChangeMyClass {
 		ClassNameReplace cnr = null;
 		MethodSigReplace msr = null;
 
-		MessagesReplace mr = null;
-		Map<String, String> messagesMap = null;
+		SearchVarVisitor svr = null;
 
 		CompilationUnit cu = null;
-		List<BodyDeclaration> members = null;
 		StringBuilder sb = null;
 
 		DebugMessageWindow.clearText();
@@ -98,21 +95,31 @@ public class ChangeMyClass {
 			if (cnr != null) {
 				try {
 					sb = new StringBuilder(cnr.getBase());
+					//TODO
+					//フィールドの変数とローカル変数に対応するクラスを調べるvarsMap
+					cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
+					svr = new SearchVarVisitor();
+					cu.accept(svr,null);
+
+					//TODO
+					//ローカル変数クラスを変更する	
+					cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
+					cu.accept(new LocalDecReplaceVisitor(codeMap,svr.getVarsMap(),svr.getReplaceBeginLines()),null);
+					sb = new StringBuilder(cu.toString());
+
+					//TODO
+					//ローカル変数のメソッドの変更を行う
+					cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
+					cu.accept(new LocalMethodReplaceVisitor(codeMap,svr.getVarsMap(),svr.getReplaceBeginLines(),changeMap),null);
+					sb = new StringBuilder(cu.toString());
+
 					//フィールドのクラス名を変更
 					for(MyClass mc : codeMap.keySet()){
-						//TODO
-						//フィールドのクラスの変更の前にメッセージ名の変更を行う
-						messagesMap = changeMap.get(mc);
-						mr = new MessagesReplace(sb.toString(),messagesMap);
-						mr.changeMessages();
-						sb = new StringBuilder(mr.getBase());
-						
+
 						//フィールドのクラスの変更
 						cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
 						cu.accept(new FieldReplaceVisitor(mc.getName(),codeMap.get(mc).getClassName()), null);
 
-						//編集したクラスを表示
-						//System.out.println(cu.toString());
 						//内容を更新
 						sb = new StringBuilder(cu.toString());
 					}
