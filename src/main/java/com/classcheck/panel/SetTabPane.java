@@ -45,14 +45,13 @@ public class SetTabPane extends JPanel{
 
 	CompTablePane tablePane;
 
-	private static Map<MyClass, Boolean> generatableMap;
+	private static Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
 
 	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.myClassList = cb.getClasslist();
 		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
-		this.generatableMap = new HashMap<MyClass, Boolean>();
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -62,7 +61,7 @@ public class SetTabPane extends JPanel{
 	public void setTableEditable(boolean isEditable){
 		tablePane.setTableEditable(isEditable);
 	}
-	
+
 	public CompTablePane getTablePane() {
 		return tablePane;
 	}
@@ -77,7 +76,7 @@ public class SetTabPane extends JPanel{
 		astahRoot = new DefaultMutableTreeNode("AstahClass");
 		jtree = new JTree(astahRoot);
 		jtree.setSize(new Dimension(200,200));
-		
+
 		boolean isSameMethodSelected = false;
 
 		//比較パネルの初期化
@@ -87,7 +86,7 @@ public class SetTabPane extends JPanel{
 			//デフォルトでパネルに初期値データを入れる
 			isSameMethodSelected = astahAndSourcePane.initComponent(myClass,true);
 			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
-			
+
 			generatableMap.put(myClass, !isSameMethodSelected);
 		}
 
@@ -109,6 +108,7 @@ public class SetTabPane extends JPanel{
 		panel = new JPanel(new BorderLayout());
 		panel.add(astahAndSourcePane,BorderLayout.CENTER);
 		astahAndSourceStatus = new StatusBar(panel, "対応付けしてください");
+		astahAndSourcePane.setStatus(astahAndSourceStatus);
 		astahAndSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(astahAndSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahAndSourceScrollPane = new JScrollPane(panel);
@@ -144,8 +144,17 @@ public class SetTabPane extends JPanel{
 						MyClass myClass = (MyClass) userObj;
 						//パネルの更新
 						reLoadAstahAndSourcePane(myClass,false);
+
+						//同じメソッドが選択されていないかチェック
+						checkSameMethod(myClass);
 					}
 				}
+
+				/*
+				if (astahAndSourcePane.getExsitSameMethod()) {
+					setSelectedType(SelectedType.SAME);
+				}
+				 */
 			}
 		});
 	}
@@ -213,32 +222,36 @@ public class SetTabPane extends JPanel{
 			}
 		}
 
-		pocket = selectedSameSigMap.get(myClass);
+		checkSameMethod(myClass);
+	}
+
+	private void checkSameMethod(MyClass myClass){
+		Pocket<SelectedType> pocket = selectedSameSigMap.get(myClass);
 
 		if (pocket.get() == SelectedType.SAME) {
 			astahAndSourceStatus.setColor(Color.red);
 			astahAndSourceStatus.setText("同じシグネチャーを選択しないでください");
 			setGeneratable(myClass ,false);
-		}else if (pocket.get() == SelectedType.NOTSAME) {
+		}else if(pocket.get() == SelectedType.NOTSAME){
 			astahAndSourceStatus.setColor(Color.green);
 			astahAndSourceStatus.setText("OK");
-			setGeneratable(myClass , true);
+			setGeneratable(myClass ,true);
 		}
 	}
 
-	private void setGeneratable(MyClass myClass , boolean b) {
+	public static void setGeneratable(MyClass myClass , boolean b) {
 		generatableMap.put(myClass, b);
 	}
-	
+
+	//staticは危険...
 	public static boolean isGeneratable(){
 		boolean isGenerate = true;
-		boolean flag = false;
-		
+
 		for(MyClass myClass : generatableMap.keySet()){
-			flag = generatableMap.get(myClass);
-			
-			if (flag == false) {
-				isGenerate = false;
+			isGenerate = generatableMap.get(myClass);
+
+			if (!isGenerate) {
+				break;
 			}
 		}
 		return isGenerate;

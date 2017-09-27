@@ -36,11 +36,7 @@ public class GenerateToolBar extends JToolBar {
 		setBorder(new LineBorder(Color.LIGHT_GRAY,1));
 		setPreferredSize(null);
 		initComponent();
-		initActionEvent();
 		setVisible(true);
-	}
-
-	private void initActionEvent() {
 	}
 
 	private void initComponent() {
@@ -57,11 +53,16 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 
+				if (AstahAndSourcePanel.getExsitSameMethod()) {
+					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください_2");
+					return ;
+				}
+
 				if(CompTablePane.isSameTableItemSelected()){
 					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください");
 					return ;
 				}
-
+				
 				DebugMessageWindow.msgToOutPutTextArea();
 				new GenerateTestProgram(baseDir,astahAndSourcePane);
 			}

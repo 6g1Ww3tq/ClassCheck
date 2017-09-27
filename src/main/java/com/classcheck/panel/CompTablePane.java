@@ -57,30 +57,73 @@ public class CompTablePane extends JPanel implements Serializable{
 	public void setTableEditable(boolean isEditable){
 		isTableEditable = isEditable;
 	}
-	
+
 	public static DefaultTableModel getTableModel(){
 		return tableModel;
 	}
-	
+
 	public static boolean isSameTableItemSelected(){
 		boolean isSameTableItemSelected = false;
-		List<Object> objList = new ArrayList<Object>();
-		
-		for (int row = 0 ; row < tableModel.getColumnCount() ; row++){
-			objList.add(tableModel.getValueAt(row, 1));
+		List<ClonableJComboBox> boxList = new ArrayList<ClonableJComboBox>();
+		List<CodeVisitor> visitorList = new ArrayList<CodeVisitor>();
+		Object obj;
+		ClonableJComboBox box_1,box_2;
+		CodeVisitor visitor_1,visitor_2;
+
+		for (int row = 0 ; row < tableModel.getRowCount() ; row++){
+			obj = tableModel.getValueAt(row, 1);
+
+			/*
+			 *なぜかテーブルのアイテムがCodeVisitorクラスと
+			 *ClonableJComboBoxの時がある 
+			 */
+			if (obj instanceof ClonableJComboBox) {
+				boxList.add((ClonableJComboBox) obj);
+			}else if (obj instanceof CodeVisitor) {
+				visitorList.add((CodeVisitor) obj);
+			}
 		}
-		
-		for (Object obj_1 : objList){
+
+		for (int i=0; i < boxList.size() ; i++){
+			box_1 = boxList.get(i);
 			
-			for (Object obj_2 : objList){
+			for(int j=0; j < boxList.size() ; j++){
+				box_2 = boxList.get(j);
 				
-				if (obj_1.equals(obj_2)) {
+				if (i==j) {
+					continue ;
+				}
+				
+				if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
 					isSameTableItemSelected = true;
 				}
 			}
-			
+
 			if (isSameTableItemSelected) {
 				break;
+			}
+		}
+		
+		if (!isSameTableItemSelected) {
+			for (int i=0;i<visitorList.size();i++){
+				visitor_1 = visitorList.get(i);
+				
+				for (int j=0;j<visitorList.size();j++){
+					visitor_2 = visitorList.get(j);
+					
+					if (i==j) {
+						continue ;
+					}
+					
+					if (visitor_1.equals(visitor_2)) {
+						isSameTableItemSelected = true;
+						break;
+					}
+				}
+				
+				if (isSameTableItemSelected) {
+					break;
+				}
 			}
 		}
 
@@ -90,7 +133,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	private void initComponent() {
 		String[] columnNames = {"AstahClass","YourClass"};
 		tableModel = null;
-		
+
 		if (isConfigFileExist()) {
 			tableModel = loadTableModel();
 		}else{
@@ -175,7 +218,7 @@ public class CompTablePane extends JPanel implements Serializable{
 				}
 			}else{
 				StackTraceElement throwableStackTraceElement = new Throwable().getStackTrace()[0];
-		        System.out.println(throwableStackTraceElement.getClassName() + "#" + throwableStackTraceElement.getMethodName() + "(" + throwableStackTraceElement.getLineNumber() + ")");
+				System.out.println(throwableStackTraceElement.getClassName() + "#" + throwableStackTraceElement.getMethodName() + "(" + throwableStackTraceElement.getLineNumber() + ")");
 			}
 		}
 		DebugMessageWindow.msgToOutPutTextArea();
@@ -215,15 +258,15 @@ public class CompTablePane extends JPanel implements Serializable{
 						codeMap.put(myClassCell.getMyClass(),visitor);
 					}
 
-//					System.out.println("Cell " + tme.getFirstRow() + ", "
-//							+ tme.getColumn() + " changed. The new value: "
-//							+ tableModel.getValueAt(tme.getFirstRow(),
-//									tme.getColumn()));	
-					
+					//					System.out.println("Cell " + tme.getFirstRow() + ", "
+					//							+ tme.getColumn() + " changed. The new value: "
+					//							+ tableModel.getValueAt(tme.getFirstRow(),
+					//									tme.getColumn()));	
+
 					System.out.println("visitor : \n"+visitor);
 					System.out.println("myClassCell : \n"+myClassCell);
 					DebugMessageWindow.msgToOutPutTextArea();
-					
+
 					//AstahAndSourcePaneの更新
 					setTabPane.reLoadAstahAndSourcePane(myClassCell.getMyClass(),true);
 				}
@@ -256,6 +299,24 @@ public class CompTablePane extends JPanel implements Serializable{
 
 		@Override
 		public Object clone() throws CloneNotSupportedException {
+			ClonableJComboBox<E> jcomboBox = new ClonableJComboBox<E>(){
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public String toString() {
+					return getSelectedItem().toString();
+				}
+			};
+
+			for (int i = 0; i < getItemCount(); i++) {
+				jcomboBox.addItem(this.getItemAt(i));
+			}
+			return  jcomboBox;
+		}
+
+		/*
+		@Override
+		public Object clone() throws CloneNotSupportedException {
 			JComboBox<E> jcomboBox = new JComboBox<E>(){
 				private static final long serialVersionUID = 1L;
 
@@ -270,5 +331,6 @@ public class CompTablePane extends JPanel implements Serializable{
 			}
 			return  jcomboBox;
 		}
+		*/
 	}
 }
