@@ -41,7 +41,7 @@ public class SearchVarVisitor extends VoidVisitorAdapter<Void> {
 			classNode = nodeList.get(0);
 			varNode = nodeList.get(1);
 
-			varsMap.put(classNode.toString(), varNode.toString());
+			varsMap.put(varNode.toString() , classNode.toString());
 		}
 		super.visit(n, arg);
 	}

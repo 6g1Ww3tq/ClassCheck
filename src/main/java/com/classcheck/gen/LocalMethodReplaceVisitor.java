@@ -42,6 +42,7 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 		String strStateMent,className,message = null;
 		Pattern varPattern = null;
 		Matcher varMatcher = null;
+		boolean isMessageChanged = false;
 
 
 		for (int row = 0 ; row < smList.size() ; row++){
@@ -61,6 +62,11 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 					if (varMatcher.find()) {
 
 						message = varMatcher.group(1);
+
+						//コンマ[;]を外す
+						message = message.substring(0,message.length()-1);
+
+
 						for (MyClass myClass : changeMap.keySet()){
 
 							className = varsMap.get(var);
@@ -69,23 +75,52 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 
 								for(String befMessage : messagesMap.keySet()){
 
-									if (message.contains(befMessage)) {
+									if (befMessage.contains(message)) {
+										//fqcnとそうでない場合がある
+										//テーブルを更新した状態
+										//とそうでない場合だとメッセージが違う??(可能性)
+										/*
+										String regex = ".+\\s+.+\\.(.+\\(.*\\));";
+										Pattern pattern = Pattern.compile(regex);
+										Matcher matcher;
+
 										message = messagesMap.get(befMessage);
+										matcher = pattern.matcher(message);
+
+										if (matcher.find()) {
+											message = matcher.group(1)+";";
+										}
+
+										isMessageChanged = true;
+										break;
+										 */
+										Pattern pattern = Pattern.compile(" ");
+										message = messagesMap.get(befMessage);
+										String ss[] = pattern.split(message, 0);
+
+										if (ss.length > 0) {
+											message = ss[ss.length - 1] + ";";
+										}
+
+										isMessageChanged = true;
 										break;
 									}
 								}
 
-								break;
+								if (isMessageChanged) {
+									isMessageChanged = false;
+									break;
+								}
 							}
 						}
 
 
-						strStateMent = varMatcher.replaceAll(var+"."+message);
+						strStateMent = var+"."+message;
 					}
 				}
 			}
 
-			if (strStateMent != null) {
+			if (strStateMent == null) {
 				strStateMent = statement.toString();
 			}
 
@@ -95,8 +130,19 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 		if (strList.size() > 0) {
 
 			lines.append("{\n");
+
+			//怪しい	
 			for (Iterator it = strList.iterator() ; it.hasNext() ;){
 				String str = (String) it.next();
+
+				if (str == null) {
+					continue;
+				}
+
+				if (!str.contains(";")) {
+					str += ";";
+				}
+
 				lines.append("\t"+str + "\n");
 			}
 			lines.append("}\n");
@@ -106,7 +152,10 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 				n.setBody(blockSt);
 			} catch (ParseException e) {
 				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
+				System.out.println("***error**");
+				System.out.println(lines.toString());
+				System.out.println(e);
+				System.out.println("*****");
 			}
 
 		}
