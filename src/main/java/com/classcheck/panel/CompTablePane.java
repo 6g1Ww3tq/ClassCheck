@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,31 @@ public class CompTablePane extends JPanel implements Serializable{
 	
 	public static DefaultTableModel getTableModel(){
 		return tableModel;
+	}
+	
+	public static boolean isSameTableItemSelected(){
+		boolean isSameTableItemSelected = false;
+		List<Object> objList = new ArrayList<Object>();
+		
+		for (int row = 0 ; row < tableModel.getColumnCount() ; row++){
+			objList.add(tableModel.getValueAt(row, 1));
+		}
+		
+		for (Object obj_1 : objList){
+			
+			for (Object obj_2 : objList){
+				
+				if (obj_1.equals(obj_2)) {
+					isSameTableItemSelected = true;
+				}
+			}
+			
+			if (isSameTableItemSelected) {
+				break;
+			}
+		}
+
+		return isSameTableItemSelected;
 	}
 
 	private void initComponent() {

@@ -45,11 +45,14 @@ public class SetTabPane extends JPanel{
 
 	CompTablePane tablePane;
 
+	private static Map<MyClass, Boolean> generatableMap;
+
 	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.myClassList = cb.getClasslist();
 		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
+		this.generatableMap = new HashMap<MyClass, Boolean>();
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -74,14 +77,18 @@ public class SetTabPane extends JPanel{
 		astahRoot = new DefaultMutableTreeNode("AstahClass");
 		jtree = new JTree(astahRoot);
 		jtree.setSize(new Dimension(200,200));
+		
+		boolean isSameMethodSelected = false;
 
 		//比較パネルの初期化
 		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 			//デフォルトでパネルに初期値データを入れる
-			astahAndSourcePane.initComponent(myClass,true);
+			isSameMethodSelected = astahAndSourcePane.initComponent(myClass,true);
 			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
+			
+			generatableMap.put(myClass, !isSameMethodSelected);
 		}
 
 		//デフォルトでパネルに初期値データを入れる
@@ -211,9 +218,29 @@ public class SetTabPane extends JPanel{
 		if (pocket.get() == SelectedType.SAME) {
 			astahAndSourceStatus.setColor(Color.red);
 			astahAndSourceStatus.setText("同じシグネチャーを選択しないでください");
+			setGeneratable(myClass ,false);
 		}else if (pocket.get() == SelectedType.NOTSAME) {
 			astahAndSourceStatus.setColor(Color.green);
 			astahAndSourceStatus.setText("OK");
+			setGeneratable(myClass , true);
 		}
+	}
+
+	private void setGeneratable(MyClass myClass , boolean b) {
+		generatableMap.put(myClass, b);
+	}
+	
+	public static boolean isGeneratable(){
+		boolean isGenerate = true;
+		boolean flag = false;
+		
+		for(MyClass myClass : generatableMap.keySet()){
+			flag = generatableMap.get(myClass);
+			
+			if (flag == false) {
+				isGenerate = false;
+			}
+		}
+		return isGenerate;
 	}
 }

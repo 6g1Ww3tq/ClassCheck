@@ -67,7 +67,7 @@ public class AstahAndSourcePanel extends JPanel {
 		return mapPanelList;
 	}
 
-	public void initComponent(MyClass myClass,boolean isAllChange){
+	public boolean initComponent(MyClass myClass,boolean isAllChange){
 		List<JPanel> panelList = mapPanelList.get(myClass);
 		LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
 		//tmp
@@ -83,6 +83,10 @@ public class AstahAndSourcePanel extends JPanel {
 		JLabel l = null;
 		JPanel p = null;
 		JComboBox<String> methodComboBox = null;
+		
+		//同じシグネチャーが選択されているかどうかを調べる
+		List<JComboBox<String>> boxList = new ArrayList<JComboBox<String>>();
+		boolean isSameMethodSelected = false;
 
 		if (isAllChange) {
 			panelList.clear();
@@ -112,6 +116,7 @@ public class AstahAndSourcePanel extends JPanel {
 				for (Method method : methodList) {
 
 					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
+					boxList.add(methodComboBox);
 					//レーベンシュタイン距離を初期化
 					distance = 0;
 					maxDistance = 0;
@@ -134,15 +139,7 @@ public class AstahAndSourcePanel extends JPanel {
 					panelList.add(p);
 				}
 
-			}else{
-				/*
-				p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-				l = new JLabel("該当するクラスがソースコードの中にありません");
-				l.setAlignmentX(CENTER_ALIGNMENT);
-				panelList.add(p);
-				*/
 			}
-
 
 		}
 
@@ -154,6 +151,23 @@ public class AstahAndSourcePanel extends JPanel {
 		//ツリーアイテムを押してもうまく表示されないので
 		//常に早く表示させるよう対策
 		repaint();
+		
+		
+		//同じメソッドが選択されているかどうかを調べる
+		for (JComboBox box_1 : boxList){
+			
+			for(JComboBox box_2 : boxList){
+				
+				if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
+					isSameMethodSelected = true;
+				}
+			}
+			
+			if (isSameMethodSelected) {
+				break;
+			}
+		}
+		return isSameMethodSelected;
 	}
 
 }
