@@ -2,6 +2,7 @@ package com.classcheck.gen;
 
 import java.awt.Component;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,17 +25,24 @@ public class ChangeMyClass {
 	private Map<MyClass, CodeVisitor> codeMap;
 	private AstahAndSourcePanel astahAndSourcePane;
 	private Map<MyClass, Map<String, String>> changeMap;
+	private ArrayList<String> generatedCodes;
 
 	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane) {
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.mapPanelList = astahAndSourcePane.getMapPanelList();
 		this.codeMap = astahAndSourcePane.getCodeMap();
+		
+		this.generatedCodes = new ArrayList<String>();
 	}
 
 	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane,
 			Map<MyClass, Map<String, String>> changeMap) {
 		this(astahAndSourcePane);
 		this.changeMap = changeMap;
+	}
+	
+	public ArrayList<String> getGeneratedCodes() {
+		return generatedCodes;
 	}
 
 	public void change() {
@@ -125,6 +133,8 @@ public class ChangeMyClass {
 					}
 					//編集したクラスを表示
 					System.out.println(sb.toString());
+					
+					generatedCodes.add(sb.toString());
 				} catch (ParseException e) {
 					// TODO 自動生成された catch ブロック
 					e.printStackTrace();

@@ -160,7 +160,11 @@ public class GenerateTestProgram {
 	private void makeHelloFile() {
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
-			new ChangeMyClass(astahAndSourcePane,changeMap).change();
+			ChangeMyClass cmc = new ChangeMyClass(astahAndSourcePane,changeMap);
+			
+			//アスタと学生のソースコードを元にしたプログラムの生成
+			cmc.change();
+			cmc.getGeneratedCodes();
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

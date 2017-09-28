@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="autosouce1" size="4038,3448" id="com.autosouce" metadata="uml2-1.0" initialized="true" zoom="0.75" scrolledX="561" scrolledY="676" tag="1000" key="32303037303533312D31303030204175746F536F7563652F6D617361">
+  <children xsi:type="editmodel:ClassEditModel" name="Activator" location="50,3343" size="101,85" id="com.autosouce/Activator">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="53,36">
+      <children xsi:type="editmodel:MethodEditModel" name="start" id="com.autosouce/Activator#start(Lorg.osgi.framework.BundleContext;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="stop" id="com.autosouce/Activator#stop(Lorg.osgi.framework.BundleContext;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.8/@sourceConnections.0" name="Inadequate" location="3823,1374" size="195,157" id="com.autosouce/Inadequate">
+    <children xsi:type="editmodel:CompartmentEditModel" size="172,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="badElement" id="com.autosouce/Inadequate#badElement"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="errorString" id="com.autosouce/Inadequate#errorString"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="model" id="com.autosouce/Inadequate#model"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="89,54">
+      <children xsi:type="editmodel:MethodEditModel" name="Inadequate" id="com.autosouce/Inadequate#Inadequate(Lcom.change_vision.jude.api.inf.model.INamedElement;Lcom.change_vision.jude.api.inf.model.INamedElement;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toArray" id="com.autosouce/Inadequate#toArray()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/Inadequate#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.6/@sourceConnections.3 //@children.13/@sourceConnections.2 //@children.9/@sourceConnections.1 //@children.7/@sourceConnections.4" name="Field" location="572,1201" size="154,319" id="com.autosouce/Field">
+    <children xsi:type="editmodel:CompartmentEditModel" size="131,198">
+      <children xsi:type="editmodel:AttributeEditModel" name="attribute" id="com.autosouce/Field#attribute"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="definition" id="com.autosouce/Field#definition"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="initial" id="com.autosouce/Field#initial"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="isFinal" id="com.autosouce/Field#isFinal"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="isMulti" id="com.autosouce/Field#isMulti"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="isOcl" id="com.autosouce/Field#isOcl"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="isStatic" id="com.autosouce/Field#isStatic"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="multiTranslate" id="com.autosouce/Field#multiTranslate"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="com.autosouce/Field#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="type" id="com.autosouce/Field#type"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="visibility" id="com.autosouce/Field#visibility"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="120,72">
+      <children xsi:type="editmodel:MethodEditModel" name="Field" id="com.autosouce/Field#Field(Lcom.change_vision.jude.api.inf.model.IAttribute;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="interfaceString" id="com.autosouce/Field#interfaceString()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setMultiTranslate" id="com.autosouce/Field#setMultiTranslate(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/Field#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Field-Standard::Call->com.autosouce/OclTranslator" source="//@children.2" target="//@children.14" targetEnd="//@children.2/@sourceConnections.0/@children.2" label="//@children.2/@sourceConnections.0/@children.0" sourceEnd="//@children.2/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,237" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="197,81"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.7/@sourceConnections.1 //@children.11/@sourceConnections.1" name="ExtraView" location="1604,2636" size="238,542" id="com.autosouce/ExtraView">
+    <children xsi:type="editmodel:CompartmentEditModel" size="215,180">
+      <children xsi:type="editmodel:AttributeEditModel" name="classBox" id="com.autosouce/ExtraView#classBox"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="classList" id="com.autosouce/ExtraView#classList"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="configButton" id="com.autosouce/ExtraView#configButton"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="debugPrint" id="com.autosouce/ExtraView#debugPrint"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="diagramBox" id="com.autosouce/ExtraView#diagramBox"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="diagramList" id="com.autosouce/ExtraView#diagramList"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="output" id="com.autosouce/ExtraView#output"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="scrollPane" id="com.autosouce/ExtraView#scrollPane"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tableModel" id="com.autosouce/ExtraView#tableModel"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="window" id="com.autosouce/ExtraView#window"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="139,216">
+      <children xsi:type="editmodel:MethodEditModel" name="ExtraView" id="com.autosouce/ExtraView#ExtraView()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="com.autosouce/ExtraView#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="activated" id="com.autosouce/ExtraView#activated()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addSelectionListener" id="com.autosouce/ExtraView#addSelectionListener(Lcom.change_vision.jude.api.inf.ui.ISelectionListener;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="deactivated" id="com.autosouce/ExtraView#deactivated()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getComponent" id="com.autosouce/ExtraView#getComponent()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDescription" id="com.autosouce/ExtraView#getDescription()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTitle" id="com.autosouce/ExtraView#getTitle()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="projectChanged" id="com.autosouce/ExtraView#projectChanged(Lcom.change_vision.jude.api.inf.project.ProjectEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="projectClosed" id="com.autosouce/ExtraView#projectClosed(Lcom.change_vision.jude.api.inf.project.ProjectEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="projectOpened" id="com.autosouce/ExtraView#projectOpened(Lcom.change_vision.jude.api.inf.project.ProjectEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setConfig" id="com.autosouce/ExtraView#setConfig(Lcom.autosouce.Config;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="139,87">
+      <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.3/@sourceConnections.1" name="MyTableModel" location="16897,20583" size="139,85" id="com.autosouce/ExtraView$MyTableModel">
+        <children xsi:type="editmodel:CompartmentEditModel"/>
+        <children xsi:type="editmodel:CompartmentEditModel" size="115,36">
+          <children xsi:type="editmodel:MethodEditModel" name="MyTableModel" id="com.autosouce/ExtraView$MyTableModel#MyTableModel([Ljava.lang.String;I)"/>
+          <children xsi:type="editmodel:MethodEditModel" name="getColumnClass" id="com.autosouce/ExtraView$MyTableModel#getColumnClass(I)"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel"/>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+      </children>
+    </children>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ExtraView->Standard::Call" source="//@children.3" target="//@children.11" targetEnd="//@children.3/@sourceConnections.0/@children.2" label="//@children.3/@sourceConnections.0/@children.0" sourceEnd="//@children.3/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,439" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="207,101"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ExtraView-Standard::Instantiate->com.autosouce/ExtraView$MyTableModel" source="//@children.3" target="//@children.3/@children.2/@children.0" targetEnd="//@children.3/@sourceConnections.1/@children.2" label="//@children.3/@sourceConnections.1/@children.0" sourceEnd="//@children.3/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate»" size="69,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="238,415" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="34,0"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ExtraView->Standard::Call" source="//@children.3" target="//@children.5" targetEnd="//@children.3/@sourceConnections.2/@children.2" label="//@children.3/@sourceConnections.2/@children.0" sourceEnd="//@children.3/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate»" size="95,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="208,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="81,157"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ExtraView->Standard::Call" source="//@children.3" target="//@children.7" targetEnd="//@children.3/@sourceConnections.3/@children.2" label="//@children.3/@sourceConnections.3/@children.0" sourceEnd="//@children.3/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,5" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="201,481"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.6/@sourceConnections.2 //@children.13/@sourceConnections.1 //@children.7/@sourceConnections.2" name="Method" location="276,1985" size="221,445" id="com.autosouce/Method">
+    <children xsi:type="editmodel:CompartmentEditModel" size="198,234">
+      <children xsi:type="editmodel:AttributeEditModel" name="addAssert" id="com.autosouce/Method#addAssert"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="addDebugPrint" id="com.autosouce/Method#addDebugPrint"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="addDefinitionConditions" id="com.autosouce/Method#addDefinitionConditions"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="c" id="com.autosouce/Method#c"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="definition" id="com.autosouce/Method#definition"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="isStatic" id="com.autosouce/Method#isStatic"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="com.autosouce/Method#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="operation" id="com.autosouce/Method#operation"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="params" id="com.autosouce/Method#params"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="process" id="com.autosouce/Method#process"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="returnString" id="com.autosouce/Method#returnString"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="returntype" id="com.autosouce/Method#returntype"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="visibility" id="com.autosouce/Method#visibility"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="154,162">
+      <children xsi:type="editmodel:MethodEditModel" name="Method" id="com.autosouce/Method#Method(Lcom.change_vision.jude.api.inf.model.IOperation;Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Method" id="com.autosouce/Method#Method(Lcom.change_vision.jude.api.inf.model.IOperation;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isBind" id="com.autosouce/Method#isBind(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setAddAssert" id="com.autosouce/Method#setAddAssert(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDebagPrint" id="com.autosouce/Method#setDebagPrint(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDefinitionConditions" id="com.autosouce/Method#setDefinitionConditions(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setProcess" id="com.autosouce/Method#setProcess(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toSignature" id="com.autosouce/Method#toSignature()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/Method#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Method-Standard::Call->com.autosouce/OclTranslator" source="//@children.4" target="//@children.14" targetEnd="//@children.4/@sourceConnections.0/@children.2" label="//@children.4/@sourceConnections.0/@children.0" sourceEnd="//@children.4/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="18,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="197,515"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.3/@sourceConnections.2" name="SouceGenerator" location="2000,1664" size="215,157" id="com.autosouce/SouceGenerator">
+    <children xsi:type="editmodel:CompartmentEditModel" size="192,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="projectAccessor" id="com.autosouce/SouceGenerator#projectAccessor"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="window" id="com.autosouce/SouceGenerator#window"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="158,72">
+      <children xsi:type="editmodel:MethodEditModel" name="SouceGenerator" id="com.autosouce/SouceGenerator#SouceGenerator()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getClassList" id="com.autosouce/SouceGenerator#getClassList()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSequenceDiagramList" id="com.autosouce/SouceGenerator#getSequenceDiagramList()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="run" id="com.autosouce/SouceGenerator#run(Ljava.util.List;Ljava.util.List;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/SouceGenerator->Standard::Call" source="//@children.5" target="//@children.8" targetEnd="//@children.5/@sourceConnections.0/@children.2" label="//@children.5/@sourceConnections.0/@children.0" sourceEnd="//@children.5/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="215,9" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,165"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/SouceGenerator-Standard::Call->com.autosouce/MyClass" source="//@children.5" target="//@children.13" targetEnd="//@children.5/@sourceConnections.1/@children.2" label="//@children.5/@sourceConnections.1/@children.0" sourceEnd="//@children.5/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,9" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="170,195"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/SouceGenerator->Standard::Call" source="//@children.5" target="//@children.6" targetEnd="//@children.5/@sourceConnections.2/@children.2" label="//@children.5/@sourceConnections.2/@children.0" sourceEnd="//@children.5/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,80" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="163,76"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/SouceGenerator->Standard::Call" source="//@children.5" target="//@children.9" targetEnd="//@children.5/@sourceConnections.3/@children.2" label="//@children.5/@sourceConnections.3/@children.0" sourceEnd="//@children.5/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,5" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="211,277"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.5/@sourceConnections.2" name="ClassBuilder" location="1209,1668" size="163,157" id="com.autosouce/ClassBuilder">
+    <children xsi:type="editmodel:CompartmentEditModel" size="140,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="classlist" id="com.autosouce/ClassBuilder#classlist"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="105,90">
+      <children xsi:type="editmodel:MethodEditModel" name="ClassBuilder" id="com.autosouce/ClassBuilder#ClassBuilder()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addClass" id="com.autosouce/ClassBuilder#addClass(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addProcess" id="com.autosouce/ClassBuilder#addProcess(Ljava.util.List;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getClass" id="com.autosouce/ClassBuilder#getClass(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getclasslistsize" id="com.autosouce/ClassBuilder#getclasslistsize()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ClassBuilder->Standard::Call" source="//@children.6" target="//@children.13" targetEnd="//@children.6/@sourceConnections.0/@children.2" label="//@children.6/@sourceConnections.0/@children.0" sourceEnd="//@children.6/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="132,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,271"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ClassBuilder->Standard::Call" source="//@children.6" target="//@children.9" targetEnd="//@children.6/@sourceConnections.1/@children.2" label="//@children.6/@sourceConnections.1/@children.0" sourceEnd="//@children.6/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="42,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="167,409"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ClassBuilder->Standard::Instantiate" source="//@children.6" target="//@children.4" targetEnd="//@children.6/@sourceConnections.2/@children.2" label="//@children.6/@sourceConnections.2/@children.0" sourceEnd="//@children.6/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="110,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,119" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="221,165"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ClassBuilder->Standard::Instantiate" source="//@children.6" target="//@children.2" targetEnd="//@children.6/@sourceConnections.3/@children.2" label="//@children.6/@sourceConnections.3/@children.0" sourceEnd="//@children.6/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="110,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,29" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="154,205"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.0 //@children.3/@sourceConnections.3" name="Config" location="787,2051" size="216,481" id="com.autosouce/Config">
+    <children xsi:type="editmodel:CompartmentEditModel" size="193,270">
+      <children xsi:type="editmodel:AttributeEditModel" name="addAssert" id="com.autosouce/Config#addAssert"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="addDebugPrint" id="com.autosouce/Config#addDebugPrint"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="addDefinitionCondition" id="com.autosouce/Config#addDefinitionCondition"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="autoInstanceGenerate" id="com.autosouce/Config#autoInstanceGenerate"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="classCollection" id="com.autosouce/Config#classCollection"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclBag" id="com.autosouce/Config#oclBag"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclBoolean" id="com.autosouce/Config#oclBoolean"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclCollection" id="com.autosouce/Config#oclCollection"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclInteger" id="com.autosouce/Config#oclInteger"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclOrderedSet" id="com.autosouce/Config#oclOrderedSet"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclReal" id="com.autosouce/Config#oclReal"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclSequence" id="com.autosouce/Config#oclSequence"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclSet" id="com.autosouce/Config#oclSet"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclString" id="com.autosouce/Config#oclString"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclTranslate" id="com.autosouce/Config#oclTranslate"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="142,162">
+      <children xsi:type="editmodel:MethodEditModel" name="Config" id="com.autosouce/Config#Config()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Config" id="com.autosouce/Config#Config(ZZZZZLjava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="activate" id="com.autosouce/Config#activate()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getClassCollction" id="com.autosouce/Config#getClassCollction()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isAddDebagPrint" id="com.autosouce/Config#isAddDebagPrint()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isDefinitionCondition" id="com.autosouce/Config#isDefinitionCondition()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isOcLTranslate" id="com.autosouce/Config#isOcLTranslate()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclTranslate" id="com.autosouce/Config#setOclTranslate(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/Config#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="com.autosouce/Config@config+com.autosouce/ConfigView@" source="//@children.7" target="//@children.11" targetEnd="//@children.7/@sourceConnections.0/@children.2" label="//@children.7/@sourceConnections.0/@children.0" sourceEnd="//@children.7/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="config" location="86,481" id="com.autosouce/Config@config+com.autosouce/ConfigView@|com.autosouce/Config#config" attachSource="true" multiplicityLabel="//@children.7/@sourceConnections.0/@children.1/@children.1" roleLabel="//@children.7/@sourceConnections.0/@children.1/@children.0" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" ~ config" location="879,2539" size="44,11" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="845,2539" size="20,11" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="120,0" id="com.autosouce/Config@config+com.autosouce/ConfigView@|com.autosouce/ConfigView#"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="com.autosouce/Config@config+com.autosouce/ExtraView@" source="//@children.7" target="//@children.3" targetEnd="//@children.7/@sourceConnections.1/@children.2" label="//@children.7/@sourceConnections.1/@children.0" sourceEnd="//@children.7/@sourceConnections.1/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="config" location="216,471" id="com.autosouce/Config@config+com.autosouce/ExtraView@|com.autosouce/Config#config" attachSource="true" multiplicityLabel="//@children.7/@sourceConnections.1/@children.1/@children.2" roleLabel="//@children.7/@sourceConnections.1/@children.1/@children.0" orderingLabel="//@children.7/@sourceConnections.1/@children.1/@children.1" scopeKind="1" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" ~ config" location="1009,2492" size="44,11" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="{order}" location="1009,2528" size="36,11" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="1009,2503" size="20,11" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="10,0" id="com.autosouce/Config@config+com.autosouce/ExtraView@|com.autosouce/ExtraView#"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Config-Standard::Call->com.autosouce/Method" source="//@children.7" target="//@children.4" targetEnd="//@children.7/@sourceConnections.2/@children.2" label="//@children.7/@sourceConnections.2/@children.0" sourceEnd="//@children.7/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,189" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="221,255"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Config-Standard::Call->com.autosouce/OclTranslator" source="//@children.7" target="//@children.14" targetEnd="//@children.7/@sourceConnections.3/@children.2" label="//@children.7/@sourceConnections.3/@children.0" sourceEnd="//@children.7/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,145" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="197,363"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Config-Standard::Call->com.autosouce/Field" source="//@children.7" target="//@children.2" targetEnd="//@children.7/@sourceConnections.4/@children.2" label="//@children.7/@sourceConnections.4/@children.0" sourceEnd="//@children.7/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="45,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="119,319"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/Config-Standard::Call->com.autosouce/ProcessBuilder" source="//@children.7" target="//@children.9" targetEnd="//@children.7/@sourceConnections.5/@children.2" label="//@children.7/@sourceConnections.5/@children.0" sourceEnd="//@children.7/@sourceConnections.5/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="168,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="54,409"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.5/@sourceConnections.0" name="DiagramChecker" location="2934,1508" size="217,175" id="com.autosouce/DiagramChecker">
+    <children xsi:type="editmodel:CompartmentEditModel" size="194,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="inadequateList" id="com.autosouce/DiagramChecker#inadequateList"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="143,108">
+      <children xsi:type="editmodel:MethodEditModel" name="DiagramChecker" id="com.autosouce/DiagramChecker#DiagramChecker()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="classCheck" id="com.autosouce/DiagramChecker#classCheck(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getInadequateSize" id="com.autosouce/DiagramChecker#getInadequateSize()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="sequenceCheck" id="com.autosouce/DiagramChecker#sequenceCheck(Lcom.change_vision.jude.api.inf.model.ISequenceDiagram;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showIndequateDialog" id="com.autosouce/DiagramChecker#showIndequateDialog()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/DiagramChecker#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/DiagramChecker->Standard::Call" source="//@children.8" target="//@children.1" targetEnd="//@children.8/@sourceConnections.0/@children.2" label="//@children.8/@sourceConnections.0/@children.0" sourceEnd="//@children.8/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="217,11" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,145"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.6/@sourceConnections.1 //@children.13/@sourceConnections.0 //@children.7/@sourceConnections.5 //@children.5/@sourceConnections.3" name="ProcessBuilder" location="1084,909" size="211,409" id="com.autosouce/ProcessBuilder">
+    <children xsi:type="editmodel:CompartmentEditModel" size="188,162">
+      <children xsi:type="editmodel:AttributeEditModel" name="autoGenerateInstance" id="com.autosouce/ProcessBuilder#autoGenerateInstance"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="baselifeline" id="com.autosouce/ProcessBuilder#baselifeline"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="c" id="com.autosouce/ProcessBuilder#c"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="elements" id="com.autosouce/ProcessBuilder#elements"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="fragments" id="com.autosouce/ProcessBuilder#fragments"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="messages" id="com.autosouce/ProcessBuilder#messages"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="operation" id="com.autosouce/ProcessBuilder#operation"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="process" id="com.autosouce/ProcessBuilder#process"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="variables" id="com.autosouce/ProcessBuilder#variables"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="161,198">
+      <children xsi:type="editmodel:MethodEditModel" name="ProcessBuilder" id="com.autosouce/ProcessBuilder#ProcessBuilder(Lcom.change_vision.jude.api.inf.model.IMessage;Lcom.change_vision.jude.api.inf.model.ILifeline;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="ProcessBuilder" id="com.autosouce/ProcessBuilder#ProcessBuilder()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addElement" id="com.autosouce/ProcessBuilder#addElement(Lcom.change_vision.jude.api.inf.model.INamedElement;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addMessage" id="com.autosouce/ProcessBuilder#addMessage(Lcom.change_vision.jude.api.inf.model.IMessage;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="build" id="com.autosouce/ProcessBuilder#build()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getCallOperation" id="com.autosouce/ProcessBuilder#getCallOperation()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getIClass" id="com.autosouce/ProcessBuilder#getIClass()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isExistVariable" id="com.autosouce/ProcessBuilder#isExistVariable(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="processBuild" id="com.autosouce/ProcessBuilder#processBuild()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setAutoGenerateInstance" id="com.autosouce/ProcessBuilder#setAutoGenerateInstance(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setFields" id="com.autosouce/ProcessBuilder#setFields(Ljava.util.List;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ProcessBuilder-Standard::Call->com.autosouce/OclTranslator" source="//@children.9" target="//@children.14" targetEnd="//@children.9/@sourceConnections.0/@children.2" label="//@children.9/@sourceConnections.0/@children.0" sourceEnd="//@children.9/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,256" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="197,227"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ProcessBuilder->Standard::Call" source="//@children.9" target="//@children.2" targetEnd="//@children.9/@sourceConnections.1/@children.2" label="//@children.9/@sourceConnections.1/@children.0" sourceEnd="//@children.9/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,350" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="154,58"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ProcessBuilder->Standard::Call" source="//@children.9" target="//@children.10" targetEnd="//@children.9/@sourceConnections.2/@children.2" label="//@children.9/@sourceConnections.2/@children.0" sourceEnd="//@children.9/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,21" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="94,139"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ProcessBuilder->Standard::Call" source="//@children.9" target="//@children.12" targetEnd="//@children.9/@sourceConnections.3/@children.2" label="//@children.9/@sourceConnections.3/@children.0" sourceEnd="//@children.9/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="209,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="37,265"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.9/@sourceConnections.2" name="Variable" location="572,63" size="109,139" id="com.autosouce/Variable">
+    <children xsi:type="editmodel:CompartmentEditModel" size="86,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="com.autosouce/Variable#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="type" id="com.autosouce/Variable#type"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="72,54">
+      <children xsi:type="editmodel:MethodEditModel" name="Variable" id="com.autosouce/Variable#Variable(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isSame" id="com.autosouce/Variable#isSame(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isSame" id="com.autosouce/Variable#isSame(Lcom.autosouce.Variable;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.7/@sourceConnections.0 //@children.3/@sourceConnections.0" name="ConfigView" location="753,2974" size="207,319" id="com.autosouce/ConfigView">
+    <children xsi:type="editmodel:CompartmentEditModel" size="184,234">
+      <children xsi:type="editmodel:AttributeEditModel" name="collectionLabel" id="com.autosouce/ConfigView#collectionLabel"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="combo" id="com.autosouce/ConfigView#combo"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="cond" id="com.autosouce/ConfigView#cond"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="condition" id="com.autosouce/ConfigView#condition"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="conditionLabel" id="com.autosouce/ConfigView#conditionLabel"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="debagPrint" id="com.autosouce/ConfigView#debagPrint"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="generateInstance" id="com.autosouce/ConfigView#generateInstance"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="language" id="com.autosouce/ConfigView#language"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclLabel" id="com.autosouce/ConfigView#oclLabel"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclTranslate" id="com.autosouce/ConfigView#oclTranslate"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tabbedpane" id="com.autosouce/ConfigView#tabbedpane"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tableModel" id="com.autosouce/ConfigView#tableModel"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="window" id="com.autosouce/ConfigView#window"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="117,36">
+      <children xsi:type="editmodel:MethodEditModel" name="ConfigView" id="com.autosouce/ConfigView#ConfigView(Lcom.autosouce.Config;Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="com.autosouce/ConfigView#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ConfigView->Standard::Call" source="//@children.11" target="//@children.7" targetEnd="//@children.11/@sourceConnections.0/@children.2" label="//@children.11/@sourceConnections.0/@children.0" sourceEnd="//@children.11/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Access, Import»" size="177,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="100,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="49,481"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/ConfigView-Standard::Call->com.autosouce/ExtraView" source="//@children.11" target="//@children.3" targetEnd="//@children.11/@sourceConnections.1/@children.2" label="//@children.11/@sourceConnections.1/@children.0" sourceEnd="//@children.11/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="207,121" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,443"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.9/@sourceConnections.3" name="Fragment" location="1559,50" size="211,265" id="com.autosouce/Fragment">
+    <children xsi:type="editmodel:CompartmentEditModel" size="188,108">
+      <children xsi:type="editmodel:AttributeEditModel" name="activator" id="com.autosouce/Fragment#activator"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="elements" id="com.autosouce/Fragment#elements"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="fragment" id="com.autosouce/Fragment#fragment"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="guard" id="com.autosouce/Fragment#guard"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="lifeline" id="com.autosouce/Fragment#lifeline"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="type" id="com.autosouce/Fragment#type"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="111,108">
+      <children xsi:type="editmodel:MethodEditModel" name="Fragment" id="com.autosouce/Fragment#Fragment(Lcom.change_vision.jude.api.inf.model.ICombinedFragment;Lcom.change_vision.jude.api.inf.model.IOperation;ILcom.change_vision.jude.api.inf.model.ILifeline;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFirstElement" id="com.autosouce/Fragment#getFirstElement()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFragments" id="com.autosouce/Fragment#getFragments(Lcom.change_vision.jude.api.inf.model.ICombinedFragment;Lcom.change_vision.jude.api.inf.model.IOperation;Lcom.change_vision.jude.api.inf.model.ILifeline;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLastElement" id="com.autosouce/Fragment#getLastElement()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isElementExist" id="com.autosouce/Fragment#isElementExist()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/Fragment#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.6/@sourceConnections.0 //@children.5/@sourceConnections.1" name="MyClass" location="1448,1233" size="170,283" id="com.autosouce/MyClass">
+    <children xsi:type="editmodel:CompartmentEditModel" size="147,126">
+      <children xsi:type="editmodel:AttributeEditModel" name="c" id="com.autosouce/MyClass#c"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="definition" id="com.autosouce/MyClass#definition"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="fields" id="com.autosouce/MyClass#fields"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="generalization" id="com.autosouce/MyClass#generalization"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="methods" id="com.autosouce/MyClass#methods"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="com.autosouce/MyClass#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="realizations" id="com.autosouce/MyClass#realizations"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="91,108">
+      <children xsi:type="editmodel:MethodEditModel" name="MyClass" id="com.autosouce/MyClass#MyClass(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addField" id="com.autosouce/MyClass#addField(Lcom.autosouce.Field;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addMethod" id="com.autosouce/MyClass#addMethod(Lcom.autosouce.Method;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addProcess" id="com.autosouce/MyClass#addProcess(Lcom.autosouce.ProcessBuilder;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getIClass" id="com.autosouce/MyClass#getIClass()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="com.autosouce/MyClass#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/MyClass->Standard::Call" source="//@children.13" target="//@children.9" targetEnd="//@children.13/@sourceConnections.0/@children.2" label="//@children.13/@sourceConnections.0/@children.0" sourceEnd="//@children.13/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,42" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="211,366"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/MyClass->Standard::Call" source="//@children.13" target="//@children.4" targetEnd="//@children.13/@sourceConnections.1/@children.2" label="//@children.13/@sourceConnections.1/@children.0" sourceEnd="//@children.13/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Instantiate, Import»" size="136,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,203" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="221,141"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="com.autosouce/MyClass->Standard::Call" source="//@children.13" target="//@children.2" targetEnd="//@children.13/@sourceConnections.2/@children.2" label="//@children.13/@sourceConnections.2/@children.0" sourceEnd="//@children.13/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,11" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,141" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="154,173"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.9/@sourceConnections.0 //@children.4/@sourceConnections.0 //@children.2/@sourceConnections.0 //@children.7/@sourceConnections.3" name="OclTranslator" location="50,1357" size="197,553" id="com.autosouce/OclTranslator">
+    <children xsi:type="editmodel:CompartmentEditModel" size="133,180">
+      <children xsi:type="editmodel:AttributeEditModel" name="oclBag" id="com.autosouce/OclTranslator#oclBag"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclBoolean" id="com.autosouce/OclTranslator#oclBoolean"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclCollection" id="com.autosouce/OclTranslator#oclCollection"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclInteger" id="com.autosouce/OclTranslator#oclInteger"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclOrderedSet" id="com.autosouce/OclTranslator#oclOrderedSet"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclReal" id="com.autosouce/OclTranslator#oclReal"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclSequence" id="com.autosouce/OclTranslator#oclSequence"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclSet" id="com.autosouce/OclTranslator#oclSet"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclString" id="com.autosouce/OclTranslator#oclString"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oclTranslate" id="com.autosouce/OclTranslator#oclTranslate"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="174,324">
+      <children xsi:type="editmodel:MethodEditModel" name="instanceGenerateTranslator" id="com.autosouce/OclTranslator#instanceGenerateTranslator(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="instanceGenerateTranslator" id="com.autosouce/OclTranslator#instanceGenerateTranslator(Lcom.change_vision.jude.api.inf.model.IClass;Lcom.change_vision.jude.api.inf.model.ITemplateBinding;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isBindOcl" id="com.autosouce/OclTranslator#isBindOcl(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isInOclPackage" id="com.autosouce/OclTranslator#isInOclPackage(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclBag" id="com.autosouce/OclTranslator#setOclBag(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclBoolean" id="com.autosouce/OclTranslator#setOclBoolean(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclCollection" id="com.autosouce/OclTranslator#setOclCollection(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclInteger" id="com.autosouce/OclTranslator#setOclInteger(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclOrderedSet" id="com.autosouce/OclTranslator#setOclOrderedSet(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclReal" id="com.autosouce/OclTranslator#setOclReal(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclSequence" id="com.autosouce/OclTranslator#setOclSequence(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclSet" id="com.autosouce/OclTranslator#setOclSet(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclString" id="com.autosouce/OclTranslator#setOclString(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setOclTranslate" id="com.autosouce/OclTranslator#setOclTranslate(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="typeTranslator" id="com.autosouce/OclTranslator#typeTranslator(Lcom.change_vision.jude.api.inf.model.IClass;Lcom.change_vision.jude.api.inf.model.IOperation;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="typeTranslator" id="com.autosouce/OclTranslator#typeTranslator(Lcom.change_vision.jude.api.inf.model.IClass;Lcom.change_vision.jude.api.inf.model.ITemplateBinding;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="typeTranslator" id="com.autosouce/OclTranslator#typeTranslator(Lcom.change_vision.jude.api.inf.model.IClass;Lcom.change_vision.jude.api.inf.model.IAttribute;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="typeTranslator" id="com.autosouce/OclTranslator#typeTranslator(Lcom.change_vision.jude.api.inf.model.IClass;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="自然" methodSorter="自然" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" level="-1" showScope="InPackage" properties="wireOptions=7;Product=eUML2"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="自然" methodSorter="自然" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="自然" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>
