@@ -22,6 +22,9 @@ public class TreeItemIterator implements Iterator<FileNode> {
 		return !stack.isEmpty();
 	}
 
+	/*
+	 * 幅優先探索を行う
+	 */
 	public FileNode next() {
 		FileNode fileNode = stack.pop();
 		List<FileNode> children = fileNode.getChildren();

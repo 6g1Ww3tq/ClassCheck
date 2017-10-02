@@ -45,7 +45,7 @@ public class SetTabPane extends JPanel{
 
 	CompTablePane tablePane;
 
-	private static Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
+	Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
 
 	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
 		this.astahAndSourcePane = astahAndSourcePane;
@@ -239,12 +239,12 @@ public class SetTabPane extends JPanel{
 		}
 	}
 
-	public static void setGeneratable(MyClass myClass , boolean b) {
+	public void setGeneratable(MyClass myClass , boolean b) {
 		generatableMap.put(myClass, b);
 	}
 
 	//staticは危険...
-	public static boolean isGeneratable(){
+	public boolean isGeneratable(){
 		boolean isGenerate = true;
 
 		for(MyClass myClass : generatableMap.keySet()){

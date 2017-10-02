@@ -29,7 +29,8 @@ public class CompTablePane extends JPanel implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	JScrollPane tableScrollPane;
-	static DefaultTableModel tableModel;
+//	static DefaultTableModel tableModel;
+	DefaultTableModel tableModel;
 	JTable classCompTable;
 	SetTabPane setTabPane;
 	List<MyClass> myClassList;
@@ -58,11 +59,11 @@ public class CompTablePane extends JPanel implements Serializable{
 		isTableEditable = isEditable;
 	}
 
-	public static DefaultTableModel getTableModel(){
+	public DefaultTableModel getTableModel(){
 		return tableModel;
 	}
 
-	public static boolean isSameTableItemSelected(){
+	public boolean isSameTableItemSelected(){
 		boolean isSameTableItemSelected = false;
 		List<ClonableJComboBox> boxList = new ArrayList<ClonableJComboBox>();
 		List<CodeVisitor> visitorList = new ArrayList<CodeVisitor>();
@@ -313,24 +314,5 @@ public class CompTablePane extends JPanel implements Serializable{
 			}
 			return  jcomboBox;
 		}
-
-		/*
-		@Override
-		public Object clone() throws CloneNotSupportedException {
-			JComboBox<E> jcomboBox = new JComboBox<E>(){
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public String toString() {
-					return getSelectedItem().toString();
-				}
-			};
-
-			for (int i = 0; i < getItemCount(); i++) {
-				jcomboBox.addItem(this.getItemAt(i));
-			}
-			return  jcomboBox;
-		}
-		*/
 	}
 }

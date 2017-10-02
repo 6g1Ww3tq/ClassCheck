@@ -23,12 +23,14 @@ public class GenerateToolBar extends JToolBar {
 	ImageIcon genIcon;
 	private File baseDir;
 	private AstahAndSourcePanel astahAndSourcePane;
+	private SetTabPane stp;
 
-	public GenerateToolBar(String name,
+	public GenerateToolBar(String name, SetTabPane stp,
 			int operation, FileNode baseDir,
 			AstahAndSourcePanel astahAndSourcePane) {
 		super(name, operation);
 
+		this.stp = stp;
 		this.baseDir = baseDir;
 		this.astahAndSourcePane = astahAndSourcePane;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
@@ -48,7 +50,7 @@ public class GenerateToolBar extends JToolBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
-				if (!SetTabPane.isGeneratable()) {
+				if (!stp.isGeneratable()) {
 					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください");
 					return ;
 				}
@@ -58,13 +60,13 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 
-				if(CompTablePane.isSameTableItemSelected()){
+				if(stp.getTablePane().isSameTableItemSelected()){
 					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください");
 					return ;
 				}
 				
 				DebugMessageWindow.msgToOutPutTextArea();
-				new GenerateTestProgram(baseDir,astahAndSourcePane);
+				new GenerateTestProgram(baseDir,astahAndSourcePane,stp.getTablePane());
 			}
 		};
 		System.out.println("Image : " + genIcon.toString());

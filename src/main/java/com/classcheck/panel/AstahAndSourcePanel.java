@@ -3,8 +3,6 @@ package com.classcheck.panel;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -23,7 +21,6 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
@@ -33,6 +30,7 @@ public class AstahAndSourcePanel extends JPanel {
 	Map<MyClass, CodeVisitor> codeMap;
 
 	private StatusBar astahAndSourceStatus;
+	private SetTabPane stp;
 	private static boolean existSameMethod = false;
 
 	public AstahAndSourcePanel() {
@@ -44,9 +42,11 @@ public class AstahAndSourcePanel extends JPanel {
 		setVisible(true);
 	}
 
-	public AstahAndSourcePanel(ClassBuilder cb,
+	public AstahAndSourcePanel(SetTabPane stp,
+			ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
+		this.stp = stp;
 		this.codeVisitorList = codeVisitorList;
 
 		for (MyClass myClass : cb.getClasslist()) {
@@ -220,7 +220,7 @@ public class AstahAndSourcePanel extends JPanel {
 					}
 
 					setExsitSameMethod(isSame);
-					SetTabPane.setGeneratable(myClass, !isSame);
+					stp.setGeneratable(myClass, !isSame);
 				}
 			});
 		}

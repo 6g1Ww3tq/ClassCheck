@@ -33,7 +33,7 @@ public class MatcherTabbedPane extends JTabbedPane {
 	}
 
 	private void initComponent(){
-		astahAndSourcePane = new AstahAndSourcePanel(cb,codeVisitorList);
+		astahAndSourcePane = new AstahAndSourcePanel(stp,cb,codeVisitorList);
 		 
 		//２つのタブを生成
 		cstp = new CompSourceTabPanel(cb,userFileTree);
@@ -48,5 +48,9 @@ public class MatcherTabbedPane extends JTabbedPane {
 	
 	public AstahAndSourcePanel getAstahAndSourcePane() {
 		return astahAndSourcePane;
+	}
+	
+	public SetTabPane getStp() {
+		return stp;
 	}
 }

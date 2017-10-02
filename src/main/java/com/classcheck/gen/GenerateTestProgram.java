@@ -30,16 +30,16 @@ public class GenerateTestProgram {
 	//アスタクラス->メッセージの前と後を表す対応関係を抽出
 	private Map<MyClass, Map<String, String>> changeMap;
 
-	private Map<MyClass, List<JPanel>> mapPanelList;
-	private Map<MyClass, CodeVisitor> codeMap;
 	private AstahAndSourcePanel astahAndSourcePane;
+	private CompTablePane tablePane;
 
 	public GenerateTestProgram(File baseDir,
-			AstahAndSourcePanel astahAndSourcePane) {
+			AstahAndSourcePanel astahAndSourcePane, CompTablePane tablePane) {
 		this.baseDir = baseDir;
 		this.astahAndSourcePane = astahAndSourcePane;
-		this.mapPanelList = astahAndSourcePane.getMapPanelList();
-		this.codeMap = astahAndSourcePane.getCodeMap();
+//		this.mapPanelList = astahAndSourcePane.getMapPanelList();
+//		this.codeMap = astahAndSourcePane.getCodeMap();
+		this.tablePane = tablePane;
 		makeChangeMap();
 		viewChangeMap();
 		makeTestDir();
@@ -67,7 +67,7 @@ public class GenerateTestProgram {
 		changeMap = new HashMap<MyClass, Map<String,String>>();
 		Map<String, String> messagesMap = null;
 		String befMessage,aftMessage;
-		DefaultTableModel tm = CompTablePane.getTableModel();
+		DefaultTableModel tm = tablePane.getTableModel();
 		Object obj = null;
 		MyClassCell myClassCell = null;
 		MyClass myClass = null;
