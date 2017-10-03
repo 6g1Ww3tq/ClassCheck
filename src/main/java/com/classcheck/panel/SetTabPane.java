@@ -225,7 +225,7 @@ public class SetTabPane extends JPanel{
 		checkSameMethod(myClass);
 	}
 
-	private void checkSameMethod(MyClass myClass){
+	public void checkSameMethod(MyClass myClass){
 		Pocket<SelectedType> pocket = selectedSameSigMap.get(myClass);
 
 		if (pocket.get() == SelectedType.SAME) {
@@ -243,7 +243,6 @@ public class SetTabPane extends JPanel{
 		generatableMap.put(myClass, b);
 	}
 
-	//staticは危険...
 	public boolean isGeneratable(){
 		boolean isGenerate = true;
 

@@ -20,7 +20,7 @@ import com.github.javaparser.ast.stmt.Statement;
 
 public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 
-	private static ClassBuilder cb;
+	private ClassBuilder cb;
 	private StringBuilder sbMsg;
 
 	public SampleMethodVisitor() {
@@ -121,7 +121,7 @@ public class SampleMethodVisitor extends VoidVisitorAdapter<Void> {
 		return sbMsg.toString();
 	}
 
-	public static void setClassBuilder(ClassBuilder cb) {
-		SampleMethodVisitor.cb = cb;
+	public void setClassBuilder(ClassBuilder cb) {
+		this.cb = cb;
 	}
 }

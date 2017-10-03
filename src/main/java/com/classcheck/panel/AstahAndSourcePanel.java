@@ -31,7 +31,7 @@ public class AstahAndSourcePanel extends JPanel {
 
 	private StatusBar astahAndSourceStatus;
 	private SetTabPane stp;
-	private static boolean existSameMethod = false;
+	private boolean existSameMethod = false;
 
 	public AstahAndSourcePanel() {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
@@ -242,7 +242,7 @@ public class AstahAndSourcePanel extends JPanel {
 		}
 	}
 
-	public static boolean getExsitSameMethod(){
+	public boolean getExsitSameMethod(){
 		return existSameMethod;
 	}
 

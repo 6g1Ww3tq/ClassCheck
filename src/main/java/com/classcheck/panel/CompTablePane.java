@@ -29,10 +29,10 @@ public class CompTablePane extends JPanel implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	JScrollPane tableScrollPane;
-//	static DefaultTableModel tableModel;
+	//	static DefaultTableModel tableModel;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
-	SetTabPane setTabPane;
+	SetTabPane stp;
 	List<MyClass> myClassList;
 	AstahAndSourcePanel astahAndSourcePane;
 	List<CodeVisitor> codeVisitorList;
@@ -43,9 +43,9 @@ public class CompTablePane extends JPanel implements Serializable{
 			AstahAndSourcePanel astahAndSourcePane) {
 	}
 
-	public CompTablePane(SetTabPane setTabPane, List<MyClass> myClassList,
+	public CompTablePane(SetTabPane stp, List<MyClass> myClassList,
 			AstahAndSourcePanel astahAndSourcePane) {
-		this.setTabPane = setTabPane;
+		this.stp = stp;
 		this.myClassList = myClassList;
 		this.astahAndSourcePane = astahAndSourcePane;
 		this.codeVisitorList = astahAndSourcePane.getCodeVisitorList();
@@ -63,6 +63,29 @@ public class CompTablePane extends JPanel implements Serializable{
 		return tableModel;
 	}
 
+	public boolean isNullItemSelected(){
+		Object obj;
+		boolean isNull = false;
+
+		for (int row = 0 ; row < tableModel.getRowCount() ; row++){
+			obj = tableModel.getValueAt(row, 1);
+
+			/*
+			 * Item が - Choose Class -のとき
+			 */
+			if (obj instanceof String) {
+				isNull = true;
+				break;
+			}
+		}
+
+		return isNull;
+	}
+
+	/*
+	 * 初期値のテーブルの２列目のセルはJComboBox
+	 * 選択をするとCodeVisitorになる
+	 */
 	public boolean isSameTableItemSelected(){
 		boolean isSameTableItemSelected = false;
 		List<ClonableJComboBox> boxList = new ArrayList<ClonableJComboBox>();
@@ -79,22 +102,28 @@ public class CompTablePane extends JPanel implements Serializable{
 			 *ClonableJComboBoxの時がある 
 			 */
 			if (obj instanceof ClonableJComboBox) {
-				boxList.add((ClonableJComboBox) obj);
+				//boxList.add((ClonableJComboBox) obj);
+				box_1 = (ClonableJComboBox) obj;
+
+				if (box_1.getSelectedItem() instanceof CodeVisitor) {
+					visitorList.add((CodeVisitor) box_1.getSelectedItem());
+				}
 			}else if (obj instanceof CodeVisitor) {
 				visitorList.add((CodeVisitor) obj);
 			}
 		}
 
+		/*
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
-			
+
 			for(int j=0; j < boxList.size() ; j++){
 				box_2 = boxList.get(j);
-				
+
 				if (i==j) {
 					continue ;
 				}
-				
+
 				if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
 					isSameTableItemSelected = true;
 				}
@@ -104,24 +133,25 @@ public class CompTablePane extends JPanel implements Serializable{
 				break;
 			}
 		}
-		
+		 */
+
 		if (!isSameTableItemSelected) {
 			for (int i=0;i<visitorList.size();i++){
 				visitor_1 = visitorList.get(i);
-				
+
 				for (int j=0;j<visitorList.size();j++){
 					visitor_2 = visitorList.get(j);
-					
+
 					if (i==j) {
 						continue ;
 					}
-					
+
 					if (visitor_1.equals(visitor_2)) {
 						isSameTableItemSelected = true;
 						break;
 					}
 				}
-				
+
 				if (isSameTableItemSelected) {
 					break;
 				}
@@ -180,6 +210,7 @@ public class CompTablePane extends JPanel implements Serializable{
 		CodeVisitor codeVisitor = null;
 		JComboBox comboBox;
 		ClonableJComboBox<Object> clComboBox = new ClonableJComboBox<Object>();
+		ClonableJComboBox<Object> tmp = null;
 
 		for (int i = 0; i < codeVisitorList.size(); i++) {
 			codeVisitor = codeVisitorList.get(i);
@@ -195,7 +226,10 @@ public class CompTablePane extends JPanel implements Serializable{
 			tableModel.insertRow(i, rowObjects);
 			tableModel.setValueAt(myClassCell, i, 0);
 			try {
-				tableModel.setValueAt(clComboBox.clone(), i, 1);
+				//デフォルト値の設定
+				tmp = (ClonableJComboBox) clComboBox.clone();
+				tmp.setSelectedItem(defaultVal);
+				tableModel.setValueAt(tmp, i, 1);
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -257,6 +291,10 @@ public class CompTablePane extends JPanel implements Serializable{
 					if (visitor != null && myClassCell != null && codeMap != null) {
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
+						//AstahAndSourcePaneの更新
+						stp.reLoadAstahAndSourcePane(myClassCell.getMyClass(),true);
+						//同じメソッドが選択されていないかチェック
+						stp.checkSameMethod(myClassCell.getMyClass());
 					}
 
 					//					System.out.println("Cell " + tme.getFirstRow() + ", "
@@ -268,8 +306,6 @@ public class CompTablePane extends JPanel implements Serializable{
 					System.out.println("myClassCell : \n"+myClassCell);
 					DebugMessageWindow.msgToOutPutTextArea();
 
-					//AstahAndSourcePaneの更新
-					setTabPane.reLoadAstahAndSourcePane(myClassCell.getMyClass(),true);
 				}
 			}
 		});
@@ -298,6 +334,9 @@ public class CompTablePane extends JPanel implements Serializable{
 			return getSelectedItem().toString();
 		}
 
+		/*
+		 * アイテムに任意の文字列が表示されるように設定
+		 */
 		@Override
 		public Object clone() throws CloneNotSupportedException {
 			ClonableJComboBox<E> jcomboBox = new ClonableJComboBox<E>(){

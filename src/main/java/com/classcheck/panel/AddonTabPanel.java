@@ -210,6 +210,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void selectFolder(Component parentComponent) {
+		//初期化	
+		initVariables();
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		Future<?> future;
 		final JFileChooser chooser = new JFileChooser();

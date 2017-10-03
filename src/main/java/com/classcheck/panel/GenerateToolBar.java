@@ -51,21 +51,27 @@ public class GenerateToolBar extends JToolBar {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
 				if (!stp.isGeneratable()) {
-					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください");
+					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 
-				if (AstahAndSourcePanel.getExsitSameMethod()) {
-					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください_2");
+				if (astahAndSourcePane.getExsitSameMethod()) {
+					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください_2", "エラー", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+				
+				if (stp.getTablePane().isNullItemSelected()) {
+					JOptionPane.showMessageDialog(getParent(), "テーブルのセルにクラスを選択してください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 
 				if(stp.getTablePane().isSameTableItemSelected()){
-					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください");
+					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 				
 				DebugMessageWindow.msgToOutPutTextArea();
+				JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
 				new GenerateTestProgram(baseDir,astahAndSourcePane,stp.getTablePane());
 			}
 		};
