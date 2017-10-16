@@ -32,7 +32,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	//	static DefaultTableModel tableModel;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
-	SetTabPane stp;
+	MethodTabPane stp;
 	List<MyClass> myClassList;
 	AstahAndSourcePanel astahAndSourcePane;
 	List<CodeVisitor> codeVisitorList;
@@ -43,7 +43,7 @@ public class CompTablePane extends JPanel implements Serializable{
 			AstahAndSourcePanel astahAndSourcePane) {
 	}
 
-	public CompTablePane(SetTabPane stp, List<MyClass> myClassList,
+	public CompTablePane(MethodTabPane stp, List<MyClass> myClassList,
 			AstahAndSourcePanel astahAndSourcePane) {
 		this.stp = stp;
 		this.myClassList = myClassList;

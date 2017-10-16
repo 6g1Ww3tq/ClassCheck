@@ -23,9 +23,9 @@ public class GenerateToolBar extends JToolBar {
 	ImageIcon genIcon;
 	private File baseDir;
 	private AstahAndSourcePanel astahAndSourcePane;
-	private SetTabPane stp;
+	private MethodTabPane stp;
 
-	public GenerateToolBar(String name, SetTabPane stp,
+	public GenerateToolBar(String name, MethodTabPane stp,
 			int operation, FileNode baseDir,
 			AstahAndSourcePanel astahAndSourcePane) {
 		super(name, operation);
@@ -50,6 +50,7 @@ public class GenerateToolBar extends JToolBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
+				
 				if (!stp.isGeneratable()) {
 					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;

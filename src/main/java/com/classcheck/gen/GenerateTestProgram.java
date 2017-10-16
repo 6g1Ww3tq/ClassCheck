@@ -124,7 +124,7 @@ public class GenerateTestProgram {
 							label = (JLabel) component;
 
 							if (!label.getText().
-									contains("(左)astahのメソッド,コンストラクタのシグネチャ : (右)ソースコードのシグネチャ")) {
+									contains("(左)astahのメソッド")) {
 								befMessage = label.getText().substring(0, label.getText().length() - 3);
 							}else{
 								continue;

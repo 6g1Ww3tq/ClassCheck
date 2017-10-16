@@ -380,7 +380,7 @@ public class Method {
 		s+=")";
 		return s;
 	}
-
+	
 	public String getReturnString() {
 		return returnString;
 	}

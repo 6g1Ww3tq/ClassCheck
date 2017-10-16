@@ -41,6 +41,9 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 				methodList.add(method);
 			}
 
+			/*
+			 * コンストラクタをソースコードから読み取るかどうか
+			 */
 			if (bodyDeclaration instanceof ConstructorDeclaration) {
 				ConstructorDeclaration constructor = (ConstructorDeclaration) bodyDeclaration;
 				constructorList.add(constructor);

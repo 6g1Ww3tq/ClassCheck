@@ -25,16 +25,13 @@ import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.basic.Pocket;
 
-public class SetTabPane extends JPanel{
+public class FieldTabPane extends JPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	AstahAndSourcePanel astahAndSourcePane;
-
 	JSplitPane holizontalSplitePane;
-	JSplitPane verticalSplitePane;
 	JTree jtree;
 	DefaultMutableTreeNode astahRoot;
 	List<MyClass> myClassList;
@@ -43,27 +40,21 @@ public class SetTabPane extends JPanel{
 	StatusBar astahTreeStatus;
 	StatusBar astahAndSourceStatus;
 
-	CompTablePane tablePane;
-
 	Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
 
-	public SetTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
-		this.astahAndSourcePane = astahAndSourcePane;
+	MyClass selectedMyClass;
+
+	public FieldTabPane(ClassBuilder cb) {
+		selectedMyClass = null;
 		this.myClassList = cb.getClasslist();
-		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
-		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
 		setVisible(true);
 	}
 
-	public void setTableEditable(boolean isEditable){
-		tablePane.setTableEditable(isEditable);
-	}
-
-	public CompTablePane getTablePane() {
-		return tablePane;
+	public MyClass getSelectedMyClass() {
+		return selectedMyClass;
 	}
 
 	private void initComponent(){
@@ -71,7 +62,6 @@ public class SetTabPane extends JPanel{
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		holizontalSplitePane.setSize(new Dimension(400, 400));
-		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		astahRoot = new DefaultMutableTreeNode("AstahClass");
 		jtree = new JTree(astahRoot);
@@ -117,16 +107,8 @@ public class SetTabPane extends JPanel{
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
 		holizontalSplitePane.setRightComponent(astahAndSourceScrollPane);
 		holizontalSplitePane.setContinuousLayout(true);
-
-		//下のテーブル
-		JScrollPane tableScrollPane = new JScrollPane(tablePane);
-		tableScrollPane.setSize(new Dimension(200, 200));	
-		tableScrollPane.add(new StatusBar(tableScrollPane, "クラスの対応関係の設定"));
-		verticalSplitePane.setTopComponent(holizontalSplitePane);
-		verticalSplitePane.setBottomComponent(tableScrollPane);
-		verticalSplitePane.setContinuousLayout(true);
-		add(verticalSplitePane,BorderLayout.CENTER);
-
+		
+		add(holizontalSplitePane,BorderLayout.CENTER);
 	}
 
 	private void initActionEvent() {
@@ -141,12 +123,12 @@ public class SetTabPane extends JPanel{
 					Object userObj = selectedNode.getUserObject();
 
 					if (userObj instanceof MyClass) {
-						MyClass myClass = (MyClass) userObj;
+						selectedMyClass = (MyClass) userObj;
 						//パネルの更新
-						reLoadAstahAndSourcePane(myClass,false);
+						reLoadAstahAndSourcePane(selectedMyClass,false);
 
 						//同じメソッドが選択されていないかチェック
-						checkSameMethod(myClass);
+						checkSameMethod(selectedMyClass);
 					}
 				}
 
@@ -193,7 +175,7 @@ public class SetTabPane extends JPanel{
 			//astah sig : code sig を取得完了
 
 			if (astahSigLabel != null && codeSigBox != null) {
-				if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
+				if (!astahSigLabel.getText().contains("(左)astahのメソッド")) {
 					obj = codeSigBox.getSelectedItem();
 
 					if (obj instanceof String) {

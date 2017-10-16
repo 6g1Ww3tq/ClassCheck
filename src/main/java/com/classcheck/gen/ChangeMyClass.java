@@ -81,7 +81,7 @@ public class ChangeMyClass {
 				//astah sig : code sig を取得完了
 
 				if (astahSigLabel != null && codeSigBox != null) {
-					if (!astahSigLabel.getText().contains("(左)astahのメソッド,コンストラクタのシグネチャ")) {
+					if (!astahSigLabel.getText().contains("(左)astahのメソッド")) {
 						msr.setBefore(astahSigLabel.getText());
 						msr.setAfter(codeSigBox.getSelectedItem().toString());
 						msr.replace();

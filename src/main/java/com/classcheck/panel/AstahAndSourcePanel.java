@@ -3,12 +3,16 @@ package com.classcheck.panel;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -17,6 +21,7 @@ import javax.swing.JPanel;
 
 import org.apache.lucene.search.spell.LevensteinDistance;
 
+import com.change_vision.jude.api.inf.model.IComment;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
@@ -24,14 +29,20 @@ import com.classcheck.autosource.MyClass;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
+/*
+ * アスタのシグネチャーと
+ * ソースコードのシグネチャーの比較を行うパネル
+ */
 public class AstahAndSourcePanel extends JPanel {
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
 	Map<MyClass, CodeVisitor> codeMap;
 
 	private StatusBar astahAndSourceStatus;
-	private SetTabPane stp;
+	private MethodTabPane stp;
 	private boolean existSameMethod = false;
+
+	private List<JComboBox<String>> boxList;
 
 	public AstahAndSourcePanel() {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
@@ -42,7 +53,7 @@ public class AstahAndSourcePanel extends JPanel {
 		setVisible(true);
 	}
 
-	public AstahAndSourcePanel(SetTabPane stp,
+	public AstahAndSourcePanel(MethodTabPane stp,
 			ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
@@ -94,8 +105,16 @@ public class AstahAndSourcePanel extends JPanel {
 		JComboBox<String> methodComboBox = null;
 
 		//同じシグネチャーが選択されているかどうかを調べる
-		final List<JComboBox<String>> boxList = new ArrayList<JComboBox<String>>();
+		boxList = new ArrayList<JComboBox<String>>();
 		boolean isSameMethodSelected = false;
+
+		//ポップアップテキスト
+		StringBuilder popSb = null;
+		
+		//コメントを取り除く
+		String regex = "(?s)/\\*.*\\*/";
+		Pattern patern = Pattern.compile(regex);
+		Matcher matcher;
 
 		if (isAllChange) {
 			panelList.clear();
@@ -103,7 +122,7 @@ public class AstahAndSourcePanel extends JPanel {
 			//説明のパネルを加える
 			//（左）astah	:（右)	ソースコード
 			p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			l = new JLabel("(左)astahのメソッド,コンストラクタのシグネチャ : (右)ソースコードのシグネチャ");
+			l = new JLabel("(左)astahのメソッド : (右)ソースコードのメソッド");
 			l.setFont(new Font("SansSerif", Font.BOLD, 20));
 			l.setAlignmentX(CENTER_ALIGNMENT);
 			p.add(l);
@@ -123,6 +142,16 @@ public class AstahAndSourcePanel extends JPanel {
 				}
 
 				for (Method method : methodList) {
+					popSb = new StringBuilder();
+
+					/*
+					 * コンストラクタは読み込まない
+					 */
+					/*
+					if (method.getName().equals(myClass.getName())) {
+						continue;
+					}
+					 */
 
 					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 					boxList.add(methodComboBox);
@@ -140,9 +169,34 @@ public class AstahAndSourcePanel extends JPanel {
 					}
 					methodComboBox.setSelectedItem(keyStr);
 					p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-					l = new JLabel(method.getSignature() + " : ");
+					matcher = patern.matcher(method.getSignature());
+					l = new JLabel(matcher.replaceAll(""));
 					l.setAlignmentX(CENTER_ALIGNMENT);
 
+					//ポップアップテキストを加える
+					popSb.append("<html>");
+					//popSb.append("<p width=\"500\">");
+					popSb.append("<p>");
+					popSb.append("事前条件:<br>");
+					if (method.getOperation().getPreConditions().length == 0) {
+						popSb.append("なし<br>");
+					}else{
+						for(String text : method.getOperation().getPreConditions()){
+							popSb.append(text+"<br>");
+						}
+					}
+					popSb.append("事後条件:<br>");
+					if (method.getOperation().getPostConditions().length == 0) {
+						popSb.append("なし<br>");
+					}else{
+						for(String text : method.getOperation().getPostConditions()){
+							popSb.append(text+"<br>");
+						}
+					}
+					popSb.append("</p>");
+					popSb.append("</html>");
+
+					l.setToolTipText(popSb.toString());
 					p.add(l);
 					p.add(methodComboBox);
 					panelList.add(p);
@@ -187,6 +241,7 @@ public class AstahAndSourcePanel extends JPanel {
 
 		//イベント登録
 		//アイテムが変更された瞬間に同じメソッドが選択されているかどうかを確認する
+		/*
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
 
@@ -224,6 +279,8 @@ public class AstahAndSourcePanel extends JPanel {
 				}
 			});
 		}
+		 */
+
 
 		return isSameMethodSelected;
 	}

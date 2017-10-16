@@ -10,7 +10,7 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
-	SetTabPane stp;
+	MethodTabPane stp;
 	CompSourceTabPanel cstp;
 	
 	//２つのタブで共有
@@ -22,6 +22,7 @@ public class MatcherTabbedPane extends JTabbedPane {
 	
 	//ユーザーのソースコードツリー
 	FileTree userFileTree;
+	private FieldTabPane ftp;
 
 	public MatcherTabbedPane(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList, FileTree fileTree) {
@@ -38,11 +39,13 @@ public class MatcherTabbedPane extends JTabbedPane {
 		//２つのタブを生成
 		cstp = new CompSourceTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
-		stp = new SetTabPane(astahAndSourcePane, cb);
+		stp = new MethodTabPane(astahAndSourcePane, cb);
 		stp.setTableEditable(false);
+//		ftp = new FieldTabPane(cb);
 
 		//２つのタブを加える
-		addTab("Set", stp);
+		addTab("Method", stp);
+//		addTab("Field", ftp);
 		addTab("View",cstp);
 	}
 	
@@ -50,7 +53,7 @@ public class MatcherTabbedPane extends JTabbedPane {
 		return astahAndSourcePane;
 	}
 	
-	public SetTabPane getStp() {
+	public MethodTabPane getStp() {
 		return stp;
 	}
 }
