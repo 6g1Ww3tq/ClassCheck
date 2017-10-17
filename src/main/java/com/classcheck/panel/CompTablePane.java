@@ -32,23 +32,23 @@ public class CompTablePane extends JPanel implements Serializable{
 	//	static DefaultTableModel tableModel;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
-	MethodTabPane stp;
+	MemberTabPane mtp;
 	List<MyClass> myClassList;
-	AstahAndSourcePanel astahAndSourcePane;
+	MethodCompPanel mcp;
 	List<CodeVisitor> codeVisitorList;
 
 	boolean isTableEditable = false;
 
 	public CompTablePane(List<MyClass> myClassList,
-			AstahAndSourcePanel astahAndSourcePane) {
+			MethodCompPanel mcp) {
 	}
 
-	public CompTablePane(MethodTabPane stp, List<MyClass> myClassList,
-			AstahAndSourcePanel astahAndSourcePane) {
-		this.stp = stp;
+	public CompTablePane(MemberTabPane mtp, List<MyClass> myClassList,
+			MethodCompPanel mcp) {
+		this.mtp = mtp;
 		this.myClassList = myClassList;
-		this.astahAndSourcePane = astahAndSourcePane;
-		this.codeVisitorList = astahAndSourcePane.getCodeVisitorList();
+		this.mcp = mcp;
+		this.codeVisitorList = mcp.getCodeVisitorList();
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -73,7 +73,7 @@ public class CompTablePane extends JPanel implements Serializable{
 			/*
 			 * Item が - Choose Class -のとき
 			 */
-			if (obj instanceof String) {
+			if (obj.toString().contains("- Choose Class -")) {
 				isNull = true;
 				break;
 			}
@@ -112,28 +112,6 @@ public class CompTablePane extends JPanel implements Serializable{
 				visitorList.add((CodeVisitor) obj);
 			}
 		}
-
-		/*
-		for (int i=0; i < boxList.size() ; i++){
-			box_1 = boxList.get(i);
-
-			for(int j=0; j < boxList.size() ; j++){
-				box_2 = boxList.get(j);
-
-				if (i==j) {
-					continue ;
-				}
-
-				if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
-					isSameTableItemSelected = true;
-				}
-			}
-
-			if (isSameTableItemSelected) {
-				break;
-			}
-		}
-		 */
 
 		if (!isSameTableItemSelected) {
 			for (int i=0;i<visitorList.size();i++){
@@ -245,11 +223,11 @@ public class CompTablePane extends JPanel implements Serializable{
 			System.out.println("obj-Class:"+obj.getClass());
 			if (obj instanceof JComboBox<?>) {
 				comboBox = (JComboBox) obj;
-				codeVisitor = astahAndSourcePane.getCodeMap().get(myClassList.get(i));
+				codeVisitor = mcp.getCodeMap().get(myClassList.get(i));
 				if (codeVisitor == null) {
 					comboBox.setSelectedItem(defaultVal);
 				}else{
-					comboBox.setSelectedItem(astahAndSourcePane.getCodeMap().get(myClassList.get(i)));
+					comboBox.setSelectedItem(mcp.getCodeMap().get(myClassList.get(i)));
 				}
 			}else{
 				StackTraceElement throwableStackTraceElement = new Throwable().getStackTrace()[0];
@@ -278,7 +256,7 @@ public class CompTablePane extends JPanel implements Serializable{
 							tme.getColumn());
 					obj_2 = tableModel.getValueAt(tme.getFirstRow(),
 							tme.getColumn() - 1);
-					codeMap = astahAndSourcePane.getCodeMap();
+					codeMap = mcp.getCodeMap();
 
 					if (obj instanceof CodeVisitor) {
 						visitor = (CodeVisitor) obj;
@@ -292,9 +270,9 @@ public class CompTablePane extends JPanel implements Serializable{
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
 						//AstahAndSourcePaneの更新
-						stp.reLoadAstahAndSourcePane(myClassCell.getMyClass(),true);
+						mtp.reLoadMethodCompPane(myClassCell.getMyClass(),true);
 						//同じメソッドが選択されていないかチェック
-						stp.checkSameMethod(myClassCell.getMyClass());
+						mtp.checkSameMethod(myClassCell.getMyClass());
 					}
 
 					//					System.out.println("Cell " + tme.getFirstRow() + ", "

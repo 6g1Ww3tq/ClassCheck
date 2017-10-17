@@ -1,12 +1,7 @@
 package com.classcheck.panel;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +16,6 @@ import javax.swing.JPanel;
 
 import org.apache.lucene.search.spell.LevensteinDistance;
 
-import com.change_vision.jude.api.inf.model.IComment;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
@@ -33,31 +27,31 @@ import com.github.javaparser.ast.body.MethodDeclaration;
  * アスタのシグネチャーと
  * ソースコードのシグネチャーの比較を行うパネル
  */
-public class AstahAndSourcePanel extends JPanel {
+public class MethodCompPanel extends JPanel {
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
 	Map<MyClass, CodeVisitor> codeMap;
 
-	private StatusBar astahAndSourceStatus;
-	private MethodTabPane stp;
-	private boolean existSameMethod = false;
+	private StatusBar mtpSourceStatus;
+	private MemberTabPane mtp;
+	private boolean rxistSameMethod = false;
 
 	private List<JComboBox<String>> boxList;
 
-	public AstahAndSourcePanel() {
+	public MethodCompPanel() {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
 		codeMap = new HashMap<MyClass, CodeVisitor>();
-		astahAndSourceStatus = null;
+		mtpSourceStatus = null;
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		setVisible(true);
 	}
 
-	public AstahAndSourcePanel(MethodTabPane stp,
+	public MethodCompPanel(MemberTabPane mtp,
 			ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
-		this.stp = stp;
+		this.mtp = mtp;
 		this.codeVisitorList = codeVisitorList;
 
 		for (MyClass myClass : cb.getClasslist()) {
@@ -110,7 +104,7 @@ public class AstahAndSourcePanel extends JPanel {
 
 		//ポップアップテキスト
 		StringBuilder popSb = null;
-		
+
 		//コメントを取り除く
 		String regex = "(?s)/\\*.*\\*/";
 		Pattern patern = Pattern.compile(regex);
@@ -177,12 +171,31 @@ public class AstahAndSourcePanel extends JPanel {
 					popSb.append("<html>");
 					//popSb.append("<p width=\"500\">");
 					popSb.append("<p>");
+
+					popSb.append("定義:<br>");
+					if (method.getOperation().getDefinition().length() == 0) {
+						popSb.append("なし<br>");
+					}else{
+						String[] comments = method.getOperation().getDefinition().split("\\n", 0);
+
+						for (String comment : comments) {
+							popSb.append(comment + "<br>");
+						}
+					}
+
+					popSb.append("本体条件:<br>");
+					if (method.getOperation().getBodyCondition().length() == 0) {
+						popSb.append("なし<br>");
+					}else{
+						popSb.append("・"+method.getOperation().getBodyCondition()+"<br>");
+					}
+
 					popSb.append("事前条件:<br>");
 					if (method.getOperation().getPreConditions().length == 0) {
 						popSb.append("なし<br>");
 					}else{
 						for(String text : method.getOperation().getPreConditions()){
-							popSb.append(text+"<br>");
+							popSb.append("・"+text+"<br>");
 						}
 					}
 					popSb.append("事後条件:<br>");
@@ -190,7 +203,7 @@ public class AstahAndSourcePanel extends JPanel {
 						popSb.append("なし<br>");
 					}else{
 						for(String text : method.getOperation().getPostConditions()){
-							popSb.append(text+"<br>");
+							popSb.append("・"+text+"<br>");
 						}
 					}
 					popSb.append("</p>");
@@ -218,17 +231,21 @@ public class AstahAndSourcePanel extends JPanel {
 
 		//同じメソッドが選択されているかどうかを調べる
 		JComboBox  box_1,box_2;
+		String strBox_1,strBox_2;
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
 
+			strBox_1 = box_1.getSelectedItem().toString();
 			for(int j=0; j < boxList.size() ; j++){
 				box_2 = boxList.get(j);
+
+				strBox_2 = box_2.getSelectedItem().toString();
 
 				if (i==j) {
 					continue ;
 				}
 
-				if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
+				if (strBox_1.equals(strBox_2)) {
 					isSameMethodSelected = true;
 					break;
 				}
@@ -239,68 +256,9 @@ public class AstahAndSourcePanel extends JPanel {
 			}
 		}
 
-		//イベント登録
-		//アイテムが変更された瞬間に同じメソッドが選択されているかどうかを確認する
-		/*
-		for (int i=0; i < boxList.size() ; i++){
-			box_1 = boxList.get(i);
-
-			box_1.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					JComboBox  box_1,box_2;
-					boolean isSame = false;
-					existSameMethod = false;
-
-					for (int i=0; i < boxList.size() ; i++){
-						box_1 = boxList.get(i);
-
-						for(int j=0; j < boxList.size() ; j++){
-							box_2 = boxList.get(j);
-
-							if (i==j) {
-								continue ;
-							}
-
-							if (box_1.getSelectedItem().equals(box_2.getSelectedItem())) {
-								isSame = true;
-								break;
-							}
-						}
-
-						if (isSame) {
-							break;
-						}
-					}
-
-					setExsitSameMethod(isSame);
-					stp.setGeneratable(myClass, !isSame);
-				}
-			});
-		}
-		 */
 
 
 		return isSameMethodSelected;
-	}
-
-	private void setExsitSameMethod(boolean b){
-		existSameMethod = b;
-
-		if (astahAndSourceStatus != null) {
-			if (b) {
-				astahAndSourceStatus.setColor(Color.red);
-				astahAndSourceStatus.setText("同じシグネチャーを選択しないでください");
-			}else{
-				astahAndSourceStatus.setColor(Color.green);
-				astahAndSourceStatus.setText("OK");
-			}
-		}
-	}
-
-	public boolean getExsitSameMethod(){
-		return existSameMethod;
 	}
 
 	/**
@@ -308,11 +266,11 @@ public class AstahAndSourcePanel extends JPanel {
 	 * @param text
 	 */
 	public void setStatusText(String text){
-		astahAndSourceStatus.setText(text);
+		mtpSourceStatus.setText(text);
 	}
 
-	public void setStatus(StatusBar astahAndSourceStatus) {
-		this.astahAndSourceStatus = astahAndSourceStatus;
+	public void setStatus(StatusBar mtpSourceStatus) {
+		this.mtpSourceStatus = mtpSourceStatus;
 	}
 
 }

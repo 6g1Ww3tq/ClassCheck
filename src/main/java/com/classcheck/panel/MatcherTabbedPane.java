@@ -1,5 +1,6 @@
 package com.classcheck.panel;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
@@ -10,7 +11,7 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
-	MethodTabPane stp;
+	MemberTabPane mtp;
 	CompSourceTabPanel cstp;
 	
 	//２つのタブで共有
@@ -18,11 +19,10 @@ public class MatcherTabbedPane extends JTabbedPane {
 	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
 	//右上のパネル
-	AstahAndSourcePanel astahAndSourcePane;
+	MethodCompPanel mcp;
 	
 	//ユーザーのソースコードツリー
 	FileTree userFileTree;
-	private FieldTabPane ftp;
 
 	public MatcherTabbedPane(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList, FileTree fileTree) {
@@ -34,26 +34,24 @@ public class MatcherTabbedPane extends JTabbedPane {
 	}
 
 	private void initComponent(){
-		astahAndSourcePane = new AstahAndSourcePanel(stp,cb,codeVisitorList);
+		mcp = new MethodCompPanel(mtp,cb,codeVisitorList);
 		 
 		//２つのタブを生成
 		cstp = new CompSourceTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
-		stp = new MethodTabPane(astahAndSourcePane, cb);
-		stp.setTableEditable(false);
-//		ftp = new FieldTabPane(cb);
+		mtp = new MemberTabPane(mcp, cb);
+		mtp.setTableEditable(false);
 
 		//２つのタブを加える
-		addTab("Method", stp);
-//		addTab("Field", ftp);
+		addTab("Method", mtp);
 		addTab("View",cstp);
 	}
 	
-	public AstahAndSourcePanel getAstahAndSourcePane() {
-		return astahAndSourcePane;
+	public MethodCompPanel getAstahAndSourcePane() {
+		return mcp;
 	}
 	
-	public MethodTabPane getStp() {
-		return stp;
+	public MemberTabPane getStp() {
+		return mtp;
 	}
 }

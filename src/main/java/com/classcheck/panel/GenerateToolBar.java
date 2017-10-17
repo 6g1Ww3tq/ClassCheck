@@ -22,17 +22,17 @@ public class GenerateToolBar extends JToolBar {
 	Action genAction;
 	ImageIcon genIcon;
 	private File baseDir;
-	private AstahAndSourcePanel astahAndSourcePane;
-	private MethodTabPane stp;
+	private MethodCompPanel mcp;
+	private MemberTabPane mtp;
 
-	public GenerateToolBar(String name, MethodTabPane stp,
+	public GenerateToolBar(String name, MemberTabPane mtp,
 			int operation, FileNode baseDir,
-			AstahAndSourcePanel astahAndSourcePane) {
+			MethodCompPanel mcp) {
 		super(name, operation);
 
-		this.stp = stp;
+		this.mtp = mtp;
 		this.baseDir = baseDir;
-		this.astahAndSourcePane = astahAndSourcePane;
+		this.mcp = mcp;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
 		add(Box.createHorizontalGlue());
 		setBorder(new LineBorder(Color.LIGHT_GRAY,1));
@@ -50,30 +50,26 @@ public class GenerateToolBar extends JToolBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate program");
-				
-				if (!stp.isGeneratable()) {
-					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
-					return ;
-				}
 
-				if (astahAndSourcePane.getExsitSameMethod()) {
-					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください_2", "エラー", JOptionPane.ERROR_MESSAGE);
-					return ;
-				}
-				
-				if (stp.getTablePane().isNullItemSelected()) {
+				if (mtp.getTablePane().isNullItemSelected()) {
 					JOptionPane.showMessageDialog(getParent(), "テーブルのセルにクラスを選択してください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 
-				if(stp.getTablePane().isSameTableItemSelected()){
+				if(mtp.getTablePane().isSameTableItemSelected()){
 					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 				
+				//すべてのクラスのメソッドを調べる
+				if (!mtp.isGeneratable()) {
+					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+
 				DebugMessageWindow.msgToOutPutTextArea();
 				JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
-				new GenerateTestProgram(baseDir,astahAndSourcePane,stp.getTablePane());
+				new GenerateTestProgram(baseDir,mcp,mtp.getTablePane());
 			}
 		};
 		System.out.println("Image : " + genIcon.toString());

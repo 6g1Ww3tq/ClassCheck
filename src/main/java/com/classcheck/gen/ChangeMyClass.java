@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.panel.AstahAndSourcePanel;
+import com.classcheck.panel.MethodCompPanel;
 import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -23,21 +23,21 @@ public class ChangeMyClass {
 
 	private Map<MyClass, List<JPanel>> mapPanelList;
 	private Map<MyClass, CodeVisitor> codeMap;
-	private AstahAndSourcePanel astahAndSourcePane;
+	private MethodCompPanel mcp;
 	private Map<MyClass, Map<String, String>> changeMap;
 	private ArrayList<String> generatedCodes;
 
-	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane) {
-		this.astahAndSourcePane = astahAndSourcePane;
-		this.mapPanelList = astahAndSourcePane.getMapPanelList();
-		this.codeMap = astahAndSourcePane.getCodeMap();
+	public ChangeMyClass(MethodCompPanel mcp) {
+		this.mcp = mcp;
+		this.mapPanelList = mcp.getMapPanelList();
+		this.codeMap = mcp.getCodeMap();
 		
 		this.generatedCodes = new ArrayList<String>();
 	}
 
-	public ChangeMyClass(AstahAndSourcePanel astahAndSourcePane,
+	public ChangeMyClass(MethodCompPanel mcp,
 			Map<MyClass, Map<String, String>> changeMap) {
-		this(astahAndSourcePane);
+		this(mcp);
 		this.changeMap = changeMap;
 	}
 	

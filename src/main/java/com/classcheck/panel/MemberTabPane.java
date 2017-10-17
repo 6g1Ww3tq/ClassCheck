@@ -25,23 +25,28 @@ import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.basic.Pocket;
 
-public class MethodTabPane extends JPanel{
+public class MemberTabPane extends JPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	AstahAndSourcePanel astahAndSourcePane;
+	//フィールドの対応付を行う
+	private FieldCompPanel fcp;
+	//メソッドの対応付を行う
+	MethodCompPanel mcp;
 
 	JSplitPane holizontalSplitePane;
 	JSplitPane verticalSplitePane;
+	JSplitPane compVerticalSplitePane;
 	JTree jtree;
 	DefaultMutableTreeNode astahRoot;
 	List<MyClass> myClassList;
 	Map<MyClass, Pocket<SelectedType>> selectedSameSigMap;
 
 	StatusBar astahTreeStatus;
-	StatusBar astahAndSourceStatus;
+	StatusBar mtpSourceStatus;
+	StatusBar fcpSourceStatus;
 
 	CompTablePane tablePane;
 
@@ -49,12 +54,14 @@ public class MethodTabPane extends JPanel{
 
 	MyClass selectedMyClass;
 
-	public MethodTabPane(AstahAndSourcePanel astahAndSourcePane, ClassBuilder cb) {
+
+	public MemberTabPane(MethodCompPanel mcp, ClassBuilder cb) {
 		selectedMyClass = null;
-		this.astahAndSourcePane = astahAndSourcePane;
+		this.fcp = new FieldCompPanel(cb);
+		this.mcp = mcp;
 		this.myClassList = cb.getClasslist();
 		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
-		this.tablePane = new CompTablePane(this,myClassList, astahAndSourcePane);
+		this.tablePane = new CompTablePane(this,myClassList, mcp);
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -79,6 +86,7 @@ public class MethodTabPane extends JPanel{
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		holizontalSplitePane.setSize(new Dimension(400, 400));
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		compVerticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
 		astahRoot = new DefaultMutableTreeNode("AstahClass");
 		jtree = new JTree(astahRoot);
@@ -91,7 +99,7 @@ public class MethodTabPane extends JPanel{
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 			//デフォルトでパネルに初期値データを入れる
-			isSameMethodSelected = astahAndSourcePane.initComponent(myClass,true);
+			isSameMethodSelected = mcp.initComponent(myClass,true);
 			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 
 			generatableMap.put(myClass, !isSameMethodSelected);
@@ -99,8 +107,8 @@ public class MethodTabPane extends JPanel{
 
 		//デフォルトでパネルに初期値データを入れる
 		//->表示させないようにする
-		astahAndSourcePane.removeAll();
-		astahAndSourcePane.revalidate();
+		mcp.removeAll();
+		mcp.revalidate();
 
 		//上の左右パネル
 		//astah tree(左)
@@ -112,17 +120,34 @@ public class MethodTabPane extends JPanel{
 		treeScrollPane.setSize(new Dimension(200, 300));	
 
 		//astah and source panel(右）
+
+		//メソッドの対応パネル
 		panel = new JPanel(new BorderLayout());
-		panel.add(astahAndSourcePane,BorderLayout.CENTER);
-		astahAndSourceStatus = new StatusBar(panel, "対応付けしてください");
-		astahAndSourcePane.setStatus(astahAndSourceStatus);
-		astahAndSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
-		panel.add(astahAndSourceStatus,BorderLayout.SOUTH);
-		JScrollPane astahAndSourceScrollPane = new JScrollPane(panel);
-		astahAndSourceScrollPane.setSize(new Dimension(200,300));	
+		panel.add(mcp,BorderLayout.CENTER);
+		mtpSourceStatus = new StatusBar(panel, "対応付けしてください");
+		mcp.setStatus(mtpSourceStatus);
+		mtpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
+		panel.add(mtpSourceStatus,BorderLayout.SOUTH);
+		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.setSize(new Dimension(200,300));	
+		//compVerticalSplitePane.setBottomComponent(scrollPane);
+		compVerticalSplitePane.setTopComponent(scrollPane);
+		//フィールドの対応パネル
+		panel = new JPanel(new BorderLayout());
+		panel.add(mcp,BorderLayout.CENTER);
+		fcpSourceStatus = new StatusBar(panel, "対応付けしてください");
+		fcp.setStatus(fcpSourceStatus);
+		fcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
+		panel.add(mtpSourceStatus,BorderLayout.SOUTH);
+		scrollPane = new JScrollPane(panel);
+		scrollPane.setSize(new Dimension(200,300));	
+		//compVerticalSplitePane.setTopComponent(scrollPane);
+		compVerticalSplitePane.setBottomComponent(scrollPane);
+		compVerticalSplitePane.setSize(new Dimension(100, 100));
+		compVerticalSplitePane.setContinuousLayout(true);
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
-		holizontalSplitePane.setRightComponent(astahAndSourceScrollPane);
+		holizontalSplitePane.setRightComponent(compVerticalSplitePane);
 		holizontalSplitePane.setContinuousLayout(true);
 
 		//下のテーブル
@@ -150,98 +175,103 @@ public class MethodTabPane extends JPanel{
 					if (userObj instanceof MyClass) {
 						selectedMyClass = (MyClass) userObj;
 						//パネルの更新
-						reLoadAstahAndSourcePane(selectedMyClass,false);
-
-						//同じメソッドが選択されていないかチェック
-						checkSameMethod(selectedMyClass);
+						reLoadMethodCompPane(selectedMyClass,false);
 					}
 				}
 
-				/*
-				if (astahAndSourcePane.getExsitSameMethod()) {
-					setSelectedType(SelectedType.SAME);
-				}
-				 */
 			}
 		});
 	}
 
-	public void reLoadAstahAndSourcePane(MyClass myClass,boolean isAllChange){
-		Map<MyClass, List<JPanel>> mapPanelList = astahAndSourcePane.getMapPanelList();
+	public void reLoadMethodCompPane(MyClass myClass,boolean isAllChange){
+		Map<MyClass, List<JPanel>> mapPanelList = mcp.getMapPanelList();
 		List<JPanel> panelList = mapPanelList.get(myClass);
 		Component component;
-		JLabel astahSigLabel = null;
-		JComboBox<String> codeSigBox = null;
+		JComboBox codeSigBox = null;
 		List<String> codeSigList = new ArrayList<String>();
-		String codeSig = null;
 		Object obj = null;
-		int sameCount = 0;
 		Pocket<SelectedType> pocket = null;
 
+		String baseSig,comparedSig;
+		boolean isSame;
+
 		//パネルの更新
-		astahAndSourcePane.removeAll();
-		astahAndSourcePane.revalidate();
-		astahAndSourcePane.initComponent(myClass,isAllChange);
+		mcp.removeAll();
+		mcp.revalidate();
+		mcp.initComponent(myClass,isAllChange);
 		astahTreeStatus.setText("Astah-Class:"+myClass.getName());
 
 		//ステータスバーによるエラーチェック
 		for (JPanel panel : panelList) {
 			for (int i = 0; i < panel.getComponentCount(); i++) {
 				component = panel.getComponent(i);
+				codeSigBox = null;
 
-				if (component instanceof JLabel) {
-					astahSigLabel = (JLabel) component;
+				if (component instanceof JComboBox) {
+					codeSigBox = (JComboBox) component;
 				}
 
-				if (component instanceof JComboBox<?>) {
-					codeSigBox = (JComboBox<String>) component;
-				}
-			}
-			//astah sig : code sig を取得完了
-
-			if (astahSigLabel != null && codeSigBox != null) {
-				if (!astahSigLabel.getText().contains("(左)astahのメソッド")) {
+				if (codeSigBox != null) {
 					obj = codeSigBox.getSelectedItem();
-
-					if (obj instanceof String) {
-						codeSig = (String) obj;
-						codeSigList.add(codeSig);
-					}
+					codeSigList.add(obj.toString());
 				}
+
 			}
 		}
 
-		for (String baseSig : codeSigList) {
-			sameCount = 0;
+		isSame = false;
 
-			for (String str : codeSigList) {
-				if (baseSig.equals(str)) {
-					sameCount++;
+		for(int i=0;i<codeSigList.size();i++){
+
+			baseSig = codeSigList.get(i);
+
+			for(int j=0;j<codeSigList.size();j++){
+
+				comparedSig = codeSigList.get(j);
+				if (i==j) {
+					continue ;
 				}
+
+				if (baseSig.equals(comparedSig)) {
+					isSame = true;
+					break;
+				}
+
+			}
+			
+			if (isSame) {
+				break;
 			}
 
-			pocket = selectedSameSigMap.get(myClass);
+		}
 
-			if (sameCount > 1) {
-				pocket.set(SelectedType.SAME);
-			}else{
-				pocket.set(SelectedType.NOTSAME);
-			}
+		pocket = selectedSameSigMap.get(myClass);
+
+		if (isSame) {
+			pocket.set(SelectedType.SAME);
+		}else{
+			pocket.set(SelectedType.NOTSAME);
 		}
 
 		checkSameMethod(myClass);
+		
+		if (codeSigList.size() == 0) {
+			mtpSourceStatus.setColor(Color.red);
+			mtpSourceStatus.setText("クラスを選択してください");
+			setGeneratable(myClass, false);
+		}
 	}
 
 	public void checkSameMethod(MyClass myClass){
 		Pocket<SelectedType> pocket = selectedSameSigMap.get(myClass);
 
 		if (pocket.get() == SelectedType.SAME) {
-			astahAndSourceStatus.setColor(Color.red);
-			astahAndSourceStatus.setText("同じシグネチャーを選択しないでください");
+			mtpSourceStatus.setColor(Color.red);
+			mtpSourceStatus.setText("同じシグネチャーを選択しないでください");
 			setGeneratable(myClass ,false);
 		}else if(pocket.get() == SelectedType.NOTSAME){
-			astahAndSourceStatus.setColor(Color.green);
-			astahAndSourceStatus.setText("OK");
+			mtpSourceStatus.setColor(Color.green);
+			mtpSourceStatus.setText("OK");
 			setGeneratable(myClass ,true);
 		}
 	}
@@ -251,15 +281,70 @@ public class MethodTabPane extends JPanel{
 	}
 
 	public boolean isGeneratable(){
-		boolean isGenerate = true;
+		boolean isSameMethod = true;
+		List<JPanel> panelList;
+		Component comp;
+		JComboBox box_1;
 
 		for(MyClass myClass : generatableMap.keySet()){
-			isGenerate = generatableMap.get(myClass);
+			panelList = mcp.getMapPanelList().get(myClass);
 
-			if (!isGenerate) {
+			for(JPanel panel : panelList){
+
+				for(int i = 0 ; i <panel.getComponentCount();i++){
+					comp = panel.getComponent(i);
+
+					if (comp instanceof JComboBox) {
+						box_1 = (JComboBox) comp;
+
+						isSameMethod = checkSameItemSelected(i,box_1,panelList);
+					}
+				}
+			}
+
+			if (isSameMethod) {
 				break;
 			}
 		}
-		return isGenerate;
+		return !isSameMethod;
+	}
+
+	private boolean checkSameItemSelected(int index,
+			JComboBox box_1,
+			List<JPanel> panelList) {
+		boolean isSame = false;
+		Component comp;
+		JComboBox box_2;
+		String strBox_1,strBox_2;
+
+		strBox_1 = box_1.getSelectedItem().toString();
+
+		for(JPanel panel : panelList){
+
+			for(int i = 0 ; i <panel.getComponentCount();i++){
+				comp = panel.getComponent(i);
+
+				if (i==index) {
+					continue ;
+				}
+
+				if (comp instanceof JComboBox) {
+					box_2 = (JComboBox) comp;
+
+					strBox_2 = box_2.getSelectedItem().toString();
+
+					if (strBox_1.equals(strBox_2)) {
+						isSame = true;
+						break;
+					}
+				}
+			}
+
+			if (isSame) {
+				break;
+			}
+		}
+
+		return isSame;
 	}
 }

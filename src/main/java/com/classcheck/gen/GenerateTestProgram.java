@@ -17,7 +17,7 @@ import org.apache.commons.io.FileUtils;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
-import com.classcheck.panel.AstahAndSourcePanel;
+import com.classcheck.panel.MethodCompPanel;
 import com.classcheck.panel.CompTablePane;
 import com.classcheck.window.DebugMessageWindow;
 
@@ -30,15 +30,15 @@ public class GenerateTestProgram {
 	//アスタクラス->メッセージの前と後を表す対応関係を抽出
 	private Map<MyClass, Map<String, String>> changeMap;
 
-	private AstahAndSourcePanel astahAndSourcePane;
+	private MethodCompPanel mcp;
 	private CompTablePane tablePane;
 
 	public GenerateTestProgram(File baseDir,
-			AstahAndSourcePanel astahAndSourcePane, CompTablePane tablePane) {
+			MethodCompPanel mcp, CompTablePane tablePane) {
 		this.baseDir = baseDir;
-		this.astahAndSourcePane = astahAndSourcePane;
-//		this.mapPanelList = astahAndSourcePane.getMapPanelList();
-//		this.codeMap = astahAndSourcePane.getCodeMap();
+		this.mcp = mcp;
+//		this.mapPanelList = mcp.getMapPanelList();
+//		this.codeMap = mcp.getCodeMap();
 		this.tablePane = tablePane;
 		makeChangeMap();
 		viewChangeMap();
@@ -74,7 +74,7 @@ public class GenerateTestProgram {
 		JComboBox comboBox = null;
 		CodeVisitor codeVisitor = null;
 		Map<MyClass, List<JPanel>> mapPanelList =
-				astahAndSourcePane.getMapPanelList();
+				mcp.getMapPanelList();
 		List<JPanel> panelList = null;
 		Component component = null;
 		JLabel label = null;
@@ -160,7 +160,7 @@ public class GenerateTestProgram {
 	private void makeHelloFile() {
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
-			ChangeMyClass cmc = new ChangeMyClass(astahAndSourcePane,changeMap);
+			ChangeMyClass cmc = new ChangeMyClass(mcp,changeMap);
 			
 			//アスタと学生のソースコードを元にしたプログラムの生成
 			cmc.change();
