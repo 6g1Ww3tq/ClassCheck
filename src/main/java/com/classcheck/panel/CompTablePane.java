@@ -33,21 +33,18 @@ public class CompTablePane extends JPanel implements Serializable{
 	DefaultTableModel tableModel;
 	JTable classCompTable;
 	MemberTabPane mtp;
-	List<MyClass> myClassList;
+	FieldCompPanel fcp;
 	MethodCompPanel mcp;
+	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
 
 	boolean isTableEditable = false;
 
-	public CompTablePane(List<MyClass> myClassList,
-			MethodCompPanel mcp) {
-	}
-
-	public CompTablePane(MemberTabPane mtp, List<MyClass> myClassList,
-			MethodCompPanel mcp) {
+	public CompTablePane(MemberTabPane mtp, List<MyClass> myClassList) {
 		this.mtp = mtp;
 		this.myClassList = myClassList;
-		this.mcp = mcp;
+		this.fcp = mtp.getFcp();
+		this.mcp = mtp.getMcp();
 		this.codeVisitorList = mcp.getCodeVisitorList();
 		setLayout(new BorderLayout());
 		initComponent();
@@ -269,16 +266,18 @@ public class CompTablePane extends JPanel implements Serializable{
 					if (visitor != null && myClassCell != null && codeMap != null) {
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
-						//AstahAndSourcePaneの更新
-						mtp.reLoadMethodCompPane(myClassCell.getMyClass(),true);
+						//メソッドパネルの更新
+						mtp.reLoadMemberPane(myClassCell.getMyClass(),true);
 						//同じメソッドが選択されていないかチェック
 						mtp.checkSameMethod(myClassCell.getMyClass());
 					}
 
-					//					System.out.println("Cell " + tme.getFirstRow() + ", "
-					//							+ tme.getColumn() + " changed. The new value: "
-					//							+ tableModel.getValueAt(tme.getFirstRow(),
-					//									tme.getColumn()));	
+					/*
+					System.out.println("Cell " + tme.getFirstRow() + ", "
+							+ tme.getColumn() + " changed. The new value: "
+							+ tableModel.getValueAt(tme.getFirstRow(),
+									tme.getColumn()));	
+					 */
 
 					System.out.println("visitor : \n"+visitor);
 					System.out.println("myClassCell : \n"+myClassCell);

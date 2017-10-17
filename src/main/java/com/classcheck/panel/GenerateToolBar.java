@@ -60,10 +60,17 @@ public class GenerateToolBar extends JToolBar {
 					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
-				
+
+				//TODO
+				//すべてのクラスのフィールドを調べる
+				if (!mtp.isFieldGeneratable()) {
+					JOptionPane.showMessageDialog(getParent(), "同じメソッドを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+
 				//すべてのクラスのメソッドを調べる
-				if (!mtp.isGeneratable()) {
-					JOptionPane.showMessageDialog(getParent(), "同じシグネチャーを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+				if (!mtp.isMethodGeneratable()) {
+					JOptionPane.showMessageDialog(getParent(), "同じメソッドを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 

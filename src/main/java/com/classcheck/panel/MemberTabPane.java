@@ -42,10 +42,11 @@ public class MemberTabPane extends JPanel{
 	JTree jtree;
 	DefaultMutableTreeNode astahRoot;
 	List<MyClass> myClassList;
-	Map<MyClass, Pocket<SelectedType>> selectedSameSigMap;
+	Map<MyClass, Pocket<SelectedType>> selectedSameFieldSigMap;
+	Map<MyClass, Pocket<SelectedType>> selectedSameMethodSigMap;
 
 	StatusBar astahTreeStatus;
-	StatusBar mtpSourceStatus;
+	StatusBar mcpSourceStatus;
 	StatusBar fcpSourceStatus;
 
 	CompTablePane tablePane;
@@ -55,13 +56,15 @@ public class MemberTabPane extends JPanel{
 	MyClass selectedMyClass;
 
 
+
 	public MemberTabPane(FieldCompPanel fcp,MethodCompPanel mcp, ClassBuilder cb) {
 		selectedMyClass = null;
 		this.fcp = fcp;
 		this.mcp = mcp;
 		this.myClassList = cb.getClasslist();
-		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
-		this.tablePane = new CompTablePane(this,myClassList, mcp);
+		this.selectedSameFieldSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
+		this.selectedSameMethodSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
+		this.tablePane = new CompTablePane(this,myClassList);
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -70,6 +73,14 @@ public class MemberTabPane extends JPanel{
 
 	public void setTableEditable(boolean isEditable){
 		tablePane.setTableEditable(isEditable);
+	}
+
+	public FieldCompPanel getFcp() {
+		return fcp;
+	}
+
+	public MethodCompPanel getMcp() {
+		return mcp;
 	}
 
 	public CompTablePane getTablePane() {
@@ -106,13 +117,13 @@ public class MemberTabPane extends JPanel{
 			isSameFieldSelected = fcp.initComponent(myClass, true);
 			//TODO
 			//フィールド用を作る＃1
-			//selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
-			
+			selectedSameFieldSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
+
 			//メソッド
 			isSameMethodSelected = mcp.initComponent(myClass,true);
 			//TODO
 			//メソッド用を作る＃1
-			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
+			selectedSameMethodSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 
 			generatableMap.put(myClass, !isSameMethodSelected);
 		}
@@ -140,10 +151,10 @@ public class MemberTabPane extends JPanel{
 		//メソッドの対応パネル
 		panel = new JPanel(new BorderLayout());
 		panel.add(mcp,BorderLayout.CENTER);
-		mtpSourceStatus = new StatusBar(panel, "対応付けしてください");
-		mcp.setStatus(mtpSourceStatus);
-		mtpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
-		panel.add(mtpSourceStatus,BorderLayout.SOUTH);
+		mcpSourceStatus = new StatusBar(panel, "対応付けしてください");
+		mcp.setStatus(mcpSourceStatus);
+		mcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
+		panel.add(mcpSourceStatus,BorderLayout.SOUTH);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.setSize(new Dimension(200,300));	
 		compVerticalSplitePane.setBottomComponent(scrollPane);
@@ -190,7 +201,7 @@ public class MemberTabPane extends JPanel{
 					if (userObj instanceof MyClass) {
 						selectedMyClass = (MyClass) userObj;
 						//パネルの更新
-						reLoadMethodCompPane(selectedMyClass,false);
+						reLoadMemberPane(selectedMyClass,false);
 					}
 				}
 
@@ -198,19 +209,23 @@ public class MemberTabPane extends JPanel{
 		});
 	}
 
-	public void reLoadMethodCompPane(MyClass myClass,boolean isAllChange){
+	public void reLoadMemberPane(MyClass myClass,boolean isAllChange){
 		Map<MyClass, List<JPanel>> fieldMapPanelList = fcp.getMapPanelList();
 		Map<MyClass, List<JPanel>> methodMapPanelList = mcp.getMapPanelList();
 		List<JPanel> methodPanelList = methodMapPanelList.get(myClass);
 		List<JPanel> fieldPanelList = fieldMapPanelList.get(myClass);
 		Component component;
-		JComboBox codeSigBox = null;
-		List<String> codeSigList = new ArrayList<String>();
+		JComboBox methodCodeSigBox = null;
+		JComboBox fieldCodeSigBox = null;
+		List<String> fieldCodeSigList = new ArrayList<String>();
+		List<String> methodCodeSigList = new ArrayList<String>();
 		Object obj = null;
-		Pocket<SelectedType> pocket = null;
+		Pocket<SelectedType> fieldPocket = null;
+		Pocket<SelectedType> methodPocket = null;
 
 		String baseSig,comparedSig;
-		boolean isSame;
+		boolean isMethodSame;
+		boolean isFieldSame;
 
 		//パネルの更新
 		//フィールド
@@ -228,77 +243,149 @@ public class MemberTabPane extends JPanel{
 		for (JPanel panel : methodPanelList) {
 			for (int i = 0; i < panel.getComponentCount(); i++) {
 				component = panel.getComponent(i);
-				codeSigBox = null;
+				methodCodeSigBox = null;
 
 				if (component instanceof JComboBox) {
-					codeSigBox = (JComboBox) component;
+					methodCodeSigBox = (JComboBox) component;
 				}
 
-				if (codeSigBox != null) {
-					obj = codeSigBox.getSelectedItem();
-					codeSigList.add(obj.toString());
+				if (methodCodeSigBox != null) {
+					obj = methodCodeSigBox.getSelectedItem();
+					methodCodeSigList.add(obj.toString());
 				}
 
 			}
 		}
-		
+
 		//TODO
 		//ステータスバーによるエラーチェック(フィールド)
-		//上のfor文と同じ
+		for (JPanel panel : fieldPanelList) {
+			for (int i = 0; i < panel.getComponentCount(); i++) {
+				component = panel.getComponent(i);
+				fieldCodeSigBox = null;
 
-		isSame = false;
+				if (component instanceof JComboBox) {
+					fieldCodeSigBox = (JComboBox) component;
+				}
 
-		for(int i=0;i<codeSigList.size();i++){
+				if (fieldCodeSigBox != null) {
+					obj = fieldCodeSigBox.getSelectedItem();
+					fieldCodeSigList.add(obj.toString());
+				}
 
-			baseSig = codeSigList.get(i);
+			}
+		}
 
-			for(int j=0;j<codeSigList.size();j++){
+		isMethodSame = false;
+		isFieldSame = false;
 
-				comparedSig = codeSigList.get(j);
+		//同じメソッドが選択されていないかチェック
+		for(int i=0;i<methodCodeSigList.size();i++){
+
+			baseSig = methodCodeSigList.get(i);
+
+			for(int j=0;j<methodCodeSigList.size();j++){
+
+				comparedSig = methodCodeSigList.get(j);
 				if (i==j) {
 					continue ;
 				}
 
 				if (baseSig.equals(comparedSig)) {
-					isSame = true;
+					isMethodSame = true;
 					break;
 				}
 
 			}
-			
-			if (isSame) {
+
+			if (isMethodSame) {
 				break;
 			}
 
 		}
 
-		pocket = selectedSameSigMap.get(myClass);
+		//同じフィールドが選択されていないかチェック
+		for(int i=0;i<fieldCodeSigList.size();i++){
 
-		if (isSame) {
-			pocket.set(SelectedType.SAME);
-		}else{
-			pocket.set(SelectedType.NOTSAME);
+			baseSig = fieldCodeSigList.get(i);
+
+			for(int j=0;j<fieldCodeSigList.size();j++){
+
+				comparedSig = fieldCodeSigList.get(j);
+				if (i==j) {
+					continue ;
+				}
+
+				if (baseSig.equals(comparedSig)) {
+					isFieldSame = true;
+					break;
+				}
+
+			}
+
+			if (isFieldSame) {
+				break;
+			}
+
 		}
 
+		fieldPocket = selectedSameFieldSigMap.get(myClass);
+		methodPocket = selectedSameMethodSigMap.get(myClass);
+
+		//フィールド
+		if (isFieldSame) {
+			fieldPocket.set(SelectedType.SAME);
+		}else{
+			fieldPocket.set(SelectedType.NOTSAME);
+		}
+
+		//メソッド
+		if (isMethodSame) {
+			methodPocket.set(SelectedType.SAME);
+		}else{
+			methodPocket.set(SelectedType.NOTSAME);
+		}
+
+		checkSameField(myClass);
 		checkSameMethod(myClass);
-		
-		if (codeSigList.size() == 0) {
-			mtpSourceStatus.setColor(Color.red);
-			mtpSourceStatus.setText("クラスを選択してください");
+
+		if (fieldCodeSigList.size() == 0) {
+			fcpSourceStatus.setColor(Color.red);
+			fcpSourceStatus.setText("クラスを選択してください");
+			setGeneratable(myClass, false);
+		}
+
+		if (methodCodeSigList.size() == 0) {
+			mcpSourceStatus.setColor(Color.red);
+			mcpSourceStatus.setText("クラスを選択してください");
 			setGeneratable(myClass, false);
 		}
 	}
 
-	public void checkSameMethod(MyClass myClass){
-		Pocket<SelectedType> pocket = selectedSameSigMap.get(myClass);
-
+	private void checkSameField(MyClass myClass) {
+		Pocket<SelectedType> pocket = selectedSameFieldSigMap.get(myClass);
+		
 		if (pocket.get() == SelectedType.SAME) {
-			mtpSourceStatus.setColor(Color.red);
-			mtpSourceStatus.setText("同じシグネチャーを選択しないでください");
+			fcpSourceStatus.setColor(Color.red);
+			fcpSourceStatus.setText("同じフィールドを選択しないでください");
 			setGeneratable(myClass ,false);
 		}else if(pocket.get() == SelectedType.NOTSAME){
-			mtpSourceStatus.setColor(Color.green);
-			mtpSourceStatus.setText("OK");
+			fcpSourceStatus.setColor(Color.green);
+			fcpSourceStatus.setText("OK");
+			setGeneratable(myClass ,true);
+		}
+	}
+
+	public void checkSameMethod(MyClass myClass){
+		Pocket<SelectedType> pocket = selectedSameMethodSigMap.get(myClass);
+
+		if (pocket.get() == SelectedType.SAME) {
+			mcpSourceStatus.setColor(Color.red);
+			mcpSourceStatus.setText("同じメソッドを選択しないでください");
+			setGeneratable(myClass ,false);
+		}else if(pocket.get() == SelectedType.NOTSAME){
+			mcpSourceStatus.setColor(Color.green);
+			mcpSourceStatus.setText("OK");
 			setGeneratable(myClass ,true);
 		}
 	}
@@ -306,8 +393,16 @@ public class MemberTabPane extends JPanel{
 	public void setGeneratable(MyClass myClass , boolean b) {
 		generatableMap.put(myClass, b);
 	}
+	
+	//TODO
+	//同じフィールドがないかどうか調べる
+	public boolean isFieldGeneratable(){
+		boolean isSameField = true;
+		
+		return isSameField;
+	}
 
-	public boolean isGeneratable(){
+	public boolean isMethodGeneratable(){
 		boolean isSameMethod = true;
 		List<JPanel> methodPanelList;
 		Component comp;
