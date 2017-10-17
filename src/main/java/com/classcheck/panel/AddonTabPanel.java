@@ -25,6 +25,7 @@ import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Config;
 import com.classcheck.autosource.ConfigView;
+import com.classcheck.autosource.DiagramChecker;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.SourceGenerator;
 import com.classcheck.tree.FileNode;
@@ -140,6 +141,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				SourceGenerator sg = null;
 				StringBuilder sb = new StringBuilder();
 				MatcherWindow ctw = null;
 
@@ -148,8 +150,13 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 				if (baseDirTree!=null && !classList.isEmpty() && !diagramList.isEmpty()) {
 					try {
-						cb = new SourceGenerator().run(classList, diagramList);
+						sg = new SourceGenerator();
+						cb = sg.run(classList, diagramList);
 						MyClass myClass = null;
+						
+						if (!sg.isGeneratable()) {
+							return ;
+						}
 
 						for(int i=0;i<cb.getclasslistsize();i++){
 							myClass = cb.getClass(i);
@@ -174,6 +181,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					}
 				}
 			}
+
 		});
 
 		configBtn.addActionListener(new ActionListener() {

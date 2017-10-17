@@ -34,6 +34,9 @@ public class SourceGenerator {
 	ProjectAccessor projectAccessor;
 	Map<String, List<IOperation>> seqFlowMap;
 
+	StringBuilder sb = new StringBuilder();
+	private boolean isGeneratable;
+
 	public SourceGenerator(){
 		AstahAPI api;
 		try {
@@ -47,6 +50,8 @@ public class SourceGenerator {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+
+		isGeneratable = false;
 
 	}
 
@@ -64,6 +69,12 @@ public class SourceGenerator {
 			e.printStackTrace();
 		}
 
+		isGeneratable = false;
+
+	}
+	
+	public boolean isGeneratable(){
+		return isGeneratable;
 	}
 
 	public static List<IClass> getClassList(){
@@ -137,8 +148,6 @@ public class SourceGenerator {
 		}
 	}
 
-	StringBuilder sb = new StringBuilder();
-
 	public StringBuilder getSb() {
 		return sb;
 	}
@@ -146,6 +155,7 @@ public class SourceGenerator {
 	public Map<String, List<IOperation>> getSeqFlowMap() {
 		return seqFlowMap;
 	}
+
 	/*
 	 * シーケンス図を読み取る!!!!
 	 */
@@ -174,7 +184,9 @@ public class SourceGenerator {
 			if(dc.getInadequateSize()!=0){
 				JOptionPane.showMessageDialog(window.getParent(),"モデルを修正してください");
 				dc.showIndequateDialog();
+				isGeneratable = false;
 			}else{
+				isGeneratable = true;
 				List<IOperation> messages = null;
 				/*ここからシーケンスを読む*/
 				for(int i=0;i<diagramList.size();i++){
@@ -398,5 +410,5 @@ public class SourceGenerator {
 		}
 		return false;
 	}
-
+	
 }

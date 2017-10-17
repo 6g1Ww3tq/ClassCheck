@@ -19,7 +19,7 @@ import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 
 public class DiagramChecker {
 	List<Inadequate> inadequateList;
-
+	
 	DiagramChecker(){
 		inadequateList = new ArrayList<Inadequate>();
 	}
@@ -150,6 +150,6 @@ public class DiagramChecker {
 
 		frame.add(scrollPane,BorderLayout.CENTER);
 		frame.setVisible(true);
-
+		
 	}
 }
