@@ -7,6 +7,7 @@ import java.util.List;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -15,14 +16,21 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 	private String classSig;
 	private List<MethodDeclaration> methodList;
 	private List<ConstructorDeclaration> constructorList;
+	private List<FieldDeclaration> fieldList;
 	
 	public CodeVisitor() {
 		className = null;
 		classSig = "";
+		fieldList = new ArrayList<FieldDeclaration>();
 		methodList = new ArrayList<MethodDeclaration>();
 		constructorList = new ArrayList<ConstructorDeclaration>();
 	}
 	
+	@Override
+	public void visit(FieldDeclaration n, Void arg) {
+		fieldList.add(n);
+		super.visit(n, arg);
+	}
 	@Override
 	public void visit(ClassOrInterfaceDeclaration classDec, Void arg1) {
 		List<BodyDeclaration> list = classDec.getMembers();
@@ -68,6 +76,10 @@ public class CodeVisitor extends VoidVisitorAdapter<Void> {
 		return methodList;
 	}
 	
+	public List<FieldDeclaration> getFieldList() {
+		return fieldList;
+	}
+
 	@Override
 	public String toString() {
 		return getClassName();

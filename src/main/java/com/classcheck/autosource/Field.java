@@ -199,5 +199,17 @@ public class Field {
 	public String getName(){
 		return name;
 	}
+	
+	public IAttribute getAttribute() {
+		return attribute;
+	}
+	
+	public String getDefinition() {
+		return definition;
+	}
+	
+	public String getVisibility() {
+		return visibility;
+	}
 
 }

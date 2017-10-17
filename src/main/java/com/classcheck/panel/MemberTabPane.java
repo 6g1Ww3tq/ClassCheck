@@ -32,7 +32,7 @@ public class MemberTabPane extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	//フィールドの対応付を行う
-	private FieldCompPanel fcp;
+	FieldCompPanel fcp;
 	//メソッドの対応付を行う
 	MethodCompPanel mcp;
 
@@ -55,9 +55,9 @@ public class MemberTabPane extends JPanel{
 	MyClass selectedMyClass;
 
 
-	public MemberTabPane(MethodCompPanel mcp, ClassBuilder cb) {
+	public MemberTabPane(FieldCompPanel fcp,MethodCompPanel mcp, ClassBuilder cb) {
 		selectedMyClass = null;
-		this.fcp = new FieldCompPanel(cb);
+		this.fcp = fcp;
 		this.mcp = mcp;
 		this.myClassList = cb.getClasslist();
 		this.selectedSameSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
@@ -92,6 +92,9 @@ public class MemberTabPane extends JPanel{
 		jtree = new JTree(astahRoot);
 		jtree.setSize(new Dimension(200,200));
 
+		//フィールド
+		boolean isSameFieldSelected = false;
+		//メソッド
 		boolean isSameMethodSelected = false;
 
 		//比較パネルの初期化
@@ -99,7 +102,16 @@ public class MemberTabPane extends JPanel{
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
 			//デフォルトでパネルに初期値データを入れる
+			//フィールド
+			isSameFieldSelected = fcp.initComponent(myClass, true);
+			//TODO
+			//フィールド用を作る＃1
+			//selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
+			
+			//メソッド
 			isSameMethodSelected = mcp.initComponent(myClass,true);
+			//TODO
+			//メソッド用を作る＃1
 			selectedSameSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 
 			generatableMap.put(myClass, !isSameMethodSelected);
@@ -107,6 +119,10 @@ public class MemberTabPane extends JPanel{
 
 		//デフォルトでパネルに初期値データを入れる
 		//->表示させないようにする
+		//フィールド
+		fcp.removeAll();
+		fcp.revalidate();
+		//メソッド
 		mcp.removeAll();
 		mcp.revalidate();
 
@@ -130,19 +146,18 @@ public class MemberTabPane extends JPanel{
 		panel.add(mtpSourceStatus,BorderLayout.SOUTH);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.setSize(new Dimension(200,300));	
-		//compVerticalSplitePane.setBottomComponent(scrollPane);
-		compVerticalSplitePane.setTopComponent(scrollPane);
+		compVerticalSplitePane.setBottomComponent(scrollPane);
+
 		//フィールドの対応パネル
 		panel = new JPanel(new BorderLayout());
-		panel.add(mcp,BorderLayout.CENTER);
+		panel.add(fcp,BorderLayout.CENTER);
 		fcpSourceStatus = new StatusBar(panel, "対応付けしてください");
 		fcp.setStatus(fcpSourceStatus);
 		fcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
-		panel.add(mtpSourceStatus,BorderLayout.SOUTH);
+		panel.add(fcpSourceStatus,BorderLayout.SOUTH);
 		scrollPane = new JScrollPane(panel);
 		scrollPane.setSize(new Dimension(200,300));	
-		//compVerticalSplitePane.setTopComponent(scrollPane);
-		compVerticalSplitePane.setBottomComponent(scrollPane);
+		compVerticalSplitePane.setTopComponent(scrollPane);
 		compVerticalSplitePane.setSize(new Dimension(100, 100));
 		compVerticalSplitePane.setContinuousLayout(true);
 
@@ -184,8 +199,10 @@ public class MemberTabPane extends JPanel{
 	}
 
 	public void reLoadMethodCompPane(MyClass myClass,boolean isAllChange){
-		Map<MyClass, List<JPanel>> mapPanelList = mcp.getMapPanelList();
-		List<JPanel> panelList = mapPanelList.get(myClass);
+		Map<MyClass, List<JPanel>> fieldMapPanelList = fcp.getMapPanelList();
+		Map<MyClass, List<JPanel>> methodMapPanelList = mcp.getMapPanelList();
+		List<JPanel> methodPanelList = methodMapPanelList.get(myClass);
+		List<JPanel> fieldPanelList = fieldMapPanelList.get(myClass);
 		Component component;
 		JComboBox codeSigBox = null;
 		List<String> codeSigList = new ArrayList<String>();
@@ -196,13 +213,19 @@ public class MemberTabPane extends JPanel{
 		boolean isSame;
 
 		//パネルの更新
+		//フィールド
+		fcp.removeAll();
+		fcp.revalidate();
+		fcp.initComponent(myClass, isAllChange);
+		//メソッド
 		mcp.removeAll();
 		mcp.revalidate();
 		mcp.initComponent(myClass,isAllChange);
+
 		astahTreeStatus.setText("Astah-Class:"+myClass.getName());
 
-		//ステータスバーによるエラーチェック
-		for (JPanel panel : panelList) {
+		//ステータスバーによるエラーチェック(メソッド)
+		for (JPanel panel : methodPanelList) {
 			for (int i = 0; i < panel.getComponentCount(); i++) {
 				component = panel.getComponent(i);
 				codeSigBox = null;
@@ -218,6 +241,10 @@ public class MemberTabPane extends JPanel{
 
 			}
 		}
+		
+		//TODO
+		//ステータスバーによるエラーチェック(フィールド)
+		//上のfor文と同じ
 
 		isSame = false;
 
@@ -282,14 +309,14 @@ public class MemberTabPane extends JPanel{
 
 	public boolean isGeneratable(){
 		boolean isSameMethod = true;
-		List<JPanel> panelList;
+		List<JPanel> methodPanelList;
 		Component comp;
 		JComboBox box_1;
 
 		for(MyClass myClass : generatableMap.keySet()){
-			panelList = mcp.getMapPanelList().get(myClass);
+			methodPanelList = mcp.getMapPanelList().get(myClass);
 
-			for(JPanel panel : panelList){
+			for(JPanel panel : methodPanelList){
 
 				for(int i = 0 ; i <panel.getComponentCount();i++){
 					comp = panel.getComponent(i);
@@ -297,7 +324,7 @@ public class MemberTabPane extends JPanel{
 					if (comp instanceof JComboBox) {
 						box_1 = (JComboBox) comp;
 
-						isSameMethod = checkSameItemSelected(i,box_1,panelList);
+						isSameMethod = checkSameItemSelected(i,box_1,methodPanelList);
 					}
 				}
 			}

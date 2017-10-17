@@ -213,4 +213,8 @@ public class MyClass {
 	public List<Method> getMethods() {
 		return methods;
 	}
+	
+	public List<Field> getFields() {
+		return fields;
+	}
 }

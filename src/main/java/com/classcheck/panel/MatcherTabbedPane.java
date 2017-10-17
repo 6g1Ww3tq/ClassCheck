@@ -18,7 +18,9 @@ public class MatcherTabbedPane extends JTabbedPane {
 	ClassBuilder cb;
 	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
-	//右上のパネル
+	//右上のパネル(フィールド)
+	FieldCompPanel fcp;
+	//右下のパネル(メソッド)
 	MethodCompPanel mcp;
 	
 	//ユーザーのソースコードツリー
@@ -34,20 +36,21 @@ public class MatcherTabbedPane extends JTabbedPane {
 	}
 
 	private void initComponent(){
+		fcp = new FieldCompPanel(mtp, cb, codeVisitorList);
 		mcp = new MethodCompPanel(mtp,cb,codeVisitorList);
 		 
 		//２つのタブを生成
 		cstp = new CompSourceTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
-		mtp = new MemberTabPane(mcp, cb);
+		mtp = new MemberTabPane(fcp,mcp, cb);
 		mtp.setTableEditable(false);
 
 		//２つのタブを加える
-		addTab("Method", mtp);
+		addTab("Compare", mtp);
 		addTab("View",cstp);
 	}
 	
-	public MethodCompPanel getAstahAndSourcePane() {
+	public MethodCompPanel getMethodCompPane() {
 		return mcp;
 	}
 	

@@ -27,6 +27,7 @@ public class MatcherWindow extends JFrame {
 			FileTree baseDirTree) {
 		initComponent(cb,codeVisitorList,baseDirTree);
 		setSize(new Dimension(500,500));
+		//中央表示
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
@@ -35,7 +36,7 @@ public class MatcherWindow extends JFrame {
 			List<CodeVisitor> codeVisitorList, FileTree baseDirTree) {
 		mt = new MatcherTabbedPane(cb,codeVisitorList,baseDirTree);
 		
-		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot(),mt.getAstahAndSourcePane());
+		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot(),mt.getMethodCompPane());
 		add(genToolBar,BorderLayout.NORTH);
 		add(mt,BorderLayout.CENTER);
 	}
