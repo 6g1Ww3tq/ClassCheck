@@ -52,25 +52,37 @@ public class GenerateToolBar extends JToolBar {
 				System.out.println("generate program");
 
 				if (mtp.getTablePane().isNullItemSelected()) {
-					JOptionPane.showMessageDialog(getParent(), "テーブルのセルにクラスを選択してください", "エラー", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "テーブルのセルにクラスを選択してください", "error", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 
 				if(mtp.getTablePane().isSameTableItemSelected()){
-					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "テーブルに同じクラスを選択しないでください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+				
+				if(!mtp.isFieldEpmty()){
+					JOptionPane.showMessageDialog(getParent(), "フィールドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "クラス図,シーケンス図に対応するフィールドを定義してください", "info", JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}
+
+				if(!mtp.isMethodEmpty()){
+					JOptionPane.showMessageDialog(getParent(), "メソッドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "クラス図,シーケンス図に対応するメソッドを定義してください", "info", JOptionPane.INFORMATION_MESSAGE);
 					return ;
 				}
 
 				//TODO
 				//すべてのクラスのフィールドを調べる
 				if (!mtp.isFieldGeneratable()) {
-					JOptionPane.showMessageDialog(getParent(), "同じメソッドを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "同じフィールドを選択しないでください", "error", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 
 				//すべてのクラスのメソッドを調べる
 				if (!mtp.isMethodGeneratable()) {
-					JOptionPane.showMessageDialog(getParent(), "同じメソッドを選択しないでください", "エラー", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "同じメソッドを選択しないでください", "error", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}
 

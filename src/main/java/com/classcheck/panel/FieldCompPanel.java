@@ -1,5 +1,6 @@
 package com.classcheck.panel;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -111,8 +112,8 @@ public class FieldCompPanel extends JPanel{
 			//説明のパネルを加える
 			//（左）astah	:（右)	ソースコード
 			p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			l = new JLabel("(左)astahのフィールド : (右)ソースコードのフィールド");
-			l.setFont(new Font("SansSerif", Font.BOLD, 20));
+			l = new JLabel("(左)スケルトンコードのフィールド : (右)ソースコードのフィールド");
+			l.setFont(new Font("SansSerif", Font.BOLD, 12));
 			l.setAlignmentX(CENTER_ALIGNMENT);
 			p.add(l);
 			panelList.add(p);

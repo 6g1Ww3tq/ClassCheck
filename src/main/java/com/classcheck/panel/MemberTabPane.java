@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -95,13 +94,12 @@ public class MemberTabPane extends JPanel{
 		JPanel panel;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		holizontalSplitePane.setSize(new Dimension(400, 400));
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		compVerticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-		astahRoot = new DefaultMutableTreeNode("AstahClass");
+		astahRoot = new DefaultMutableTreeNode("SkeltonCodeClass");
 		jtree = new JTree(astahRoot);
-		jtree.setSize(new Dimension(200,200));
+		jtree.setMinimumSize(new Dimension(150,200));
 
 		//フィールド
 		boolean isSameFieldSelected = false;
@@ -141,10 +139,10 @@ public class MemberTabPane extends JPanel{
 		//astah tree(左)
 		panel = new JPanel(new BorderLayout());
 		panel.add(jtree,BorderLayout.CENTER);
-		astahTreeStatus = new StatusBar(panel, "Astah-Class");
+		astahTreeStatus = new StatusBar(panel, "SkeltonCode-Class");
 		panel.add(astahTreeStatus,BorderLayout.SOUTH);
 		JScrollPane treeScrollPane = new JScrollPane(panel);
-		treeScrollPane.setSize(new Dimension(200, 300));	
+		treeScrollPane.setMinimumSize(new Dimension(150, 200));	
 
 		//astah and source panel(右）
 
@@ -156,7 +154,8 @@ public class MemberTabPane extends JPanel{
 		mcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(mcpSourceStatus,BorderLayout.SOUTH);
 		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.setSize(new Dimension(200,300));	
+		scrollPane.setMinimumSize(new Dimension(400, 100));
+		scrollPane.setSize(new Dimension(400, 150));
 		compVerticalSplitePane.setBottomComponent(scrollPane);
 
 		//フィールドの対応パネル
@@ -167,9 +166,9 @@ public class MemberTabPane extends JPanel{
 		fcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(fcpSourceStatus,BorderLayout.SOUTH);
 		scrollPane = new JScrollPane(panel);
-		scrollPane.setSize(new Dimension(200,300));	
+		scrollPane.setMinimumSize(new Dimension(400, 100));
+		scrollPane.setSize(new Dimension(400, 150));
 		compVerticalSplitePane.setTopComponent(scrollPane);
-		compVerticalSplitePane.setSize(new Dimension(100, 100));
 		compVerticalSplitePane.setContinuousLayout(true);
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
@@ -178,7 +177,8 @@ public class MemberTabPane extends JPanel{
 
 		//下のテーブル
 		JScrollPane tableScrollPane = new JScrollPane(tablePane);
-		tableScrollPane.setSize(new Dimension(200, 200));	
+		tableScrollPane.setMinimumSize(new Dimension(400, 100));	
+		tableScrollPane.setSize(new Dimension(400, 150));	
 		tableScrollPane.add(new StatusBar(tableScrollPane, "クラスの対応関係の設定"));
 		verticalSplitePane.setTopComponent(holizontalSplitePane);
 		verticalSplitePane.setBottomComponent(tableScrollPane);
@@ -237,7 +237,7 @@ public class MemberTabPane extends JPanel{
 		mcp.revalidate();
 		mcp.initComponent(myClass,isAllChange);
 
-		astahTreeStatus.setText("Astah-Class:"+myClass.getName());
+		astahTreeStatus.setText("SkeltonCode-Class:"+myClass.getName());
 
 		//ステータスバーによるエラーチェック(メソッド)
 		for (JPanel panel : methodPanelList) {
@@ -351,20 +351,20 @@ public class MemberTabPane extends JPanel{
 
 		if (fieldCodeSigList.size() == 0) {
 			fcpSourceStatus.setColor(Color.red);
-			fcpSourceStatus.setText("クラスを選択してください");
+			fcpSourceStatus.setText("フィールドが空です");
 			setGeneratable(myClass, false);
 		}
 
 		if (methodCodeSigList.size() == 0) {
 			mcpSourceStatus.setColor(Color.red);
-			mcpSourceStatus.setText("クラスを選択してください");
+			mcpSourceStatus.setText("メソッドが空です	");
 			setGeneratable(myClass, false);
 		}
 	}
 
 	private void checkSameField(MyClass myClass) {
 		Pocket<SelectedType> pocket = selectedSameFieldSigMap.get(myClass);
-		
+
 		if (pocket.get() == SelectedType.SAME) {
 			fcpSourceStatus.setColor(Color.red);
 			fcpSourceStatus.setText("同じフィールドを選択しないでください");
@@ -393,42 +393,74 @@ public class MemberTabPane extends JPanel{
 	public void setGeneratable(MyClass myClass , boolean b) {
 		generatableMap.put(myClass, b);
 	}
-	
+
 	//TODO
 	//同じフィールドがないかどうか調べる
 	public boolean isFieldGeneratable(){
-		boolean isSameField = true;
-		
-		return isSameField;
-	}
-
-	public boolean isMethodGeneratable(){
-		boolean isSameMethod = true;
-		List<JPanel> methodPanelList;
+		boolean generatable = true;
+		List<JPanel> fieldPanelList;
 		Component comp;
 		JComboBox box_1;
+		JPanel panel;
 
 		for(MyClass myClass : generatableMap.keySet()){
-			methodPanelList = mcp.getMapPanelList().get(myClass);
+			fieldPanelList = fcp.getMapPanelList().get(myClass);
 
-			for(JPanel panel : methodPanelList){
+			for(int i = 0; i<fieldPanelList.size();i++){
+				panel = fieldPanelList.get(i);
 
-				for(int i = 0 ; i <panel.getComponentCount();i++){
-					comp = panel.getComponent(i);
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
 
-					if (comp instanceof JComboBox) {
+					if(comp instanceof JComboBox){
 						box_1 = (JComboBox) comp;
 
-						isSameMethod = checkSameItemSelected(i,box_1,methodPanelList);
+						generatable = !checkSameItemSelected(i, box_1, fieldPanelList);
 					}
 				}
 			}
 
-			if (isSameMethod) {
+			if (!generatable) {
 				break;
 			}
+
 		}
-		return !isSameMethod;
+
+
+		return generatable;
+	}
+
+	public boolean isMethodGeneratable(){
+		boolean generatable = true;
+		List<JPanel> methodPanelList;
+		Component comp;
+		JComboBox box_1;
+		JPanel panel;
+
+		for(MyClass myClass : generatableMap.keySet()){
+			methodPanelList = mcp.getMapPanelList().get(myClass);
+
+			for(int i = 0; i<methodPanelList.size();i++){
+				panel = methodPanelList.get(i);
+
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
+
+					if(comp instanceof JComboBox){
+						box_1 = (JComboBox) comp;
+
+						generatable = !checkSameItemSelected(i, box_1, methodPanelList);
+					}
+				}
+			}
+
+			if (!generatable) {
+				break;
+			}
+
+		}
+
+		return generatable;
 	}
 
 	private boolean checkSameItemSelected(int index,
@@ -438,17 +470,15 @@ public class MemberTabPane extends JPanel{
 		Component comp;
 		JComboBox box_2;
 		String strBox_1,strBox_2;
+		JPanel panel;
 
 		strBox_1 = box_1.getSelectedItem().toString();
 
-		for(JPanel panel : panelList){
+		for(int i=0;i<panelList.size() ||i!=index;i++){
+			panel = panelList.get(i);
 
-			for(int i = 0 ; i <panel.getComponentCount();i++){
-				comp = panel.getComponent(i);
-
-				if (i==index) {
-					continue ;
-				}
+			for(int j = 0 ; j <panel.getComponentCount();j++){
+				comp = panel.getComponent(j);
 
 				if (comp instanceof JComboBox) {
 					box_2 = (JComboBox) comp;
@@ -468,5 +498,38 @@ public class MemberTabPane extends JPanel{
 		}
 
 		return isSame;
+	}
+
+	public boolean isFieldEpmty() {
+		boolean generatable = true;
+		List<JPanel> fieldPanelList;
+
+		for(MyClass myClass : generatableMap.keySet()){
+			fieldPanelList = fcp.getMapPanelList().get(myClass);
+
+			if (fieldPanelList.size() <= 1) {
+				generatable = false;
+				break;
+			}
+			
+		}
+
+		return generatable;
+	}
+
+	public boolean isMethodEmpty() {
+		boolean generatable = true;
+		List<JPanel> methodPanelList;
+
+		for(MyClass myClass : generatableMap.keySet()){
+			methodPanelList = fcp.getMapPanelList().get(myClass);
+
+			if (methodPanelList.size() <= 1) {
+				generatable = false;
+				break;
+			}
+			
+		}
+		return generatable;
 	}
 }

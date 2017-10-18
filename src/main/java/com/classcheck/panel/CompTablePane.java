@@ -1,6 +1,7 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class CompTablePane extends JPanel implements Serializable{
 	}
 
 	private void initComponent() {
-		String[] columnNames = {"AstahClass","YourClass"};
+		String[] columnNames = {"Skelton Code Class","Your Class"};
 		tableModel = null;
 
 		if (isConfigFileExist()) {

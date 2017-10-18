@@ -26,9 +26,12 @@ public class MatcherWindow extends JFrame {
 	public MatcherWindow(ClassBuilder cb, List<CodeVisitor> codeVisitorList,
 			FileTree baseDirTree) {
 		initComponent(cb,codeVisitorList,baseDirTree);
-		setSize(new Dimension(500,500));
+
+		setMinimumSize(new Dimension(700, 700));
+		setSize(new Dimension(900, 900));
 		//中央表示
 		setLocationRelativeTo(null);
+
 		setVisible(true);
 	}
 

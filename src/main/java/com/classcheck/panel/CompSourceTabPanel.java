@@ -95,7 +95,7 @@ public class CompSourceTabPanel extends JPanel{
 
 
 		//astah tree logic
-		astahRoot = new DefaultMutableTreeNode("Astah");
+		astahRoot = new DefaultMutableTreeNode("SkeltonCode");
 		astahJTree = new JTree(astahRoot);
 		astahJTree.setSize(new Dimension(200,200));
 
@@ -136,7 +136,7 @@ public class CompSourceTabPanel extends JPanel{
 		//astah tree(左)
 		panel = new JPanel(new BorderLayout());
 		panel.add(astahJTree,BorderLayout.CENTER);
-		astahTreeStatus = new StatusBar(panel, "Astah-Class");
+		astahTreeStatus = new StatusBar(panel, "SkeltonCode-Class");
 		panel.add(astahTreeStatus,BorderLayout.SOUTH);
 		JScrollPane astahTreeScrollPane = new JScrollPane(panel);
 		astahTreeScrollPane.setPreferredSize(new Dimension(180, 150));	
@@ -144,7 +144,7 @@ public class CompSourceTabPanel extends JPanel{
 		//astah textArea(右）
 		panel = new JPanel(new BorderLayout());
 		panel.add(astahTextArea,BorderLayout.CENTER);
-		astahSourceStatus = new StatusBar(panel, "Astah Source Code");
+		astahSourceStatus = new StatusBar(panel, "Skelton Code");
 		panel.add(astahSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahTextAreaScrollPane = new JScrollPane(panel);
 		astahTextAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
