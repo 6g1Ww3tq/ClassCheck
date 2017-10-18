@@ -21,6 +21,8 @@ import com.change_vision.jude.api.inf.ui.IPluginActionDelegate.UnExpectedExcepti
 import com.change_vision.jude.api.inf.ui.IPluginExtraTabView;
 import com.change_vision.jude.api.inf.ui.ISelectionListener;
 import com.classcheck.analyzer.source.CodeVisitor;
+import com.classcheck.analyzer.source.SkeltonCodeAnalyzer;
+import com.classcheck.analyzer.source.SkeltonCodeVisitor;
 import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Config;
@@ -142,8 +144,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SourceGenerator sg = null;
-				StringBuilder sb = new StringBuilder();
 				MatcherWindow ctw = null;
+				
+				//スケルトンコードのメソッド内でインスタンスを生成していないか
+				//チェックを行う
+				SkeltonCodeAnalyzer sca = null;
+				SkeltonCodeVisitor scv = null;
 
 				config.activate();
 				create_class_sequence_list();
@@ -154,13 +160,25 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 						cb = sg.run(classList, diagramList);
 						MyClass myClass = null;
 						
+						//山田さんのチェックに引っかかるかどうか判定
+						//山田さんのエラーメッセージを出す
 						if (!sg.isGeneratable()) {
 							return ;
 						}
 
 						for(int i=0;i<cb.getclasslistsize();i++){
 							myClass = cb.getClass(i);
-							sb.append(myClass.toString());
+							sca = new SkeltonCodeAnalyzer(myClass);
+							sca.doAnalyze();
+							scv = sca.getSkeltonCodeVisitor();
+							
+							//Point p = new Point(start,end);
+							//のようなステートメントがメソッド内で書かれているか
+							//チェックを行う
+							if (scv.isWrittenNewSt()) {
+								JOptionPane.showMessageDialog(getParent(), "シーケンス図のメッセージが不正です", "error", JOptionPane.ERROR_MESSAGE);
+								return ;
+							}
 						}
 
 						ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);

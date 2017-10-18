@@ -12,7 +12,7 @@ import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
 	MemberTabPane mtp;
-	CompSourceTabPanel cstp;
+	ViewTabPanel cstp;
 	
 	//２つのタブで共有
 	ClassBuilder cb;
@@ -40,7 +40,7 @@ public class MatcherTabbedPane extends JTabbedPane {
 		mcp = new MethodCompPanel(mtp,cb,codeVisitorList);
 		 
 		//２つのタブを生成
-		cstp = new CompSourceTabPanel(cb,userFileTree);
+		cstp = new ViewTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
 		mtp = new MemberTabPane(fcp,mcp, cb);
 		mtp.setTableEditable(false);

@@ -154,8 +154,8 @@ public class MemberTabPane extends JPanel{
 		mcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(mcpSourceStatus,BorderLayout.SOUTH);
 		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.setMinimumSize(new Dimension(400, 100));
-		scrollPane.setSize(new Dimension(400, 150));
+		scrollPane.setMinimumSize(new Dimension(400, 150));
+		scrollPane.setSize(new Dimension(400, 200));
 		compVerticalSplitePane.setBottomComponent(scrollPane);
 
 		//フィールドの対応パネル
@@ -166,8 +166,8 @@ public class MemberTabPane extends JPanel{
 		fcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
 		panel.add(fcpSourceStatus,BorderLayout.SOUTH);
 		scrollPane = new JScrollPane(panel);
-		scrollPane.setMinimumSize(new Dimension(400, 100));
-		scrollPane.setSize(new Dimension(400, 150));
+		scrollPane.setMinimumSize(new Dimension(400, 150));
+		scrollPane.setSize(new Dimension(400, 200));
 		compVerticalSplitePane.setTopComponent(scrollPane);
 		compVerticalSplitePane.setContinuousLayout(true);
 

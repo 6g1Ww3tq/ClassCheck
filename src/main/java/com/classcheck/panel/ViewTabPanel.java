@@ -26,7 +26,7 @@ import com.classcheck.tree.FileNode;
 import com.classcheck.tree.FileTree;
 import com.classcheck.window.DebugMessageWindow;
 
-public class CompSourceTabPanel extends JPanel{
+public class ViewTabPanel extends JPanel{
 	/**
 	 * 
 	 */
@@ -50,7 +50,7 @@ public class CompSourceTabPanel extends JPanel{
 	List<MyClass> myClassList;
 	FileTree userFileTree;
 
-	public CompSourceTabPanel(ClassBuilder cb, FileTree userFileTree) {
+	public ViewTabPanel(ClassBuilder cb, FileTree userFileTree) {
 		this.myClassList = cb.getClasslist();
 		this.userFileTree = userFileTree;
 		setLayout(new BorderLayout());
@@ -97,6 +97,7 @@ public class CompSourceTabPanel extends JPanel{
 		//astah tree logic
 		astahRoot = new DefaultMutableTreeNode("SkeltonCode");
 		astahJTree = new JTree(astahRoot);
+		astahJTree.setMinimumSize(new Dimension(200,200));
 		astahJTree.setSize(new Dimension(200,200));
 
 		for (MyClass myClass : myClassList) {
@@ -107,6 +108,7 @@ public class CompSourceTabPanel extends JPanel{
 		//user file tree logic
 		userRoot = new MutableFileNode(userFileTree.getRoot());
 		userJtree = new JTree(userRoot);
+		userJtree.setMinimumSize(new Dimension(200, 200));
 		userJtree.setSize(new Dimension(200,200));
 		makeFileNodeTree();
 
@@ -117,7 +119,9 @@ public class CompSourceTabPanel extends JPanel{
 		userTreeStatus = new StatusBar(panel, "Your-Class");
 		panel.add(userTreeStatus,BorderLayout.SOUTH);
 		JScrollPane treeScrollPane = new JScrollPane(panel);
-		treeScrollPane.setPreferredSize(new Dimension(180, 150));	
+		treeScrollPane.setMinimumSize(new Dimension(180, 150));	
+		treeScrollPane.setSize(new Dimension(180, 150));	
+		//treeScrollPane.setPreferredSize(new Dimension(180, 150));	
 
 		//user textArea(右）
 		panel = new JPanel(new BorderLayout());
@@ -125,7 +129,9 @@ public class CompSourceTabPanel extends JPanel{
 		userSourceStatus = new StatusBar(panel, "Your Source Code");
 		panel.add(userSourceStatus,BorderLayout.SOUTH);
 		JScrollPane textAreaScrollPane = new JScrollPane(panel);
-		textAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
+		textAreaScrollPane.setMinimumSize(new Dimension(180, 150));	
+		textAreaScrollPane.setSize(new Dimension(180, 150));	
+		//textAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
 
 		//左右をセット
 		userHolizontalSplitePane.setLeftComponent(treeScrollPane);
@@ -139,7 +145,9 @@ public class CompSourceTabPanel extends JPanel{
 		astahTreeStatus = new StatusBar(panel, "SkeltonCode-Class");
 		panel.add(astahTreeStatus,BorderLayout.SOUTH);
 		JScrollPane astahTreeScrollPane = new JScrollPane(panel);
-		astahTreeScrollPane.setPreferredSize(new Dimension(180, 150));	
+		astahTreeScrollPane.setMinimumSize(new Dimension(180, 150));	
+		astahTreeScrollPane.setSize(new Dimension(180, 150));	
+		//astahTreeScrollPane.setPreferredSize(new Dimension(180, 150));	
 
 		//astah textArea(右）
 		panel = new JPanel(new BorderLayout());
@@ -147,7 +155,9 @@ public class CompSourceTabPanel extends JPanel{
 		astahSourceStatus = new StatusBar(panel, "Skelton Code");
 		panel.add(astahSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahTextAreaScrollPane = new JScrollPane(panel);
-		astahTextAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
+		astahTextAreaScrollPane.setMinimumSize(new Dimension(180, 150));	
+		astahTextAreaScrollPane.setSize(new Dimension(180, 150));	
+		//astahTextAreaScrollPane.setPreferredSize(new Dimension(180, 150));	
 
 		//左右をセット
 		astahHolizontalSplitePane.setLeftComponent(astahTreeScrollPane);
