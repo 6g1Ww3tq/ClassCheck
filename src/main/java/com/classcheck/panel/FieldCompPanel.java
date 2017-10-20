@@ -1,8 +1,8 @@
 package com.classcheck.panel;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.change_vision.jude.api.inf.model.IAttribute;
+import com.change_vision.jude.api.inf.model.IComment;
+import com.change_vision.jude.api.inf.model.IConstraint;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Field;
@@ -98,6 +100,11 @@ public class FieldCompPanel extends JPanel{
 		boxList = new ArrayList<JComboBox<String>>();
 		boolean isSameFieldSelected = false;
 
+		//フィールドの説明を加える
+		IComment[] comments;
+		IConstraint[] constraints;
+		IAttribute attr;
+
 		//ポップアップテキスト
 		StringBuilder popSb = null;
 
@@ -120,14 +127,26 @@ public class FieldCompPanel extends JPanel{
 
 			if (codeVisitor != null){
 				codeFieldList = codeVisitor.getFieldList();
-				ArrayList<String> strList = new ArrayList<String>();
-
-				for (FieldDeclaration fieldDeclaration : codeFieldList) {
-					strList.add(fieldDeclaration.toString().replaceAll(";", ""));
-				}
-
 
 				for (Field field : fieldList){
+
+					ArrayList<String> strList = new ArrayList<String>();
+
+					for (FieldDeclaration fieldDeclaration : codeFieldList) {
+						//ソースコードのメソッドの修飾子と
+						//スケルトンコードの修飾子の一致
+						if (field.getModifiers().contains(
+								Modifier.toString(fieldDeclaration.getModifiers())
+								)){
+							strList.add(fieldDeclaration.toString().replaceAll(";", ""));
+						}
+					}
+
+
+					//TODO
+					//メソッド同様に
+					//修飾子が合わないやつは弾く
+
 					popSb = new StringBuilder();
 
 					fieldComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
@@ -152,7 +171,7 @@ public class FieldCompPanel extends JPanel{
 					l = new JLabel(matcher.replaceAll("").replaceAll(";", ""));
 					l.setAlignmentX(CENTER_ALIGNMENT);
 
-					IAttribute attr = field.getAttribute();
+					attr = field.getAttribute();
 					//ポップアップテキストを加える
 					popSb.append("<html>");
 					popSb.append("<p>");
@@ -161,13 +180,35 @@ public class FieldCompPanel extends JPanel{
 					if (attr.getDefinition().length() == 0) {
 						popSb.append("なし<br>");
 					}else{
-						String[] comments = attr.getDefinition().split("\\n", 0);
+						String[] strs = attr.getDefinition().split("\\n", 0);
 
-						for (String comment : comments) {
+						for (String comment : strs) {
 							popSb.append(comment + "<br>");
 						}
 					}
 
+					popSb.append("コメント:<br>");
+					if (attr.getComments().length == 0) {
+						popSb.append("なし<br>");
+					}else{
+						comments = attr.getComments();
+
+						for (IComment comment : comments){
+							popSb.append("・"+comment.toString()+"<br>");
+						}
+					}
+
+					popSb.append("制約:<br>");
+					if (attr.getConstraints().length == 0) {
+						popSb.append("なし<br>");
+					}else{
+						constraints = attr.getConstraints();
+
+						for (IConstraint constraint : constraints){
+							popSb.append("・"+constraint.toString()+"<br>");
+						}
+					}
+						
 					popSb.append("</p>");
 					popSb.append("</html>");
 
@@ -193,15 +234,29 @@ public class FieldCompPanel extends JPanel{
 		//同じメソッドが選択されているかどうかを調べる
 		JComboBox  box_1,box_2;
 		String strBox_1,strBox_2;
+		Object obj;
 
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
 
-			strBox_1 = box_1.getSelectedItem().toString();
+			obj = box_1.getSelectedItem();
+			
+			if (obj == null) {
+				continue ;
+			}
+
+			strBox_1 = obj.toString();
+
 			for(int j=0; j < boxList.size() ; j++){
 				box_2 = boxList.get(j);
 
-				strBox_2 = box_2.getSelectedItem().toString();
+				obj = box_2.getSelectedItem();
+
+				if (obj == null) {
+					continue ;
+				}
+
+				strBox_2 = obj.toString();
 
 				if (i==j) {
 					continue ;

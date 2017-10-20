@@ -396,4 +396,18 @@ public class Method {
 	public String getReturntype() {
 		return returntype;
 	}
+	
+	public String getModifiers(){
+		StringBuilder rtnSB = new StringBuilder();
+		
+		if (!visibility.isEmpty()) {
+			rtnSB.append(visibility);
+		}
+		
+		if (!isStatic.isEmpty()) {
+			rtnSB.append(isStatic);
+		}
+		
+		return rtnSB.toString();
+	}
 }

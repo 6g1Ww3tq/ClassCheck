@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -19,6 +20,9 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.change_vision.jude.api.inf.model.IClass;
+import com.change_vision.jude.api.inf.model.IComment;
+import com.change_vision.jude.api.inf.model.IConstraint;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
@@ -39,6 +43,7 @@ public class MemberTabPane extends JPanel{
 	JSplitPane verticalSplitePane;
 	JSplitPane compVerticalSplitePane;
 	JTree jtree;
+	JLabel jtrSelClass;
 	DefaultMutableTreeNode astahRoot;
 	List<MyClass> myClassList;
 	Map<MyClass, Pocket<SelectedType>> selectedSameFieldSigMap;
@@ -91,7 +96,7 @@ public class MemberTabPane extends JPanel{
 	}
 
 	private void initComponent(){
-		JPanel panel;
+		JPanel panel,classFieldMethodPane;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -100,6 +105,8 @@ public class MemberTabPane extends JPanel{
 		astahRoot = new DefaultMutableTreeNode("SkeltonCodeClass");
 		jtree = new JTree(astahRoot);
 		jtree.setMinimumSize(new Dimension(150,200));
+		jtrSelClass = new JLabel();
+		jtrSelClass.setFont(new Font("SansSerif", Font.BOLD, 18));
 
 		//フィールド
 		boolean isSameFieldSelected = false;
@@ -148,6 +155,7 @@ public class MemberTabPane extends JPanel{
 
 		//メソッドの対応パネル
 		panel = new JPanel(new BorderLayout());
+		//メソッドパネルを中央
 		panel.add(mcp,BorderLayout.CENTER);
 		mcpSourceStatus = new StatusBar(panel, "対応付けしてください");
 		mcp.setStatus(mcpSourceStatus);
@@ -160,6 +168,7 @@ public class MemberTabPane extends JPanel{
 
 		//フィールドの対応パネル
 		panel = new JPanel(new BorderLayout());
+		//フィールドパネルを中央
 		panel.add(fcp,BorderLayout.CENTER);
 		fcpSourceStatus = new StatusBar(panel, "対応付けしてください");
 		fcp.setStatus(fcpSourceStatus);
@@ -170,9 +179,15 @@ public class MemberTabPane extends JPanel{
 		scrollPane.setSize(new Dimension(400, 200));
 		compVerticalSplitePane.setTopComponent(scrollPane);
 		compVerticalSplitePane.setContinuousLayout(true);
+		
+		//クラス,フィールド,メソッドをまとめる
+		classFieldMethodPane = new JPanel();
+		classFieldMethodPane.setLayout(new BorderLayout(5,5));
+		classFieldMethodPane.add(jtrSelClass,BorderLayout.NORTH);
+		classFieldMethodPane.add(compVerticalSplitePane,BorderLayout.CENTER);
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);
-		holizontalSplitePane.setRightComponent(compVerticalSplitePane);
+		holizontalSplitePane.setRightComponent(classFieldMethodPane);
 		holizontalSplitePane.setContinuousLayout(true);
 
 		//下のテーブル
@@ -189,10 +204,14 @@ public class MemberTabPane extends JPanel{
 
 	private void initActionEvent() {
 		jtree.addTreeSelectionListener(new TreeSelectionListener(){
-
+			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				Object obj = jtree.getLastSelectedPathComponent();
+				StringBuilder popSb = new StringBuilder();
+				IClass iClass;
+				IComment[] comments;
+				IConstraint[] constraints;
 
 				if (obj instanceof ClassNode) {
 					ClassNode selectedNode = (ClassNode) obj;
@@ -200,6 +219,51 @@ public class MemberTabPane extends JPanel{
 
 					if (userObj instanceof MyClass) {
 						selectedMyClass = (MyClass) userObj;
+						iClass = selectedMyClass.getIClass();
+						//jtreeで選択したクラスを表示
+						jtrSelClass.setText(selectedMyClass.getName());
+
+						//説明を加える
+						popSb.append("<html>");
+						popSb.append("<p>");
+
+						popSb.append("定義:<br>");
+						if (selectedMyClass.getDefinition().isEmpty()) {
+							popSb.append("なし<br>");
+						}else{
+							String[] strs = iClass.getDefinition().split("\\n", 0);
+
+							for (String comment : strs) {
+								popSb.append(comment + "<br>");
+							}
+						}
+
+						popSb.append("コメント:<br>");
+						if (iClass.getComments().length == 0) {
+							popSb.append("なし<br>");
+						}else{
+							comments = iClass.getComments();
+							
+							for (IComment comment : comments){
+								popSb.append("・"+comment.toString()+"<br>");
+							}
+						}
+						
+						popSb.append("制約:<br>");
+						if (iClass.getConstraints().length == 0) {
+							popSb.append("なし<br>");
+						}else{
+							constraints = iClass.getConstraints();
+
+							for (IConstraint constraint : constraints){
+								popSb.append("・"+constraint.toString()+"<br>");
+							}
+						}
+						
+						popSb.append("</p>");
+						popSb.append("</html>");
+						
+						jtrSelClass.setToolTipText(popSb.toString());
 						//パネルの更新
 						reLoadMemberPane(selectedMyClass,false);
 					}
@@ -207,6 +271,7 @@ public class MemberTabPane extends JPanel{
 
 			}
 		});
+		
 	}
 
 	public void reLoadMemberPane(MyClass myClass,boolean isAllChange){
@@ -251,7 +316,12 @@ public class MemberTabPane extends JPanel{
 
 				if (methodCodeSigBox != null) {
 					obj = methodCodeSigBox.getSelectedItem();
-					methodCodeSigList.add(obj.toString());
+
+					//TODO
+					//nullでない
+					if (obj != null) {
+						methodCodeSigList.add(obj.toString());
+					}
 				}
 
 			}
@@ -270,7 +340,10 @@ public class MemberTabPane extends JPanel{
 
 				if (fieldCodeSigBox != null) {
 					obj = fieldCodeSigBox.getSelectedItem();
-					fieldCodeSigList.add(obj.toString());
+
+					if (obj != null) {
+						fieldCodeSigList.add(obj.toString());
+					}
 				}
 
 			}
@@ -471,6 +544,14 @@ public class MemberTabPane extends JPanel{
 		JComboBox box_2;
 		String strBox_1,strBox_2;
 		JPanel panel;
+		Object obj;
+
+		obj = box_1.getSelectedItem();
+
+		//ボックスのアイテムが空の場合
+		if (obj == null){
+			return true;
+		}
 
 		strBox_1 = box_1.getSelectedItem().toString();
 
@@ -482,6 +563,13 @@ public class MemberTabPane extends JPanel{
 
 				if (comp instanceof JComboBox) {
 					box_2 = (JComboBox) comp;
+
+					obj = box_2.getSelectedItem();
+
+					//ボックスのアイテムが空の場合
+					if (obj == null) {
+						continue ;
+					}
 
 					strBox_2 = box_2.getSelectedItem().toString();
 
@@ -511,7 +599,7 @@ public class MemberTabPane extends JPanel{
 				generatable = false;
 				break;
 			}
-			
+
 		}
 
 		return generatable;
@@ -528,7 +616,7 @@ public class MemberTabPane extends JPanel{
 				generatable = false;
 				break;
 			}
-			
+
 		}
 		return generatable;
 	}

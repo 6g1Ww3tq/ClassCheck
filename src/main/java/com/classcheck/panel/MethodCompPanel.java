@@ -35,7 +35,6 @@ public class MethodCompPanel extends JPanel {
 
 	private StatusBar mtpSourceStatus;
 	private MemberTabPane mtp;
-	private boolean rxistSameMethod = false;
 
 	private List<JComboBox<String>> boxList;
 
@@ -102,6 +101,8 @@ public class MethodCompPanel extends JPanel {
 		//同じシグネチャーが選択されているかどうかを調べる
 		boxList = new ArrayList<JComboBox<String>>();
 		boolean isSameMethodSelected = false;
+		//コンストラクタかどうか判定する
+		boolean isConstructor = false;
 
 		//ポップアップテキスト
 		StringBuilder popSb = null;
@@ -130,47 +131,63 @@ public class MethodCompPanel extends JPanel {
 				for (Method method : methodList) {
 					popSb = new StringBuilder();
 					ArrayList<String> strList = new ArrayList<String>();
-
-					//ソースコードのメソッドを追加
-					for (MethodDeclaration methodDeclaration : codeMethodList) {
-
-						//ソースコードのメソッドのパラメータ数と
-						//スケルトンコードのパラメータ個数の一致
-						if (methodDeclaration.getParameters().size() == method.getParams().length && 
-								//ソースコードのメソッドの修飾子と
-								//スケルトンコードの修飾子の一致
-								Modifier.toString(methodDeclaration.getModifiers()).contains(
-										method.getOperation().getTypeModifier()
-										)
-								){
-							strList.add(methodDeclaration.getDeclarationAsString());
-						}
-					}
-
-					//ソースコードのコンストラクタを追加
-					for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
-						//ソースコードのメソッドのパラメータ数と
-						//スケルトンコードのパラメータ個数の一致
-
-						if (constructorDeclaration.getParameters().size() == method.getParams().length && 
-								//ソースコードのコンストラクタの修飾子と
-								//スケルトンコードの修飾子の一致
-								Modifier.toString(constructorDeclaration.getModifiers()).contains(
-										method.getOperation().getTypeModifier()
-										)){
-
-							strList.add(constructorDeclaration.getDeclarationAsString());
-						}
-					}
+					isConstructor = false;
 
 					/*
 					 * コンストラクタは読み込まない
+					 * =>メソッド名とクラス名が同類のメソッドはコンストラクタ
 					 */
-					/*
 					if (method.getName().equals(myClass.getName())) {
-						continue;
+						isConstructor = true;
 					}
-					 */
+					
+					if (isConstructor) {
+
+						System.out.println("*** ConstructorDeclaration ***");
+
+						//ソースコードのコンストラクタを追加
+						for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
+
+							System.out.println(Modifier.toString(constructorDeclaration.getModifiers()));
+
+							//ソースコードのメソッドのパラメータ数と
+							//スケルトンコードのパラメータ個数の一致
+
+							if (constructorDeclaration.getParameters().size() == method.getParams().length && 
+									//ソースコードのコンストラクタの修飾子と
+									//スケルトンコードの修飾子の一致
+									method.getModifiers().contains(
+											Modifier.toString(constructorDeclaration.getModifiers())
+											)){
+
+								strList.add(constructorDeclaration.getDeclarationAsString());
+							}
+						}
+
+					}else{
+						System.out.println("*** method ***");
+						System.out.println("type is :"+method.getModifiers());
+
+						System.out.println("*** MethodDeclaration ***");
+						//ソースコードのメソッドを追加
+						for (MethodDeclaration methodDeclaration : codeMethodList) {
+
+
+							System.out.println(Modifier.toString(methodDeclaration.getModifiers()));
+
+							//ソースコードのメソッドのパラメータ数と
+							//スケルトンコードのパラメータ個数の一致
+							if (methodDeclaration.getParameters().size() == method.getParams().length && 
+									//ソースコードのメソッドの修飾子と
+									//スケルトンコードの修飾子の一致
+									method.getModifiers().contains(
+											Modifier.toString(methodDeclaration.getModifiers())
+											)
+									){
+								strList.add(methodDeclaration.getDeclarationAsString());
+							}
+						}
+					}
 
 					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 					boxList.add(methodComboBox);
@@ -257,14 +274,29 @@ public class MethodCompPanel extends JPanel {
 		//同じメソッドが選択されているかどうかを調べる
 		JComboBox  box_1,box_2;
 		String strBox_1,strBox_2;
+		Object obj;
+		
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
 
-			strBox_1 = box_1.getSelectedItem().toString();
+			obj = box_1.getSelectedItem();
+
+			if (obj == null) {
+				continue ;
+			}
+
+			strBox_1 = obj.toString();
+
 			for(int j=0; j < boxList.size() ; j++){
 				box_2 = boxList.get(j);
 
-				strBox_2 = box_2.getSelectedItem().toString();
+				obj = box_2.getSelectedItem();
+				
+				if (obj == null) {
+					continue ;
+				}
+				
+				strBox_2 = obj.toString();
 
 				if (i==j) {
 					continue ;

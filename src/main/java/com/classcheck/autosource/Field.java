@@ -211,5 +211,22 @@ public class Field {
 	public String getVisibility() {
 		return visibility;
 	}
-
+	
+	public String getModifiers(){
+		StringBuilder rtnSB = new StringBuilder();
+		
+		if (!visibility.isEmpty()) {
+			rtnSB.append(visibility);
+		}
+		
+		if (!isStatic.isEmpty()) {
+			rtnSB.append(isStatic);
+		}
+		
+		if (!isFinal.isEmpty()) {
+			rtnSB.append(isFinal);
+		}
+		
+		return rtnSB.toString();
+	}
 }

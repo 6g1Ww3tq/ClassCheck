@@ -15,7 +15,7 @@ import com.change_vision.jude.api.inf.model.IRealization;
 public class MyClass {
 	/* クラスの情報を保持するクラス
 	 * 最終的にここから1つのクラス分のソースコードができるようにこのクラスにデータを入れていく*/
-	IClass c;
+	IClass iClass;
 	String definition;//定義
 	List<Field> fields;
 	List<Method> methods;
@@ -28,10 +28,10 @@ public class MyClass {
 
 
 	MyClass(IClass ic){
-		c=ic;
+		iClass=ic;
 		//定義
-		if(!c.getDefinition().equals("")){
-			String s[] = c.getDefinition().split("\n",0);
+		if(!iClass.getDefinition().equals("")){
+			String s[] = iClass.getDefinition().split("\n",0);
 			for(int i=0;i<s.length;i++){
 				if(i==0){
 					definition = "\t/**\r\n\t *"+s[i];
@@ -47,12 +47,12 @@ public class MyClass {
 		}
 
 		generalization = "";
-		IGeneralization g[] = c.getGeneralizations();
+		IGeneralization g[] = iClass.getGeneralizations();
 		if(g.length>0){
 			generalization = g[0].getSuperType().getName();
 		}
 
-		IRealization r[] = c.getClientRealizations();
+		IRealization r[] = iClass.getClientRealizations();
 		realizations = new IClass[r.length];
 		for(int i=0;i<r.length;i++){
 			realizations[i] = (IClass) r[i].getSupplier();
@@ -66,11 +66,11 @@ public class MyClass {
 	public String getClassSig(){
 		String rtnSig = "";
 		
-		rtnSig += c.getTypeModifier();
-		if (!c.getTypeModifier().isEmpty()) {
+		rtnSig += iClass.getTypeModifier();
+		if (!iClass.getTypeModifier().isEmpty()) {
 			rtnSig += " ";
 		}
-		rtnSig += "class " + c.getName();
+		rtnSig += "class " + iClass.getName();
 		return rtnSig;
 	}
 
@@ -179,7 +179,7 @@ public class MyClass {
 	}
 
 	private boolean isEnum(){
-		String type[] = c.getStereotypes();
+		String type[] = iClass.getStereotypes();
 		for(int i=0;i<type.length;i++){
 			if(type[i].equals("enum")){
 				return true;
@@ -189,7 +189,7 @@ public class MyClass {
 	}
 
 	private boolean isInterface(){
-		String type[] = c.getStereotypes();
+		String type[] = iClass.getStereotypes();
 		for(int i=0;i<type.length;i++){
 			if(type[i].equals("interface")){
 				return true;
@@ -199,7 +199,7 @@ public class MyClass {
 	}
 
 	public IClass getIClass(){
-		return c;
+		return iClass;
 	}
 
 	/**
@@ -216,5 +216,9 @@ public class MyClass {
 	
 	public List<Field> getFields() {
 		return fields;
+	}
+	
+	public String getDefinition() {
+		return definition;
 	}
 }

@@ -63,8 +63,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private JButton genBtn;
 	private JTextField folderTextField;
 
-	private File sourceLoc;
-
 	private List<CodeVisitor> codeVisitorList;
 	FileTree baseDirTree;
 
