@@ -274,18 +274,17 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		if (!folderTextField.getText().isEmpty()) {
 			file = new File(folderTextField.getText());
 			
-			if (folderTextField.getText().isEmpty() || !file.isDirectory()) {
+			if (!file.isDirectory()) {
 				chooser.setCurrentDirectory(new File(projectPath));
 			}else{
 				chooser.setCurrentDirectory(new File(folderTextField.getText()));
-				chooser.setSelectedFile(file);
 			}
 		}else{
 			chooser.setCurrentDirectory(new File(projectPath));
 		}
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
+		
 		int rtnVal = chooser.showOpenDialog(parentComponent);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
 			future = executor.submit(new Callable<String>() {
@@ -346,6 +345,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			//テキストフィールドにフォルダパスを入力
 			folderTextField.setText(chooser.getSelectedFile().getPath());
 		}
+
 	}
 
 	@Override

@@ -1,8 +1,8 @@
 package com.classcheck.panel;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,18 +126,42 @@ public class MethodCompPanel extends JPanel {
 			if (codeVisitor != null){
 				codeMethodList = codeVisitor.getMethodList();
 				codeConstructorList = codeVisitor.getConstructorList();
-				ArrayList<String> strList = new ArrayList<String>();
-
-				for (MethodDeclaration methodDeclaration : codeMethodList) {
-					strList.add(methodDeclaration.getDeclarationAsString());
-				}
-
-				for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
-					strList.add(constructorDeclaration.getDeclarationAsString());
-				}
 
 				for (Method method : methodList) {
 					popSb = new StringBuilder();
+					ArrayList<String> strList = new ArrayList<String>();
+
+					//ソースコードのメソッドを追加
+					for (MethodDeclaration methodDeclaration : codeMethodList) {
+
+						//ソースコードのメソッドのパラメータ数と
+						//スケルトンコードのパラメータ個数の一致
+						if (methodDeclaration.getParameters().size() == method.getParams().length && 
+								//ソースコードのメソッドの修飾子と
+								//スケルトンコードの修飾子の一致
+								Modifier.toString(methodDeclaration.getModifiers()).contains(
+										method.getOperation().getTypeModifier()
+										)
+								){
+							strList.add(methodDeclaration.getDeclarationAsString());
+						}
+					}
+
+					//ソースコードのコンストラクタを追加
+					for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
+						//ソースコードのメソッドのパラメータ数と
+						//スケルトンコードのパラメータ個数の一致
+
+						if (constructorDeclaration.getParameters().size() == method.getParams().length && 
+								//ソースコードのコンストラクタの修飾子と
+								//スケルトンコードの修飾子の一致
+								Modifier.toString(constructorDeclaration.getModifiers()).contains(
+										method.getOperation().getTypeModifier()
+										)){
+
+							strList.add(constructorDeclaration.getDeclarationAsString());
+						}
+					}
 
 					/*
 					 * コンストラクタは読み込まない
