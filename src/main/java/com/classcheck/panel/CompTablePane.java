@@ -1,7 +1,6 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,6 @@ public class CompTablePane extends JPanel implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	JScrollPane tableScrollPane;
-	//	static DefaultTableModel tableModel;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
 	MemberTabPane mtp;
@@ -164,7 +162,6 @@ public class CompTablePane extends JPanel implements Serializable{
 
 		classCompTable = new JTable(tableModel);
 		tableScrollPane = new JScrollPane(classCompTable);
-		//tableScrollPane.setPreferredSize(null);
 		add(tableScrollPane);
 
 		insertData();
@@ -272,13 +269,6 @@ public class CompTablePane extends JPanel implements Serializable{
 						//同じメソッドが選択されていないかチェック
 						mtp.checkSameMethod(myClassCell.getMyClass());
 					}
-
-					/*
-					System.out.println("Cell " + tme.getFirstRow() + ", "
-							+ tme.getColumn() + " changed. The new value: "
-							+ tableModel.getValueAt(tme.getFirstRow(),
-									tme.getColumn()));	
-					 */
 
 					System.out.println("visitor : \n"+visitor);
 					System.out.println("myClassCell : \n"+myClassCell);

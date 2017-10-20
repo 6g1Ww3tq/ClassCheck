@@ -2,16 +2,33 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
+import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
@@ -27,38 +44,26 @@ import com.classcheck.analyzer.source.SourceAnalyzer;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Config;
 import com.classcheck.autosource.ConfigView;
-import com.classcheck.autosource.DiagramChecker;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.SourceGenerator;
 import com.classcheck.tree.FileNode;
 import com.classcheck.tree.FileTree;
-import com.classcheck.window.ConfigJDialog;
-import com.classcheck.window.MatcherWindow;
 import com.classcheck.window.DebugMessageWindow;
-import com.classcheck.window.TextMessageWindow;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import com.classcheck.window.MatcherWindow;
 
 public class AddonTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel bottonPane;
+	private JPanel genPane;
+	private JPanel folderPane;
 	private JButton expBtn;
 	private JButton folderBtn;
 	private JButton genBtn;
+	private JTextField folderTextField;
+
+	private File sourceLoc;
 
 	private List<CodeVisitor> codeVisitorList;
 	FileTree baseDirTree;
@@ -67,6 +72,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	List<ISequenceDiagram> diagramList;
 
 	ProjectAccessor projectAccessor;
+	String projectPath;
 	private JButton configBtn;
 
 	AstahAPI api;
@@ -77,6 +83,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	ByteArrayOutputStream baos;
 	public AddonTabPanel() {
 		initComponents();
+		initEvents();
 		addProjectEventListener();
 		initVariables();
 		initDebugWindow();
@@ -98,27 +105,43 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 
 	private void initComponents() {
+		JPanel northPane = new JPanel();
+		northPane.setLayout(new BorderLayout(3, 3));
 		setLayout(new BorderLayout());
 		baseDirTree = null;
 
-		bottonPane = new JPanel();
+		genPane = new JPanel();
+
 		expBtn = new JButton("実験");
-		folderBtn = new JButton("フォルダ");
-		bottonPane.add(expBtn);
-		bottonPane.add(folderBtn);
+		genPane.add(expBtn);
 
 		genBtn = new JButton("生成");
-		bottonPane.add(genBtn);
+		genPane.add(genBtn);
 
 		configBtn = new JButton("設定");
-		bottonPane.add(configBtn);
-		btnEventInit();
+		genPane.add(configBtn);
 
-		add(bottonPane, BorderLayout.NORTH);
+		folderBtn = new JButton("フォルダ");
+		folderPane = new JPanel();
+		folderPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,3));
+		folderTextField = new JTextField(50);
+		folderTextField.setDragEnabled(true);
+		folderTextField.setToolTipText("<html>"+
+				"ソースコードが存在する<br>" +
+				"フォルダを選択してください" +
+				"</html>");
+		folderPane.add(folderTextField);
+
+		northPane.add(genPane, BorderLayout.NORTH);
+		northPane.add(folderTextField, BorderLayout.CENTER);
+		northPane.add(new JLabel("フォルダ選択 : "),BorderLayout.WEST);
+		northPane.add(folderBtn,BorderLayout.EAST);
+
+		add(northPane,BorderLayout.NORTH);
 		setVisible(true);
 	}
 
-	private void btnEventInit() {
+	private void initEvents() {
 		expBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -145,7 +168,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			public void actionPerformed(ActionEvent e) {
 				SourceGenerator sg = null;
 				MatcherWindow ctw = null;
-				
+
 				//スケルトンコードのメソッド内でインスタンスを生成していないか
 				//チェックを行う
 				SkeltonCodeAnalyzer sca = null;
@@ -159,9 +182,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 						sg = new SourceGenerator();
 						cb = sg.run(classList, diagramList);
 						MyClass myClass = null;
-						
+
 						//山田さんのチェックに引っかかるかどうか判定
-						//山田さんのエラーメッセージを出す
+						//山田さんのエラーメッセージを出力して終了
 						if (!sg.isGeneratable()) {
 							return ;
 						}
@@ -171,7 +194,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 							sca = new SkeltonCodeAnalyzer(myClass);
 							sca.doAnalyze();
 							scv = sca.getSkeltonCodeVisitor();
-							
+
 							//Point p = new Point(start,end);
 							//のようなステートメントがメソッド内で書かれているか
 							//チェックを行う
@@ -229,20 +252,40 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		try {
 			api = AstahAPI.getAstahAPI();
 			projectAccessor = api.getProjectAccessor();
+			projectPath = projectAccessor.getProjectPath();
 			projectAccessor.addProjectEventListener(this);
 		} catch (ClassNotFoundException e) {
 			e.getMessage();
+		} catch (ProjectNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void selectFolder(Component parentComponent) {
 		//初期化	
 		initVariables();
+
+		File file;
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		Future<?> future;
 		final JFileChooser chooser = new JFileChooser();
+		chooser.setDragEnabled(true);
+
+		if (!folderTextField.getText().isEmpty()) {
+			file = new File(folderTextField.getText());
+			
+			if (folderTextField.getText().isEmpty() || !file.isDirectory()) {
+				chooser.setCurrentDirectory(new File(projectPath));
+			}else{
+				chooser.setCurrentDirectory(new File(folderTextField.getText()));
+				chooser.setSelectedFile(file);
+			}
+		}else{
+			chooser.setCurrentDirectory(new File(projectPath));
+		}
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
 		int rtnVal = chooser.showOpenDialog(parentComponent);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
 			future = executor.submit(new Callable<String>() {
@@ -280,6 +323,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					return null;
 				}
 			});
+
 			try {
 				future.get(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
@@ -295,8 +339,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				baseDirTree = null;
 				e.printStackTrace();
 			}
+
 			executor.shutdownNow();
 			DebugMessageWindow.msgToOutPutTextArea();
+
+			//テキストフィールドにフォルダパスを入力
+			folderTextField.setText(chooser.getSelectedFile().getPath());
 		}
 	}
 

@@ -10,6 +10,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
 
@@ -93,6 +94,7 @@ public class GenerateToolBar extends JToolBar {
 		};
 		System.out.println("Image : " + genIcon.toString());
 		DebugMessageWindow.msgToOutPutTextArea();
+		
 		add(genAction);
 	}
 }
