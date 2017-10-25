@@ -2,6 +2,8 @@ package com.classcheck.window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -22,6 +24,8 @@ public class MatcherWindow extends JFrame {
 	
 	MatcherTabbedPane mt;
 	GenerateToolBar genToolBar;
+	
+	private static boolean closed = true;
 
 	public MatcherWindow(ClassBuilder cb, List<CodeVisitor> codeVisitorList,
 			FileTree baseDirTree) {
@@ -31,7 +35,8 @@ public class MatcherWindow extends JFrame {
 		setSize(new Dimension(900, 900));
 		//中央表示
 		setLocationRelativeTo(null);
-
+		
+		addWindowListener(new WindowEventListener());
 		setVisible(true);
 	}
 
@@ -42,5 +47,52 @@ public class MatcherWindow extends JFrame {
 		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot(),mt.getMethodCompPane());
 		add(genToolBar,BorderLayout.NORTH);
 		add(mt,BorderLayout.CENTER);
+	}
+	
+	public static boolean isClosed(){
+		return closed;
+	}
+	
+	private class WindowEventListener implements WindowListener{
+
+		@Override
+		public void windowActivated(WindowEvent e) {
+			// TODO 自動生成されたメソッド・スタブ
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			closed = true;
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			closed = true;
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO 自動生成されたメソッド・スタブ
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			// TODO 自動生成されたメソッド・スタブ
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			// TODO 自動生成されたメソッド・スタブ
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			closed = false;
+		}
+		
 	}
 }

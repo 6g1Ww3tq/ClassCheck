@@ -50,7 +50,6 @@ public class GenerateToolBar extends JToolBar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GenerateState gs = GenerateState.NORMAL;
-				System.out.println("generate program");
 
 				if (mtp.getTablePane().isNullItemSelected()) {
 					JOptionPane.showMessageDialog(getParent(), "テーブルのセルにクラスを選択してください", "error", JOptionPane.ERROR_MESSAGE);
@@ -64,12 +63,14 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 				
+				/*
 				if(!mtp.isFieldEpmty()){
 					JOptionPane.showMessageDialog(getParent(), "フィールドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
 					JOptionPane.showMessageDialog(getParent(), "クラス図,シーケンス図に対応するフィールドを定義してください", "info", JOptionPane.INFORMATION_MESSAGE);
 					gs = GenerateState.FIELDNULL;
 					return ;
 				}
+				*/
 
 				if(!mtp.isMethodEmpty()){
 					JOptionPane.showMessageDialog(getParent(), "メソッドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
@@ -93,17 +94,15 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 
-				DebugMessageWindow.msgToOutPutTextArea();
-				
 				if (gs == GenerateState.NORMAL) {
-					new GenerateTestProgram(baseDir,mcp,mtp.getTablePane());
+//					new GenerateTestProgram(baseDir,mtp);
 					JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
 				}
+				
+				DebugMessageWindow.msgToOutPutTextArea();
 
 			}
 		};
-		System.out.println("Image : " + genIcon.toString());
-		DebugMessageWindow.msgToOutPutTextArea();
 		
 		add(genAction);
 	}

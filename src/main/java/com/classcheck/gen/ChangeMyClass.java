@@ -109,6 +109,7 @@ public class ChangeMyClass {
 					svr = new SearchVarVisitor();
 					cu.accept(svr,null);
 
+					/*
 					//TODO
 					//ローカル変数クラスを変更する	
 					cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
@@ -120,6 +121,7 @@ public class ChangeMyClass {
 					cu = JavaParser.parse(new ByteArrayInputStream(sb.toString().getBytes()));
 					cu.accept(new LocalMethodReplaceVisitor(codeMap,svr.getVarsMap(),svr.getReplaceBeginLines(),changeMap),null);
 					sb = new StringBuilder(cu.toString());
+					*/
 
 					//フィールドのクラス名を変更
 					for(MyClass mc : codeMap.keySet()){

@@ -206,6 +206,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				SkeltonCodeAnalyzer sca = null;
 				SkeltonCodeVisitor scv = null;
 
+
+				if (!MatcherWindow.isClosed()) {
+					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}
+				
 				config.activate();
 				create_class_sequence_list();
 
@@ -302,7 +308,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		Future<?> future;
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setDragEnabled(true);
-
+		
+		if (!MatcherWindow.isClosed()) {
+			JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
+			return ;
+		}
+		
 		if (!folderTextField.getText().isEmpty()) {
 			file = new File(folderTextField.getText());
 			

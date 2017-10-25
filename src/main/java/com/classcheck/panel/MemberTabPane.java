@@ -22,6 +22,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.codehaus.classworlds.UberJarRealmClassLoader;
+
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IComment;
 import com.change_vision.jude.api.inf.model.IConstraint;
@@ -57,6 +59,8 @@ public class MemberTabPane extends JPanel{
 
 	CompTablePane tablePane;
 
+	//TODO
+	//使い方をよく見る
 	Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
 
 	MyClass selectedMyClass;
@@ -515,14 +519,13 @@ public class MemberTabPane extends JPanel{
 						box_1 = (JComboBox) comp;
 
 						generatable = !checkSameItemSelected(i, box_1, fieldPanelList);
+
+						if (!generatable) {
+							return generatable;
+						}
 					}
 				}
 			}
-
-			if (!generatable) {
-				break;
-			}
-
 		}
 
 
@@ -538,6 +541,8 @@ public class MemberTabPane extends JPanel{
 
 		for(MyClass myClass : generatableMap.keySet()){
 			methodPanelList = mcp.getMapPanelList().get(myClass);
+			
+			System.out.println("myClass : " + myClass.getName());
 
 			for(int i = 0; i<methodPanelList.size();i++){
 				panel = methodPanelList.get(i);
@@ -549,14 +554,12 @@ public class MemberTabPane extends JPanel{
 						box_1 = (JComboBox) comp;
 
 						generatable = !checkSameItemSelected(i, box_1, methodPanelList);
+						if (!generatable) {
+							return generatable;
+						}
 					}
 				}
 			}
-
-			if (!generatable) {
-				break;
-			}
-
 		}
 
 		return generatable;
@@ -581,7 +584,13 @@ public class MemberTabPane extends JPanel{
 
 		strBox_1 = box_1.getSelectedItem().toString();
 
-		for(int i=0;i<panelList.size() ||i!=index;i++){
+		System.out.println("strBox_1 :  " + strBox_1);
+		for(int i=0;i<panelList.size();i++){
+			
+			if (i == index) {
+				continue ;
+			}
+
 			panel = panelList.get(i);
 
 			for(int j = 0 ; j <panel.getComponentCount();j++){
@@ -599,6 +608,7 @@ public class MemberTabPane extends JPanel{
 
 					strBox_2 = box_2.getSelectedItem().toString();
 
+					System.out.println("strBox_2 :  " + strBox_2);
 					if (strBox_1.equals(strBox_2)) {
 						isSame = true;
 						break;
@@ -610,7 +620,8 @@ public class MemberTabPane extends JPanel{
 				break;
 			}
 		}
-
+		
+		System.out.println("isSame : "+isSame);
 		return isSame;
 	}
 
@@ -621,6 +632,8 @@ public class MemberTabPane extends JPanel{
 		for(MyClass myClass : generatableMap.keySet()){
 			fieldPanelList = fcp.getMapPanelList().get(myClass);
 
+			//（左）...（右)...
+			//のラベルを含めるので1
 			if (fieldPanelList.size() <= 1) {
 				generatable = false;
 				break;
@@ -636,8 +649,10 @@ public class MemberTabPane extends JPanel{
 		List<JPanel> methodPanelList;
 
 		for(MyClass myClass : generatableMap.keySet()){
-			methodPanelList = fcp.getMapPanelList().get(myClass);
+			methodPanelList = mcp.getMapPanelList().get(myClass);
 
+			//（左）...（右)...
+			//のラベルを含めるので1
 			if (methodPanelList.size() <= 1) {
 				generatable = false;
 				break;

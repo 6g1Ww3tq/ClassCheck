@@ -17,6 +17,8 @@ import org.apache.commons.io.FileUtils;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
+import com.classcheck.panel.FieldCompPanel;
+import com.classcheck.panel.MemberTabPane;
 import com.classcheck.panel.MethodCompPanel;
 import com.classcheck.panel.CompTablePane;
 import com.classcheck.window.DebugMessageWindow;
@@ -30,20 +32,21 @@ public class GenerateTestProgram {
 	//アスタクラス->メッセージの前と後を表す対応関係を抽出
 	private Map<MyClass, Map<String, String>> changeMap;
 
+	private MemberTabPane mtp;
+	private FieldCompPanel fcp;
 	private MethodCompPanel mcp;
 	private CompTablePane tablePane;
 
-	public GenerateTestProgram(File baseDir,
-			MethodCompPanel mcp, CompTablePane tablePane) {
+	public GenerateTestProgram(File baseDir, MemberTabPane mtp) {
 		this.baseDir = baseDir;
-		this.mcp = mcp;
-//		this.mapPanelList = mcp.getMapPanelList();
-//		this.codeMap = mcp.getCodeMap();
-		this.tablePane = tablePane;
+		this.mtp = mtp;
+		this.fcp = mtp.getFcp();
+		this.mcp = mtp.getMcp();
+		this.tablePane = mtp.getTablePane();
 		makeChangeMap();
 		viewChangeMap();
 		makeTestDir();
-		makeHelloFile();
+		makeFile();
 	}
 
 	private void viewChangeMap() {
@@ -157,7 +160,8 @@ public class GenerateTestProgram {
 		//System.out.println(changeMap);
 	}
 
-	private void makeHelloFile() {
+	private void makeFile() {
+		StringBuilder sb = null;
 		try {
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
 			ChangeMyClass cmc = new ChangeMyClass(mcp,changeMap);
