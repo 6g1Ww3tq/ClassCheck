@@ -29,7 +29,6 @@ public class DebugMessageWindow extends JFrame {
 		setSize(new Dimension(800, 600));
 		initComponents();
 		setTitle(title);
-		setVisible(true);
 	}
 
 	private void initComponents() {

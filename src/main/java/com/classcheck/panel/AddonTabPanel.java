@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,11 +21,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ToolTipManager;
 
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
@@ -56,7 +59,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private DebugMessageWindow debugWindow;
 	private JPanel genPane;
+	private JCheckBox debugCheckBox;
 	private JPanel folderPane;
 	private JButton expBtn;
 	private JButton folderBtn;
@@ -79,6 +84,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private static Config config;
 
 	ByteArrayOutputStream baos;
+
 	public AddonTabPanel() {
 		initComponents();
 		initEvents();
@@ -88,7 +94,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void initDebugWindow(){
-		new DebugMessageWindow("Debug",true);
+		debugWindow = new DebugMessageWindow("Debug",true);
 	}
 
 	private void initVariables() {
@@ -99,11 +105,20 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		config.activate();
 
 		codeVisitorList = new ArrayList<CodeVisitor>();
+		
+		ToolTipManager.sharedInstance().setInitialDelay(250);
+		ToolTipManager.sharedInstance().setReshowDelay(250);
 	}
 
 
 	private void initComponents() {
+		JPanel actionPane = new JPanel();
+		JPanel debugPane = new JPanel();
 		JPanel northPane = new JPanel();
+		
+		actionPane.setLayout(new FlowLayout());
+		debugCheckBox = new JCheckBox();
+
 		northPane.setLayout(new BorderLayout(3, 3));
 		setLayout(new BorderLayout());
 		baseDirTree = null;
@@ -119,20 +134,26 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		configBtn = new JButton("設定");
 		genPane.add(configBtn);
 
-		folderBtn = new JButton("フォルダ");
+		folderBtn = new JButton("選択");
 		folderPane = new JPanel();
 		folderPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,3));
 		folderTextField = new JTextField(50);
+		folderTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		folderTextField.setDragEnabled(true);
 		folderTextField.setToolTipText("<html>"+
 				"ソースコードが存在する<br>" +
 				"フォルダを選択してください" +
 				"</html>");
 		folderPane.add(folderTextField);
+		
+		debugPane.add(new JLabel("デバックモード:"));
+		debugPane.add(debugCheckBox);
 
-		northPane.add(genPane, BorderLayout.NORTH);
+		actionPane.add(debugPane);
+		actionPane.add(genPane);
+		northPane.add(actionPane, BorderLayout.NORTH);
 		northPane.add(folderTextField, BorderLayout.CENTER);
-		northPane.add(new JLabel("フォルダ選択 : "),BorderLayout.WEST);
+		northPane.add(new JLabel("フォルダ : "),BorderLayout.WEST);
 		northPane.add(folderBtn,BorderLayout.EAST);
 
 		add(northPane,BorderLayout.NORTH);
@@ -140,6 +161,19 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void initEvents() {
+		
+		debugCheckBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (debugCheckBox.isSelected()) {
+					debugWindow.setVisible(true);
+				}else{
+					debugWindow.setVisible(false);
+				}
+			}
+		});
+		
 		expBtn.addActionListener(new ActionListener() {
 
 			@Override

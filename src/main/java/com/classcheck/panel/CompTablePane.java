@@ -1,6 +1,7 @@
 package com.classcheck.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

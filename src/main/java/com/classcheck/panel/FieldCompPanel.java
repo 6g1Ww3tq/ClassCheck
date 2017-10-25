@@ -1,5 +1,6 @@
 package com.classcheck.panel;
 
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.lang.reflect.Modifier;
@@ -150,6 +151,7 @@ public class FieldCompPanel extends JPanel{
 					popSb = new StringBuilder();
 
 					fieldComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
+					fieldComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					boxList.add(fieldComboBox);
 					//レーベンシュタイン距離を初期化
 					distance = 0;
@@ -213,6 +215,7 @@ public class FieldCompPanel extends JPanel{
 					popSb.append("</html>");
 
 					l.setToolTipText(popSb.toString());
+					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					p.add(l);
 					p.add(fieldComboBox);
 					panelList.add(p);

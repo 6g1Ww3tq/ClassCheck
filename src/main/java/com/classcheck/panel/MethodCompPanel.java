@@ -1,5 +1,7 @@
 package com.classcheck.panel;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.lang.reflect.Modifier;
@@ -24,10 +26,6 @@ import com.classcheck.autosource.MyClass;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-/*
- * アスタのシグネチャーと
- * ソースコードのシグネチャーの比較を行うパネル
- */
 public class MethodCompPanel extends JPanel {
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
@@ -190,6 +188,7 @@ public class MethodCompPanel extends JPanel {
 					}
 
 					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
+					methodComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					boxList.add(methodComboBox);
 					//レーベンシュタイン距離を初期化
 					distance = 0;
@@ -252,6 +251,7 @@ public class MethodCompPanel extends JPanel {
 					popSb.append("</html>");
 
 					l.setToolTipText(popSb.toString());
+					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					p.add(l);
 					p.add(methodComboBox);
 					panelList.add(p);
@@ -329,5 +329,4 @@ public class MethodCompPanel extends JPanel {
 	public void setStatus(StatusBar mtpSourceStatus) {
 		this.mtpSourceStatus = mtpSourceStatus;
 	}
-
 }

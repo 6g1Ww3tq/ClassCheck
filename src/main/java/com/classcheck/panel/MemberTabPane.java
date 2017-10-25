@@ -3,7 +3,9 @@ package com.classcheck.panel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,7 +98,7 @@ public class MemberTabPane extends JPanel{
 	}
 
 	private void initComponent(){
-		JPanel panel,classFieldMethodPane;
+		JPanel panel,classNamePane,classFieldMethodPane;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -105,8 +107,12 @@ public class MemberTabPane extends JPanel{
 		astahRoot = new DefaultMutableTreeNode("SkeltonCodeClass");
 		jtree = new JTree(astahRoot);
 		jtree.setMinimumSize(new Dimension(150,200));
+		
+		classNamePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		jtrSelClass = new JLabel();
 		jtrSelClass.setFont(new Font("SansSerif", Font.BOLD, 18));
+		jtrSelClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		classNamePane.add(jtrSelClass);
 
 		//フィールド
 		boolean isSameFieldSelected = false;
@@ -132,7 +138,7 @@ public class MemberTabPane extends JPanel{
 
 			generatableMap.put(myClass, !isSameMethodSelected);
 		}
-
+		
 		//デフォルトでパネルに初期値データを入れる
 		//->表示させないようにする
 		//フィールド
@@ -160,11 +166,20 @@ public class MemberTabPane extends JPanel{
 		mcpSourceStatus = new StatusBar(panel, "対応付けしてください");
 		mcp.setStatus(mcpSourceStatus);
 		mcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
+		/*
 		panel.add(mcpSourceStatus,BorderLayout.SOUTH);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.setMinimumSize(new Dimension(400, 150));
 		scrollPane.setSize(new Dimension(400, 200));
 		compVerticalSplitePane.setBottomComponent(scrollPane);
+		*/
+		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.setMinimumSize(new Dimension(400, 150));
+		scrollPane.setSize(new Dimension(400, 200));
+		panel = new JPanel(new BorderLayout());
+		panel.add(scrollPane,BorderLayout.CENTER);
+		panel.add(mcpSourceStatus,BorderLayout.SOUTH);
+		compVerticalSplitePane.setBottomComponent(panel);
 
 		//フィールドの対応パネル
 		panel = new JPanel(new BorderLayout());
@@ -173,17 +188,28 @@ public class MemberTabPane extends JPanel{
 		fcpSourceStatus = new StatusBar(panel, "対応付けしてください");
 		fcp.setStatus(fcpSourceStatus);
 		fcpSourceStatus.setStatusLabelFont(new Font("SansSerif", Font.BOLD, 15));
+		/*
 		panel.add(fcpSourceStatus,BorderLayout.SOUTH);
 		scrollPane = new JScrollPane(panel);
 		scrollPane.setMinimumSize(new Dimension(400, 150));
 		scrollPane.setSize(new Dimension(400, 200));
 		compVerticalSplitePane.setTopComponent(scrollPane);
 		compVerticalSplitePane.setContinuousLayout(true);
+		*/
+		scrollPane = new JScrollPane(panel);
+		scrollPane.setMinimumSize(new Dimension(400, 150));
+		scrollPane.setSize(new Dimension(400, 200));
+		panel = new JPanel(new BorderLayout());
+		panel.add(scrollPane,BorderLayout.CENTER);
+		panel.add(fcpSourceStatus,BorderLayout.SOUTH);
+		compVerticalSplitePane.setTopComponent(panel);
+
+		compVerticalSplitePane.setContinuousLayout(true);
 		
 		//クラス,フィールド,メソッドをまとめる
 		classFieldMethodPane = new JPanel();
 		classFieldMethodPane.setLayout(new BorderLayout(5,5));
-		classFieldMethodPane.add(jtrSelClass,BorderLayout.NORTH);
+		classFieldMethodPane.add(classNamePane,BorderLayout.NORTH);
 		classFieldMethodPane.add(compVerticalSplitePane,BorderLayout.CENTER);
 
 		holizontalSplitePane.setLeftComponent(treeScrollPane);

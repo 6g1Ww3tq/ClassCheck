@@ -1,0 +1,5 @@
+package com.classcheck.panel;
+
+public enum GenerateState {
+	NORMAL,TABLENULL,TABLESAMECLASS,FIELDNULL,FIELDSAME,METHODNULL,METHODSAME
+}
