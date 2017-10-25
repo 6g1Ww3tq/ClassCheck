@@ -29,7 +29,7 @@ public class Field {
 	boolean isOcl;
 
 
-	Field(IAttribute a){
+	public Field(IAttribute a){
 		attribute=a;
 		isOcl=false;
 

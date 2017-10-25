@@ -27,7 +27,7 @@ public class MyClass {
 	IClass realizations[];//実装するインターフェイス
 
 
-	MyClass(IClass ic){
+	public MyClass(IClass ic){
 		iClass=ic;
 		//定義
 		if(!iClass.getDefinition().equals("")){

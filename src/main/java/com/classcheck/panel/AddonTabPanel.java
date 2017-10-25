@@ -108,6 +108,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 		ToolTipManager.sharedInstance().setReshowDelay(250);
+		ToolTipManager.sharedInstance().setDismissDelay(60000);
 	}
 
 
