@@ -214,6 +214,10 @@ public class MyClass {
 		return methods;
 	}
 	
+	public void setMethods(List<Method> methods) {
+		this.methods = methods;
+	}
+	
 	public List<Field> getFields() {
 		return fields;
 	}

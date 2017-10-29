@@ -309,13 +309,40 @@ public class Method {
 			}
 		}
 		st+=postCondition;
-		
+
 		if (returnString.contains("null")) {
 			return st;
 		}else{
 			st+=returnString;
 			return st;
 		}
+	}
+
+	public String getMethodBody(){
+		String s = new String();
+
+		String preCondition ="";
+		if(addAssert){//事前条件
+			String pre[] = operation.getPreConditions();
+			for(int i=0;i<pre.length;i++){
+				preCondition += "\t\t//assert "+pre[i]+";\t//事前条件 **自動追加したコメント**\r\n";
+			}
+		}
+		s+=preCondition;
+		for(int i=0;i<process.size();i++){
+			s+=process.get(i);
+		}
+		String postCondition="";
+		if(addAssert){//事後条件
+			String post[] = operation.getPostConditions();
+			for(int i=0;i<post.length;i++){
+				postCondition += "\t\t//assert "+post[i]+";\t//事後条件 **自動追加したコメント**\r\n";
+			}
+		}
+		s+=postCondition;
+
+		s+=returnString;
+		return s;
 	}
 
 	public String toSignature(){
@@ -367,7 +394,7 @@ public class Method {
 
 	public String getSignature(){
 		String s = new String();
-		
+
 		if (definition.contains(" ")) {
 			s += definition+" ";
 		}
@@ -380,34 +407,38 @@ public class Method {
 		s+=")";
 		return s;
 	}
-	
+
 	public String getReturnString() {
 		return returnString;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public String[] getParams() {
 		return params;
 	}
-	
+
 	public String getReturntype() {
 		return returntype;
 	}
 	
+	public List<String> getProcess() {
+		return process;
+	}
+
 	public String getModifiers(){
 		StringBuilder rtnSB = new StringBuilder();
-		
+
 		if (!visibility.isEmpty()) {
 			rtnSB.append(visibility);
 		}
-		
+
 		if (!isStatic.isEmpty()) {
 			rtnSB.append(isStatic);
 		}
-		
+
 		return rtnSB.toString();
 	}
 }

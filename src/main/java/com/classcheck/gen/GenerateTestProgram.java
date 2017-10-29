@@ -233,7 +233,10 @@ public class GenerateTestProgram {
 			//アスタと学生のソースコードを元にしたプログラムの生成
 			ChangeSkeltonCode cmc = new ChangeSkeltonCode(mtp,tableMap,fieldChangeMap,methodChangeMap);
 			cmc.change();
-			cmc.getGeneratedCodes();
+			
+			//TODO
+			//加工後の文字列をテスト用にする
+			cmc.getGeneratedCodesMap();
 
 			//ファイル出力
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");

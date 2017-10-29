@@ -1,7 +1,5 @@
 package com.classcheck.gen;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

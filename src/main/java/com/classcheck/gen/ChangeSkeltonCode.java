@@ -2,10 +2,13 @@ package com.classcheck.gen;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.classcheck.analyzer.source.CodeVisitor;
+import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.MemberTabPane;
 import com.classcheck.window.DebugMessageWindow;
@@ -20,7 +23,7 @@ public class ChangeSkeltonCode {
 	private Map<MyClass, CodeVisitor> fieldCodeMap;
 	private Map<MyClass, Map<String, String>> methodChangeMap;
 	private Map<MyClass, Map<String, String>> fieldChangeMap;
-	private ArrayList<String> generatedCodes;
+	private Map<CodeVisitor, String> generatedCodesMap;
 
 	public ChangeSkeltonCode(MemberTabPane mtp,
 			Map<MyClass, CodeVisitor> tableMap,
@@ -32,16 +35,20 @@ public class ChangeSkeltonCode {
 		this.tableMap = tableMap;
 		this.fieldChangeMap = fieldChangeMap;
 		this.methodChangeMap = methodChangeMap;
-		this.generatedCodes = new ArrayList<String>();
+		this.generatedCodesMap = new HashMap<CodeVisitor, String>();
 	}
 
-	public ArrayList<String> getGeneratedCodes() {
-		return generatedCodes;
+	public Map<CodeVisitor, String> getGeneratedCodesMap() {
+		return generatedCodesMap;
 	}
 
 	public void change() {
 		Set<MyClass> myClassKeySet = methodChangeMap.keySet();
 		Map<String, String> fieldMap,methodMap;
+		//スケルトンコードのメソッドリスト
+		List<Method> methodList;
+		//排除するメソッドをチェックするクラス
+		CheckMember cm;
 		//変更したテキスト	
 		StringBuilder sb = null;
 
@@ -58,7 +65,19 @@ public class ChangeSkeltonCode {
 		for (MyClass myClass : myClassKeySet) {
 			fieldMap = fieldChangeMap.get(myClass);
 			methodMap = methodChangeMap.get(myClass);
-
+			
+			//空のメソッドやnewが使われているメソッドは除外する
+			//コンストラクタも同様
+			methodList = myClass.getMethods();
+			cm = new CheckMember(methodList);
+			cm.doCheck();
+			myClass.setMethods(cm.getMemberList());
+			
+			//検査するメソッドが空の場合はスルー
+			if (cm.getMemberList().isEmpty()) {
+				continue ;
+			}
+			
 			//フィールド変更
 			fsr = new FieldSigReplace(myClass.toString());
 
@@ -83,37 +102,28 @@ public class ChangeSkeltonCode {
 				cu = JavaParser.parse(new ByteArrayInputStream(msr.getBase().getBytes()));
 				cu.accept(frv, null);
 
-				//TODO
-				//メソッドのボディの変更(start.toString();)のようなメソッド名
-				//まずフィールドの変数とクラス名を調べる
-				//クラス名(myClass)からメソッドのパネルリストを調べる(メソッドの対応関係を調べる)
-				
+				//メソッドのステートメントを変更
 				mstr = new MethodStmtsReplace(
 						methodChangeMap,
 						frv.getVariableBefMap(),
 						frv.getVariableAftMap(),
 						cu.toString());
 				mstr.replace();
+
+				//クラス名変更
+				cnr = new ClassNameReplace(mstr.getBase());
+				cnr.setBefore(myClass.getClassSig());
+				cnr.setAfter(methodCodeMap.get(myClass).getClassSig());
+				cnr.replace();
+
+				System.out.println(cnr.getBase());
 				
-				System.out.println(mstr.getBase());
+				//変換後のクラス名と内容を記録
+				generatedCodesMap.put(methodCodeMap.get(myClass), cnr.getBase());
 			} catch (ParseException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
-
-
-			//System.out.println(msr.getBase());
-
-			//クラス名変更
-			/*
-				cnr = new ClassNameReplace(msr.getBase());
-				cnr.setBefore(myClass.getClassSig());
-				cnr.setAfter(methodCodeMap.get(myClass).getClassSig());
-				cnr.replace();
-			 */
-
-			//クラス名とメソッド名の変更
-			//System.out.println(cnr.getBase());
 
 			DebugMessageWindow.msgToOutPutTextArea();
 
