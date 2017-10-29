@@ -101,6 +101,10 @@ public class MemberTabPane extends JPanel{
 		return selectedMyClass;
 	}
 
+	public JTree getJtree() {
+		return jtree;
+	}
+	
 	private void initComponent(){
 		JPanel panel,classNamePane,classFieldMethodPane;
 		ClassNode child = null;

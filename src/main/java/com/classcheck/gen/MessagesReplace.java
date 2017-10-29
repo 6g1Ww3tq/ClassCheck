@@ -21,4 +21,9 @@ public class MessagesReplace extends Replace{
 			super.replace();
 		}
 	}
+
+	@Override
+	public boolean canChange() {
+		return line.contains(before) && !lineNumList.contains(new Integer(lineNum));
+	}
 }

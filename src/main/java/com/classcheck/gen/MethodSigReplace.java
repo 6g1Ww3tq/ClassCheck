@@ -12,4 +12,9 @@ public class MethodSigReplace extends Replace{
 		// TODO 自動生成されたメソッド・スタブ
 		super.setBefore(before.replaceAll(" : ", ""));
 	}
+	
+	@Override
+	public boolean canChange() {
+		return line.contains(before) && !lineNumList.contains(new Integer(lineNum));
+	}
 }

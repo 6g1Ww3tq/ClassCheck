@@ -7,4 +7,8 @@ public class ClassNameReplace extends Replace {
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
+	@Override
+	public boolean canChange() {
+		return line.contains(before) && !lineNumList.contains(new Integer(lineNum));
+	}
 }

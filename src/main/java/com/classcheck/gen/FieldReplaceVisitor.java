@@ -1,5 +1,14 @@
 package com.classcheck.gen;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.w3c.dom.CDATASection;
+
+import com.classcheck.analyzer.source.CodeVisitor;
+import com.classcheck.autosource.MyClass;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
@@ -9,33 +18,69 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class FieldReplaceVisitor extends VoidVisitorAdapter<Void> {
 
-	private String befClassDecName;
-	private String aftClassDecName;
+	private Map<MyClass, CodeVisitor> tableMap;
 
-	public FieldReplaceVisitor(String befClassDecName,String aftClassDecName) {
+	//フィールドの変数名に対する型を記録しておく
+	private HashMap<String, MyClass> variableBefMap;
+	private HashMap<String, CodeVisitor> variableAftMap;
+
+	Pattern varPattern;
+
+	public FieldReplaceVisitor(Map<MyClass, CodeVisitor> tableMap) {
 		super();
-		this.befClassDecName = befClassDecName;
-		this.aftClassDecName = aftClassDecName;
+		this.tableMap = tableMap;
+		this.variableBefMap= new HashMap<String, MyClass>();
+		this.variableAftMap = new HashMap<String, CodeVisitor>();
+
+		varPattern = Pattern.compile("\\s+.+;");
 	}
-	
+
 	public void visit(VariableDeclarator n, Void arg) {
 		Expression exp = n.getInit();
 		if (exp instanceof IntegerLiteralExpr) {
-			
+
 		}
 	}
 
 	@Override
 	public void visit(FieldDeclaration field, Void arg) {
-		ClassOrInterfaceType aftType = new ClassOrInterfaceType(aftClassDecName);
-		FieldDeclaration fieldDeclaration = null;
+		ClassOrInterfaceType aftType = null;
+		//クラス名変換後
+		CodeVisitor aftClass;
 
-		if (field.toString().contains(befClassDecName)) {
-			field.setType(aftType);
-			fieldDeclaration = new FieldDeclaration(field.getModifiers(), aftType, field.getVariables());
-			field = fieldDeclaration;
+		Matcher matcher;
+
+		for(MyClass myClass : tableMap.keySet()){
+			//フィールドのクラスとスケルトンコードのクラスといずれか一つに一致
+			if (field.toString().contains(myClass.getName())) {
+				aftClass = tableMap.get(myClass);
+				aftType = new ClassOrInterfaceType(aftClass.getClassName());
+				field.setType(aftType);
+
+				matcher = varPattern.matcher(field.toString());
+
+
+				if (matcher.find()) {
+					//マッチした文字列を取得(変数名の抽出)
+					variableBefMap.put(matcher.group()
+							.replaceAll("^\\s+", "")
+							.replaceAll(";", ""), myClass);
+					variableAftMap.put(matcher.group()
+							.replaceAll("^\\s+", "")
+							.replaceAll(";", ""), aftClass);
+					break;
+				}
+			}
 		}
 		super.visit(field, arg);
+	}
+
+	public HashMap<String, MyClass> getVariableBefMap() {
+		return variableBefMap;
+	}
+	
+	public HashMap<String, CodeVisitor> getVariableAftMap() {
+		return variableAftMap;
 	}
 
 }

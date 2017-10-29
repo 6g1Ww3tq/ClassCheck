@@ -7,16 +7,31 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 
-public abstract class Replace {
-	private String base;
-	private String before;
-	private String after;
-	private ArrayList<Integer> lineNumList;
+public abstract class Replace implements Strategy{
+	String base;
+	String before;
+	String after;
+	ArrayList<Integer> lineNumList;
+
+	StringBuilder sb;
+	StringReader sr;
+	BufferedReader br;
+	String line;
+	int lineNum;
+	private int replaceTimesLimit;
+	boolean replaced;
 
 	public Replace(String base) {
 		this.base= base;
 		this.before = null;
 		this.after = null;
+		this.sb = null;
+		this.sr = null;
+		this.br = null;
+		this.line = null;
+		this.lineNum = 0;
+		this.replaced = false;
+		this.replaceTimesLimit = 0;
 		this.lineNumList = new ArrayList<Integer>();
 	}
 
@@ -32,15 +47,20 @@ public abstract class Replace {
 		this.after = after;
 	}
 
-	public void replace(){
-		StringBuilder sb = new StringBuilder();
-		StringReader sr = new StringReader(base);
-		BufferedReader br = new BufferedReader(sr);
-		String line = null;
-		int lineNum = 0;
-		boolean replaced = false;
+	public void setReplaceTimesLimit(int times){
+		this.replaceTimesLimit = times;
+	}
 
-		if (before==null || after==null) {
+	public void replace(){
+		sb = new StringBuilder();
+		sr = new StringReader(base);
+		br = new BufferedReader(sr);
+		line = null;
+		lineNum = 0;
+		replaced = false;
+		int replaceTimes = 0;
+
+		if (isBeforeAfterNull()) {
 			return ;
 		}
 
@@ -48,18 +68,14 @@ public abstract class Replace {
 			while ((line = br.readLine()) != null) {
 				lineNum++;
 
-				if (!replaced) {
-					//すでに前回、置換した行をまた置換しないようにする
-					if (line.contains(before) && !lineNumList.contains(new Integer(lineNum))) {
-						sb.append(StringUtils.replace(line, before, after));
+				//すでに前回、置換した行をまた置換しないようにする
+				if (canChange() && canReplace(replaceTimes)) {
+					sb.append(StringUtils.replace(line, before, after));
 
-						//置換した行数を記録しておく
-						lineNumList.add(lineNum);
-						//置換した
-						replaced = true;
-					}else{
-						sb.append(line);
-					}
+					//置換した行数を記録しておく
+					lineNumList.add(lineNum);
+					//置換した
+					replaceTimes++;
 				}else{
 					sb.append(line);
 				}
@@ -82,5 +98,22 @@ public abstract class Replace {
 		}
 
 		this.base = sb.toString();
+	}
+
+	protected boolean isBeforeAfterNull() {
+		if (before==null || after==null) {
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	private boolean canReplace(int replaceTimes) {
+
+		if (replaceTimes <= replaceTimesLimit) {
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

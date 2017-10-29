@@ -95,7 +95,7 @@ public class GenerateToolBar extends JToolBar {
 				}
 
 				if (gs == GenerateState.NORMAL) {
-					new GenerateTestProgram(baseDir,mtp);
+					new GenerateTestProgram(baseDir,mtp).doExec();
 					JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
 				}
 				
