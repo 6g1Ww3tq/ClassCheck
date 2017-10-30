@@ -22,6 +22,7 @@ import com.classcheck.panel.FieldCompPanel;
 import com.classcheck.panel.MemberTabPane;
 import com.classcheck.panel.MethodCompPanel;
 import com.classcheck.window.DebugMessageWindow;
+import com.classcheck.window.SelectConstructorViewer;
 
 public class GenerateTestProgram {
 	//出力元となるディレクトリ
@@ -51,11 +52,15 @@ public class GenerateTestProgram {
 		this.tablePane = mtp.getTablePane();
 	}
 
-	public void doExec(){
+	public boolean doExec(){
+		boolean successed = true;
+
 		makeChangeMap();
 		viewChangeMap();
 		makeTestDir();
-		makeFile();
+		successed = makeFile();
+		
+		return successed;
 	}
 
 	private void viewChangeMap() {
@@ -227,23 +232,48 @@ public class GenerateTestProgram {
 		//System.out.println(methodChangeMap);
 	}
 
-	private void makeFile() {
+	private boolean makeFile() {
+		boolean successed = true;
+		Map<String,String> fileMap;
 		StringBuilder sb = null;
+		Map<CodeVisitor, String> generatedCodesMap;
+		MakeFile makeFile = null;
+		SelectConstructorViewer scv = null;
+		
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
 			ChangeSkeltonCode cmc = new ChangeSkeltonCode(mtp,tableMap,fieldChangeMap,methodChangeMap);
 			cmc.change();
 			
-			//TODO
-			//加工後の文字列をテスト用にする
-			cmc.getGeneratedCodesMap();
+			//テストプログラムの
+			//初期化コンストラクタの指定
+			generatedCodesMap = cmc.getGeneratedCodesMap();
+			scv = new SelectConstructorViewer(generatedCodesMap);
+			successed = !scv.isCanceled();
 
+			/*
+			//TODO
+			//加工後の文字列をテスト用にする(javaparserを使用する)
+			makeFile = new MakeFile(generatedCodesMap);
+			makeFile.make();
+			fileMap = makeFile.getFileMap();
+			
+			for(String fileName : fileMap.keySet()){
+				System.out.println("FileName : " + fileName);
+				System.out.println(fileMap.get(fileName));
+			}
+			
+			DebugMessageWindow.msgToOutPutTextArea();
+
+			 */
 			//ファイル出力
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+		
+		return successed;
 	}
 
 	/**

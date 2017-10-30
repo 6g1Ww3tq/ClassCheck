@@ -22,17 +22,14 @@ public class GenerateToolBar extends JToolBar {
 	Action genAction;
 	ImageIcon genIcon;
 	private File baseDir;
-	private MethodCompPanel mcp;
 	private MemberTabPane mtp;
 
 	public GenerateToolBar(String name, MemberTabPane mtp,
-			int operation, FileNode baseDir,
-			MethodCompPanel mcp) {
+			int operation, FileNode baseDir) {
 		super(name, operation);
 
 		this.mtp = mtp;
 		this.baseDir = baseDir;
-		this.mcp = mcp;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
 		add(Box.createHorizontalGlue());
 		setBorder(new LineBorder(Color.LIGHT_GRAY,1));
@@ -95,8 +92,11 @@ public class GenerateToolBar extends JToolBar {
 				}
 
 				if (gs == GenerateState.NORMAL) {
-					new GenerateTestProgram(baseDir,mtp).doExec();
-					JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
+					if(new GenerateTestProgram(baseDir,mtp).doExec()){
+						JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
+					}else{
+						//JOptionPane.showMessageDialog(getParent(), "テストプログラムに失敗しました","失敗",JOptionPane.ERROR_MESSAGE);
+					}
 				}
 				
 				DebugMessageWindow.msgToOutPutTextArea();

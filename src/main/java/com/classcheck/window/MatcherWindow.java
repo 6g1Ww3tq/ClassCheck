@@ -44,7 +44,7 @@ public class MatcherWindow extends JFrame {
 			List<CodeVisitor> codeVisitorList, FileTree baseDirTree) {
 		mt = new MatcherTabbedPane(cb,codeVisitorList,baseDirTree);
 		
-		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot(),mt.getMethodCompPane());
+		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot());
 		add(genToolBar,BorderLayout.NORTH);
 		add(mt,BorderLayout.CENTER);
 	}

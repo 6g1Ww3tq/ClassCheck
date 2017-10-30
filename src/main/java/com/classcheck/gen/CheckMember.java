@@ -48,7 +48,11 @@ public class CheckMember {
 		StringReader sr = new StringReader(body);
 		BufferedReader br = new BufferedReader(sr);
 		String line;
-		Pattern pattern = Pattern.compile("=\\s+new\\s");
+		//メソッドのステートメントに
+		//ある記述がされていると
+		//除外するようにする
+		//Pattern pattern = Pattern.compile("=\\s+new\\s");
+		Pattern pattern = Pattern.compile("(=|\\s+new\\s|this..)");
 		Matcher matcher;
 
 		try {

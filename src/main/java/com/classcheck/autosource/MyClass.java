@@ -26,6 +26,39 @@ public class MyClass {
 	String generalization;//継承するクラス
 	IClass realizations[];//実装するインターフェイス
 
+	@Override
+	public MyClass clone() throws CloneNotSupportedException {
+		MyClass clMyClass = new MyClass(iClass);
+		IClass reals[] = new IClass[realizations.length];
+		clMyClass.setDefinition(new String(definition));
+		clMyClass.setFields(new ArrayList<Field>(fields));
+		clMyClass.setMethods(new ArrayList<Method>(methods));
+		clMyClass.setName(new String(name));
+		clMyClass.setGeneralization(new String(generalization));
+		
+		for(int i=0;i<realizations.length;i++){
+			reals[i] = realizations[i];
+		}
+		clMyClass.setRealizations(reals);
+		
+		return clMyClass;
+	}
+	
+	public void setGeneralization(String generalization) {
+		this.generalization = generalization;
+	}
+	
+	public void setRealizations(IClass[] realizations) {
+		this.realizations = realizations;
+	}
+	
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
+	
+	public void setFields(List<Field> fields) {
+		this.fields = fields;
+	}
 
 	public MyClass(IClass ic){
 		iClass=ic;

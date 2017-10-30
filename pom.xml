@@ -323,6 +323,15 @@
 			<version>3.4</version> </dependency> -->
 
 
+		<!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
+		<dependency>
+			<groupId>org.jmockit</groupId>
+			<artifactId>jmockit</artifactId>
+			<version>1.17</version>
+			<scope>test</scope>
+		</dependency>
+
+
 	</dependencies>
 	<name>SouceCheck</name>
 	<description>UMLを元にソースコードのチェック</description>

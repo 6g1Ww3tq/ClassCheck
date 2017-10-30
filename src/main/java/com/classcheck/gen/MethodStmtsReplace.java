@@ -56,7 +56,7 @@ public class MethodStmtsReplace extends Replace {
 	@Override
 	public boolean canChange() {
 		Map<String, String> methodMap;
-		Pattern aftPtn = Pattern.compile(" [a-zA-Z_]+\\(");
+		Pattern aftPtn = Pattern.compile(" [a-zA-Z_0-9]+\\(");
 		Matcher aftMatcher;
 
 		for (String key : varKeys){

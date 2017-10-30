@@ -51,6 +51,9 @@ public class ChangeSkeltonCode {
 		CheckMember cm;
 		//変更したテキスト	
 		StringBuilder sb = null;
+		
+		//MyClassのフィールドを削除するためコピーを用意
+		MyClass clMyClass = null;
 
 		FieldSigReplace fsr = null;
 		MethodSigReplace msr = null;
@@ -66,12 +69,18 @@ public class ChangeSkeltonCode {
 			fieldMap = fieldChangeMap.get(myClass);
 			methodMap = methodChangeMap.get(myClass);
 			
+			try {
+				clMyClass = myClass.clone();
+			} catch (CloneNotSupportedException e1) {
+				// TODO 自動生成された catch ブロック
+				e1.printStackTrace();
+			}
 			//空のメソッドやnewが使われているメソッドは除外する
 			//コンストラクタも同様
-			methodList = myClass.getMethods();
+			methodList = clMyClass.getMethods();
 			cm = new CheckMember(methodList);
 			cm.doCheck();
-			myClass.setMethods(cm.getMemberList());
+			clMyClass.setMethods(cm.getMemberList());
 			
 			//検査するメソッドが空の場合はスルー
 			if (cm.getMemberList().isEmpty()) {
@@ -79,7 +88,7 @@ public class ChangeSkeltonCode {
 			}
 			
 			//フィールド変更
-			fsr = new FieldSigReplace(myClass.toString());
+			fsr = new FieldSigReplace(clMyClass.toString());
 
 			for (String befFieldStr : fieldMap.keySet()){
 				fsr.setBefore(befFieldStr);
