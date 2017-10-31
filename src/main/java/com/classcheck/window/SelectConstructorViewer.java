@@ -46,6 +46,18 @@ public class SelectConstructorViewer extends JDialog {
 		setVisible(true);
 	}
 	
+	public boolean isCanceled() {
+		return canceled;
+	}
+
+	public HashMap<CodeVisitor, String> getConstructorMap() {
+		return constructorMap;
+	}
+	
+	public ConstructorTabbedPane getCtp() {
+		return ctp;
+	}
+	
 	private void initCompoenent() {
 		JPanel contentPane = (JPanel) getContentPane();
 		JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
@@ -100,13 +112,4 @@ public class SelectConstructorViewer extends JDialog {
 			}
 		});
 	}
-	
-	public boolean isCanceled() {
-		return canceled;
-	}
-
-	public HashMap<CodeVisitor, String> getConstructorMap() {
-		return constructorMap;
-	}
-	
 }

@@ -23,6 +23,10 @@ public class ConstructorTabbedPane extends JTabbedPane {
 		initComponent();
 		setVisible(true);
 	}
+	
+	public ArrayList<ConstructorPane> getConstructorPaneList() {
+		return constructorPaneList;
+	}
 
 	private void initComponent() {
 		JScrollPane jscrollPane;

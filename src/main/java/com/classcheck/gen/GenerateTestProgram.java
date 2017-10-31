@@ -18,6 +18,8 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
 import com.classcheck.panel.CompTablePane;
+import com.classcheck.panel.ConstructorPane;
+import com.classcheck.panel.ConstructorTabbedPane;
 import com.classcheck.panel.FieldCompPanel;
 import com.classcheck.panel.MemberTabPane;
 import com.classcheck.panel.MethodCompPanel;
@@ -239,6 +241,7 @@ public class GenerateTestProgram {
 		Map<CodeVisitor, String> generatedCodesMap;
 		MakeFile makeFile = null;
 		SelectConstructorViewer scv = null;
+		List<ConstructorPane> cPaneList = null;
 		
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
@@ -250,11 +253,11 @@ public class GenerateTestProgram {
 			generatedCodesMap = cmc.getGeneratedCodesMap();
 			scv = new SelectConstructorViewer(generatedCodesMap);
 			successed = !scv.isCanceled();
+			cPaneList = scv.getCtp().getConstructorPaneList();
 
-			/*
 			//TODO
 			//加工後の文字列をテスト用にする(javaparserを使用する)
-			makeFile = new MakeFile(generatedCodesMap);
+			makeFile = new MakeFile(generatedCodesMap,cPaneList);
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
 			
@@ -265,7 +268,6 @@ public class GenerateTestProgram {
 			
 			DebugMessageWindow.msgToOutPutTextArea();
 
-			 */
 			//ファイル出力
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
 		} catch (IOException e) {
