@@ -1,6 +1,7 @@
 package com.classcheck.gen;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -14,15 +15,18 @@ import com.classcheck.panel.ConstructorPane;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.Parameter;
 
 public class MakeFile {
 
 	private Map<CodeVisitor, String> generatedCodesMap;
 	private Map<String,String> fileMap;
 	private List<ConstructorPane> cPanelList;
+	private Collection<CodeVisitor> codeCollection;
 
-	public MakeFile(Map<CodeVisitor, String> generatedCodesMap, List<ConstructorPane> cPaneList) {
+	public MakeFile(Map<CodeVisitor, String> generatedCodesMap, List<ConstructorPane> cPaneList, Collection<CodeVisitor> codeCollection) {
 		this.generatedCodesMap = generatedCodesMap;
+		this.codeCollection = codeCollection;
 		this.cPanelList = cPaneList;
 		this.fileMap = new HashMap<String, String>();
 	}
@@ -48,7 +52,8 @@ public class MakeFile {
 
 			try {
 				cu = JavaParser.parse(new ByteArrayInputStream(skeltonCode.getBytes()));
-				skeVisitor = new TestSkeltonCodeVisitor();
+				//引数にすべてのcoddevisitorのSetを入れる
+				skeVisitor = new TestSkeltonCodeVisitor(codeCollection);
 				cu.accept(skeVisitor, null);
 
 				mockParamsList = skeVisitor.getMockFieldList();
@@ -62,7 +67,7 @@ public class MakeFile {
 								codeVisitor.getClassName(),
 								mockMethodMap,
 								mockParamsList,
-								cPanelList.get(i).getGroup());
+								cPanelList.get(i));
 					}
 				}
 
@@ -79,14 +84,15 @@ public class MakeFile {
 			String className,
 			HashMap<String, String> mockMethodMap,
 			List<String> mockParamsList,
-			ButtonGroup buttonGroup) {
-		Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+			ConstructorPane constructorPane) {
+		Enumeration<AbstractButton> buttons = constructorPane.getGroup().getElements();
+		Map<AbstractButton, String> abstructBtnMap = constructorPane.getAbstractBtnMap();
 		AbstractButton button;
 		AbstractButton selectedButton = null;
-		
+
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();
-			
+
 			if(button.isSelected()){
 				selectedButton = button;
 				break;
@@ -117,7 +123,15 @@ public class MakeFile {
 			//プリミティブだけを入れるのか
 			//どうかを考える
 			if (selectedButton != null) {
-				sb.append("\r\t"+ className +" object " + "=" +" "+"new "+ selectedButton.getText()+"\n");
+				sb.append("\r\t"+ className +" object " + "=" +" "+"new ");
+				
+				if (abstructBtnMap.get(selectedButton) != null) {
+					//定義したコンストラクタ
+					sb.append(abstructBtnMap.get(selectedButton) +";\n");
+				}else{
+					//デフォルトコンストラクタ
+					sb.append(className + "()"+";\n");
+				}
 			}
 
 			//record

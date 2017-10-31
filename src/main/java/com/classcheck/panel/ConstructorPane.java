@@ -1,7 +1,10 @@
 package com.classcheck.panel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -12,11 +15,14 @@ import org.apache.lucene.search.spell.LevensteinDistance;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 
 public class ConstructorPane extends JPanel {
 
 	private CodeVisitor codeVisitor;
 	private ButtonGroup group;
+	private Map<JRadioButton, ConstructorDeclaration> radioConstMap;
+	private Map<AbstractButton, String> abstractBtnMap;
 
 	public ConstructorPane(CodeVisitor codeVisitor) {
 		this.codeVisitor = codeVisitor;
@@ -25,52 +31,91 @@ public class ConstructorPane extends JPanel {
 
 		initComponent();
 	}
-	
+
 	public ButtonGroup getGroup() {
 		return group;
 	}
-	
+
 	public CodeVisitor getCodeVisitor() {
 		return codeVisitor;
 	}
 
+	public Map<AbstractButton, String> getAbstractBtnMap() {
+		return abstractBtnMap;
+	}
+
 	private void initComponent() {
 		this.group = new ButtonGroup();
+		this.radioConstMap = new HashMap<JRadioButton, ConstructorDeclaration>();
+		this.abstractBtnMap = new HashMap<AbstractButton, String>();
 		List<FieldDeclaration> fieldList = codeVisitor.getFieldList();
-		List<ConstructorDeclaration> methodList = codeVisitor.getConstructorList();
+		List<ConstructorDeclaration> constructorList = codeVisitor.getConstructorList();
+		List<Parameter> paramList;
+		String[] splits;
 		JRadioButton radioButton = null;
 		float distance;
 		float distanceMax = -1;
 		String fieldParams;
-		StringBuilder sb = new StringBuilder();
+		StringBuilder radioTextSB = new StringBuilder();
+		StringBuilder sb = null;;
 		LevensteinDistance ld = new LevensteinDistance();
-		
+
 		for(int i=0;i<fieldList.size();i++){
 			FieldDeclaration field = fieldList.get(i);
-			sb.append(field.toString());
-			
+			radioTextSB.append(field.toString());
+
 			if(i < fieldList.size() - 1){
-				sb.append(",");
+				radioTextSB.append(",");
 			}
 		}
-			
-		fieldParams = sb.toString();
 
-		for(ConstructorDeclaration method : methodList){
-			radioButton = new JRadioButton(method.getDeclarationAsString());
+		fieldParams = radioTextSB.toString();
+
+		if (constructorList.size() > 0) {
+			for(ConstructorDeclaration constructor : constructorList){
+				radioTextSB = new StringBuilder();
+
+				radioTextSB.append(constructor.getDeclarationAsString());
+				radioButton = new JRadioButton(radioTextSB.toString());
+				radioConstMap.put(radioButton, constructor);
+
+				sb = new StringBuilder();
+				sb.append(constructor.getName());
+				sb.append("(");
+				paramList = constructor.getParameters();
+				for(int i=0;i<paramList.size();i++){
+					Parameter param = paramList.get(i);
+					splits = param.toString().split(" ");
+					sb.append(splits[splits.length - 1]);
+
+					if(i<paramList.size() -1){
+						sb.append(",");
+					}
+				}
+				sb.append(")");
+
+				abstractBtnMap.put((AbstractButton)radioButton, sb.toString());
+				group.add(radioButton);
+				add(radioButton);
+
+				//デフォルトで選択するアイテムを設定(類似度)
+				distance = ld.getDistance(fieldParams, constructor.getDeclarationAsString());
+				if(distance > distanceMax){
+					distanceMax = distance;
+					group.setSelected(radioButton.getModel(), true);
+				}
+			}
+
+		} else {
+
+			radioButton = new JRadioButton("なし　（デフォルトコンストラクタ）");
 			group.add(radioButton);
 			add(radioButton);
 
-			//デフォルトで選択するアイテムを設定(類似度)
-			distance = ld.getDistance(fieldParams, method.getDeclarationAsString());
-			if(distance > distanceMax){
-				distanceMax = distance;
-				group.setSelected(radioButton.getModel(), true);
-			}
 		}
-		
+
 		group.setSelected(radioButton.getModel(), true);
-		
+
 	}
 
 }

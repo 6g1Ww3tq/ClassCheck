@@ -257,7 +257,7 @@ public class GenerateTestProgram {
 
 			//TODO
 			//加工後の文字列をテスト用にする(javaparserを使用する)
-			makeFile = new MakeFile(generatedCodesMap,cPaneList);
+			makeFile = new MakeFile(generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
 			
