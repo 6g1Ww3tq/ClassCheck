@@ -1,4 +1,4 @@
-package com.classcheck.tree.type;
+package com.classcheck.type;
 
 public enum FILETYPE {
 	FILE,FOLDER;

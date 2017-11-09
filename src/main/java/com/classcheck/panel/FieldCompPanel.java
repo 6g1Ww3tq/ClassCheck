@@ -15,10 +15,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.change_vision.jude.api.inf.model.IAttribute;
+import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IComment;
 import com.change_vision.jude.api.inf.model.IConstraint;
 import com.classcheck.analyzer.source.CodeVisitor;
@@ -29,13 +31,14 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 
 public class FieldCompPanel extends JPanel{
 
+	private List<IClass> javaPackage;
 	private ClassBuilder cb;
 	StatusBar fcpSourceStatus;
-	private MemberTabPane mtp;
 	private List<CodeVisitor> codeVisitorList;
 	private HashMap<MyClass, List<JPanel>> mapPanelList;
 	private HashMap<MyClass, CodeVisitor> codeMap;
 	private ArrayList<JComboBox<String>> boxList;
+	private DefaultTableModel tableModel;
 
 	public FieldCompPanel(ClassBuilder cb) {
 		this.cb = cb;
@@ -47,11 +50,11 @@ public class FieldCompPanel extends JPanel{
 		setVisible(true);
 	}
 
-	public FieldCompPanel(MemberTabPane mtp,
+	public FieldCompPanel(List<IClass> javaPackage,
 			ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this(cb);
-		this.mtp = mtp;
+		this.javaPackage = javaPackage;
 		this.codeVisitorList = codeVisitorList;
 
 		for (MyClass myClass : cb.getClasslist()) {
@@ -134,6 +137,8 @@ public class FieldCompPanel extends JPanel{
 					ArrayList<String> strList = new ArrayList<String>();
 
 					for (FieldDeclaration fieldDeclaration : codeFieldList) {
+						//TODO
+						//型を比較するメソッドを作る（型はソースコードに依存する、また基本型の場合も考えるようにする)
 						//ソースコードのメソッドの修飾子と
 						//スケルトンコードの修飾子の一致
 						if (field.getModifiers().contains(
@@ -210,7 +215,7 @@ public class FieldCompPanel extends JPanel{
 							popSb.append("・"+constraint.toString()+"<br>");
 						}
 					}
-						
+
 					popSb.append("</p>");
 					popSb.append("</html>");
 
@@ -243,7 +248,7 @@ public class FieldCompPanel extends JPanel{
 			box_1 = boxList.get(i);
 
 			obj = box_1.getSelectedItem();
-			
+
 			if (obj == null) {
 				continue ;
 			}
@@ -289,5 +294,9 @@ public class FieldCompPanel extends JPanel{
 
 	public void setStatus(StatusBar fcpSourceStatus) {
 		this.fcpSourceStatus = fcpSourceStatus;
+	}
+
+	public void setTableModel(DefaultTableModel tableModel) {
+		this.tableModel = tableModel;
 	}
 }

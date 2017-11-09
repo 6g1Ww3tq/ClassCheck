@@ -1,6 +1,5 @@
 package com.classcheck.panel;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -16,25 +15,31 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 import org.apache.lucene.search.spell.LevensteinDistance;
 
+import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.type.BasicType;
+import com.classcheck.type.ParamCheck;
+import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class MethodCompPanel extends JPanel {
+	private List<IClass> javaPackage;
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
 	Map<MyClass, CodeVisitor> codeMap;
 
 	private StatusBar mtpSourceStatus;
-	private MemberTabPane mtp;
 
 	private List<JComboBox<String>> boxList;
+	private DefaultTableModel tableModel;
 
 	public MethodCompPanel() {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
@@ -45,11 +50,10 @@ public class MethodCompPanel extends JPanel {
 		setVisible(true);
 	}
 
-	public MethodCompPanel(MemberTabPane mtp,
-			ClassBuilder cb,
+	public MethodCompPanel(List<IClass> javaPackage, ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
-		this.mtp = mtp;
+		this.javaPackage = javaPackage;
 		this.codeVisitorList = codeVisitorList;
 
 		for (MyClass myClass : cb.getClasslist()) {
@@ -138,7 +142,7 @@ public class MethodCompPanel extends JPanel {
 					if (method.getName().equals(myClass.getName())) {
 						isConstructor = true;
 					}
-					
+
 					if (isConstructor) {
 
 						System.out.println("*** ConstructorDeclaration ***");
@@ -175,13 +179,16 @@ public class MethodCompPanel extends JPanel {
 
 							//ソースコードのメソッドのパラメータ数と
 							//スケルトンコードのパラメータ個数の一致
+							//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
 							if (methodDeclaration.getParameters().size() == method.getParams().length && 
 									//ソースコードのメソッドの修飾子と
 									//スケルトンコードの修飾子の一致
-									method.getModifiers().contains(
-											Modifier.toString(methodDeclaration.getModifiers())
-											)
-									){
+									method.getModifiers().contains(Modifier.toString(methodDeclaration.getModifiers())) &&
+									//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
+									(new ReferenceType(javaPackage,tableModel, method, methodDeclaration).evaluate() || 
+											new BasicType(method,methodDeclaration).evaluate()
+											) && 
+											new ParamCheck(javaPackage,tableModel,method.getParams(),methodDeclaration.getParameters()).evaluate()){
 								strList.add(methodDeclaration.getDeclarationAsString());
 							}
 						}
@@ -275,7 +282,7 @@ public class MethodCompPanel extends JPanel {
 		JComboBox  box_1,box_2;
 		String strBox_1,strBox_2;
 		Object obj;
-		
+
 		for (int i=0; i < boxList.size() ; i++){
 			box_1 = boxList.get(i);
 
@@ -291,11 +298,11 @@ public class MethodCompPanel extends JPanel {
 				box_2 = boxList.get(j);
 
 				obj = box_2.getSelectedItem();
-				
+
 				if (obj == null) {
 					continue ;
 				}
-				
+
 				strBox_2 = obj.toString();
 
 				if (i==j) {
@@ -313,8 +320,6 @@ public class MethodCompPanel extends JPanel {
 			}
 		}
 
-
-
 		return isSameMethodSelected;
 	}
 
@@ -328,5 +333,9 @@ public class MethodCompPanel extends JPanel {
 
 	public void setStatus(StatusBar mtpSourceStatus) {
 		this.mtpSourceStatus = mtpSourceStatus;
+	}
+
+	public void setTableModel(DefaultTableModel tableModel) {
+		this.tableModel = tableModel;
 	}
 }

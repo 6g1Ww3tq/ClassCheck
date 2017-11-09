@@ -72,7 +72,7 @@ public class SourceGenerator {
 		isGeneratable = false;
 
 	}
-	
+
 	public boolean isGeneratable(){
 		return isGeneratable;
 	}
@@ -94,7 +94,30 @@ public class SourceGenerator {
 			e.printStackTrace();
 		}
 		return null;
-
+	}
+	
+	
+	/**
+	 * 指定したパッケージのクラスをすべて抽出する
+	 * @param packageName
+	 * @return
+	 */
+	public List<IClass> getClassList(String packageName){
+		AstahAPI api;
+		try {
+			api = AstahAPI.getAstahAPI();
+			ProjectAccessor projectAccessor = api.getProjectAccessor();
+			IModel imodel = projectAccessor.getProject();
+			List<IClass> classList=new ArrayList<IClass>();
+			getAllClasses(imodel,classList,packageName);
+			return classList;
+		} catch (ClassNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (ProjectNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static List<ISequenceDiagram> getSequenceDiagramList(){
@@ -383,6 +406,21 @@ public class SourceGenerator {
 		return false;
 	}
 
+	private void getAllClasses(IModel element, List<IClass> classList,
+			String packageName) throws ClassNotFoundException, ProjectNotFoundException {
+		if (element instanceof IPackage) {
+			for(INamedElement ownedNamedElement : ((IPackage)element).getOwnedElements()) {
+				if(ownedNamedElement.getName().equals(packageName)){
+					if (ownedNamedElement instanceof IPackage) {
+						for(INamedElement iname : ((IPackage) ownedNamedElement).getOwnedElements()){
+							getAllClasses(iname, classList);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private  static void getAllClasses(INamedElement element, List<IClass> classList)
 			throws ClassNotFoundException, ProjectNotFoundException {
 		if (element instanceof IPackage) {
@@ -410,5 +448,5 @@ public class SourceGenerator {
 		}
 		return false;
 	}
-	
+
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
+import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.panel.GenerateToolBar;
@@ -24,11 +25,14 @@ public class MatcherWindow extends JFrame {
 	
 	MatcherTabbedPane mt;
 	GenerateToolBar genToolBar;
-	
+
+	private List<IClass> javaPackage;
+
 	private static boolean closed = true;
 
-	public MatcherWindow(ClassBuilder cb, List<CodeVisitor> codeVisitorList,
+	public MatcherWindow(List<IClass> javaPackage, ClassBuilder cb, List<CodeVisitor> codeVisitorList,
 			FileTree baseDirTree) {
+		this.javaPackage = javaPackage;
 		initComponent(cb,codeVisitorList,baseDirTree);
 
 		setMinimumSize(new Dimension(700, 700));
@@ -42,7 +46,7 @@ public class MatcherWindow extends JFrame {
 
 	private void initComponent(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList, FileTree baseDirTree) {
-		mt = new MatcherTabbedPane(cb,codeVisitorList,baseDirTree);
+		mt = new MatcherTabbedPane(javaPackage,cb,codeVisitorList,baseDirTree);
 		
 		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot());
 		add(genToolBar,BorderLayout.NORTH);

@@ -22,15 +22,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.codehaus.classworlds.UberJarRealmClassLoader;
-
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IComment;
 import com.change_vision.jude.api.inf.model.IConstraint;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.basic.Pocket;
+import com.classcheck.generic.Pocket;
 
 public class MemberTabPane extends JPanel{
 	/**
@@ -75,6 +73,9 @@ public class MemberTabPane extends JPanel{
 		this.selectedSameFieldSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.selectedSameMethodSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.tablePane = new CompTablePane(this,myClassList);
+		//テーブル情報を追加
+		fcp.setTableModel(tablePane.getTableModel());
+		mcp.setTableModel(tablePane.getTableModel());
 		setLayout(new BorderLayout());
 		initComponent();
 		initActionEvent();
@@ -104,7 +105,7 @@ public class MemberTabPane extends JPanel{
 	public JTree getJtree() {
 		return jtree;
 	}
-	
+
 	private void initComponent(){
 		JPanel panel,classNamePane,classFieldMethodPane;
 		ClassNode child = null;
@@ -115,7 +116,7 @@ public class MemberTabPane extends JPanel{
 		astahRoot = new DefaultMutableTreeNode("SkeltonCodeClass");
 		jtree = new JTree(astahRoot);
 		jtree.setMinimumSize(new Dimension(150,200));
-		
+
 		classNamePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		jtrSelClass = new JLabel();
 		jtrSelClass.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -146,7 +147,7 @@ public class MemberTabPane extends JPanel{
 
 			generatableMap.put(myClass, !isSameMethodSelected);
 		}
-		
+
 		//デフォルトでパネルに初期値データを入れる
 		//->表示させないようにする
 		//フィールド
@@ -198,7 +199,7 @@ public class MemberTabPane extends JPanel{
 		compVerticalSplitePane.setTopComponent(panel);
 
 		compVerticalSplitePane.setContinuousLayout(true);
-		
+
 		//クラス,フィールド,メソッドをまとめる
 		classFieldMethodPane = new JPanel();
 		classFieldMethodPane.setLayout(new BorderLayout(5,5));
@@ -223,7 +224,7 @@ public class MemberTabPane extends JPanel{
 
 	private void initActionEvent() {
 		jtree.addTreeSelectionListener(new TreeSelectionListener(){
-			
+
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				Object obj = jtree.getLastSelectedPathComponent();
@@ -262,12 +263,12 @@ public class MemberTabPane extends JPanel{
 							popSb.append("なし<br>");
 						}else{
 							comments = iClass.getComments();
-							
+
 							for (IComment comment : comments){
 								popSb.append("・"+comment.toString()+"<br>");
 							}
 						}
-						
+
 						popSb.append("制約:<br>");
 						if (iClass.getConstraints().length == 0) {
 							popSb.append("なし<br>");
@@ -278,10 +279,10 @@ public class MemberTabPane extends JPanel{
 								popSb.append("・"+constraint.toString()+"<br>");
 							}
 						}
-						
+
 						popSb.append("</p>");
 						popSb.append("</html>");
-						
+
 						jtrSelClass.setToolTipText(popSb.toString());
 						//パネルの更新
 						reLoadMemberPane(selectedMyClass,false);
@@ -290,9 +291,12 @@ public class MemberTabPane extends JPanel{
 
 			}
 		});
-		
+
 	}
 
+	//TODO
+	//フィールドやメソッドのボックスが一部空の場合に
+	//どのように対処するか考える
 	public void reLoadMemberPane(MyClass myClass,boolean isAllChange){
 		Map<MyClass, List<JPanel>> fieldMapPanelList = fcp.getMapPanelList();
 		Map<MyClass, List<JPanel>> methodMapPanelList = mcp.getMapPanelList();
@@ -360,6 +364,8 @@ public class MemberTabPane extends JPanel{
 				if (fieldCodeSigBox != null) {
 					obj = fieldCodeSigBox.getSelectedItem();
 
+					//TODO
+					//nullでない
 					if (obj != null) {
 						fieldCodeSigList.add(obj.toString());
 					}
@@ -372,6 +378,7 @@ public class MemberTabPane extends JPanel{
 		isFieldSame = false;
 
 		//同じメソッドが選択されていないかチェック
+		//選択できないメソッドがあるかどうか
 		for(int i=0;i<methodCodeSigList.size();i++){
 
 			baseSig = methodCodeSigList.get(i);
@@ -397,6 +404,7 @@ public class MemberTabPane extends JPanel{
 		}
 
 		//同じフィールドが選択されていないかチェック
+		//あるいは選択できないフィールドがあるかどうか
 		for(int i=0;i<fieldCodeSigList.size();i++){
 
 			baseSig = fieldCodeSigList.get(i);
@@ -441,13 +449,15 @@ public class MemberTabPane extends JPanel{
 		checkSameField(myClass);
 		checkSameMethod(myClass);
 
-		if (fieldCodeSigList.size() == 0) {
+		if (fieldCodeSigList.size() == 0 ||
+				fieldPanelList.size() - 1 != fieldCodeSigList.size()) {
 			fcpSourceStatus.setColor(Color.red);
 			fcpSourceStatus.setText("フィールドが空です");
 			setGeneratable(myClass, false);
 		}
 
-		if (methodCodeSigList.size() == 0) {
+		if (methodCodeSigList.size() == 0 || 
+				methodPanelList.size() - 1 != methodCodeSigList.size()) {
 			mcpSourceStatus.setColor(Color.red);
 			mcpSourceStatus.setText("メソッドが空です	");
 			setGeneratable(myClass, false);
@@ -484,6 +494,79 @@ public class MemberTabPane extends JPanel{
 
 	public void setGeneratable(MyClass myClass , boolean b) {
 		generatableMap.put(myClass, b);
+	}
+
+	/**
+	 * フィールドのボックスに空があるかどうか判定するメソッド
+	 * @return
+	 */
+	public boolean isFieldPanelEmpty(){
+		boolean isEmpty = false;
+		List<JPanel> fieldPanelList;
+		Component comp;
+		JComboBox box_1;
+		JPanel panel;
+
+		for(MyClass myClass : generatableMap.keySet()){
+			fieldPanelList = fcp.getMapPanelList().get(myClass);
+
+			for(int i = 0; i<fieldPanelList.size();i++){
+				panel = fieldPanelList.get(i);
+
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
+
+					if(comp instanceof JComboBox){
+						box_1 = (JComboBox) comp;
+
+						if(box_1.getSelectedItem() == null){
+							isEmpty = true;
+							return isEmpty;
+						}
+					}
+				}
+			}
+		}
+
+		return isEmpty;
+	}
+
+	/**
+	 * メソッドのボックスに空があるかどうか判定するメソッド
+	 * @return
+	 */
+	public boolean isMethodPanelEmpty(){
+		boolean isEmpty = false;
+
+		List<JPanel> methodPanelList;
+		Component comp;
+		JComboBox box_1;
+		JPanel panel;
+
+		for(MyClass myClass : generatableMap.keySet()){
+			methodPanelList = mcp.getMapPanelList().get(myClass);
+
+			System.out.println("myClass : " + myClass.getName());
+
+			for(int i = 0; i<methodPanelList.size();i++){
+				panel = methodPanelList.get(i);
+
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
+
+					if(comp instanceof JComboBox){
+						box_1 = (JComboBox) comp;
+
+						if(box_1.getSelectedItem() == null){
+							isEmpty = true;
+							return isEmpty;
+						}
+					}
+				}
+			}
+		}
+		return isEmpty;
+
 	}
 
 	//TODO
@@ -530,7 +613,7 @@ public class MemberTabPane extends JPanel{
 
 		for(MyClass myClass : generatableMap.keySet()){
 			methodPanelList = mcp.getMapPanelList().get(myClass);
-			
+
 			System.out.println("myClass : " + myClass.getName());
 
 			for(int i = 0; i<methodPanelList.size();i++){
@@ -575,7 +658,7 @@ public class MemberTabPane extends JPanel{
 
 		System.out.println("strBox_1 :  " + strBox_1);
 		for(int i=0;i<panelList.size();i++){
-			
+
 			if (i == index) {
 				continue ;
 			}
@@ -609,7 +692,7 @@ public class MemberTabPane extends JPanel{
 				break;
 			}
 		}
-		
+
 		System.out.println("isSame : "+isSame);
 		return isSame;
 	}

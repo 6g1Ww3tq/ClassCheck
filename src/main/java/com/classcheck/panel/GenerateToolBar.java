@@ -76,6 +76,18 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 
+				if (!mtp.isFieldEpmty()) {
+					JOptionPane.showMessageDialog(getParent(), "空のフィールドがあります", "error", JOptionPane.ERROR_MESSAGE);
+					gs = GenerateState.FIELDNULL;
+					return ;
+				}
+
+				if (!mtp.isMethodEmpty()) {
+					JOptionPane.showMessageDialog(getParent(), "空のメソッドがあります", "error", JOptionPane.ERROR_MESSAGE);
+					gs = GenerateState.METHODNULL;
+					return ;
+				}
+
 				//TODO
 				//すべてのクラスのフィールドを調べる
 				if (!mtp.isFieldGeneratable()) {

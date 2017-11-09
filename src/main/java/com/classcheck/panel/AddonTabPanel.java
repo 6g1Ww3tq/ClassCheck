@@ -201,6 +201,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				List<IClass> javaPackage;
+				
 				SourceGenerator sg = null;
 				MatcherWindow ctw = null;
 
@@ -245,7 +247,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 							}
 						}
 
-						ctw = new MatcherWindow(cb,codeVisitorList,baseDirTree);
+						javaPackage = sg.getClassList("java");
+						ctw = new MatcherWindow(javaPackage,cb,codeVisitorList,baseDirTree);
 						ctw.setTitle("テストプログラムの生成");
 					} catch (UnExpectedException e1) {
 						// TODO 自動生成された catch ブロック

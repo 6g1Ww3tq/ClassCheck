@@ -1,4 +1,4 @@
-package com.classcheck.basic;
+package com.classcheck.generic;
 
 public class Pocket<E> {
 	E obj;

@@ -1,16 +1,18 @@
 package com.classcheck.panel;
 
-import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
 
+import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.tree.FileTree;
 
 public class MatcherTabbedPane extends JTabbedPane {
+	private List<IClass> javaPackage;
+
 	MemberTabPane mtp;
 	ViewTabPanel cstp;
 	
@@ -26,8 +28,10 @@ public class MatcherTabbedPane extends JTabbedPane {
 	//ユーザーのソースコードツリー
 	FileTree userFileTree;
 
-	public MatcherTabbedPane(ClassBuilder cb,
-			List<CodeVisitor> codeVisitorList, FileTree fileTree) {
+	public MatcherTabbedPane(List<IClass> javaPackage, ClassBuilder cb,
+			List<CodeVisitor> codeVisitorList,
+			FileTree fileTree) {
+		this.javaPackage = javaPackage;
 		this.cb = cb;
 		this.codeVisitorList = codeVisitorList;
 		this.userFileTree = fileTree;
@@ -36,15 +40,16 @@ public class MatcherTabbedPane extends JTabbedPane {
 	}
 
 	private void initComponent(){
-		fcp = new FieldCompPanel(mtp, cb, codeVisitorList);
-		mcp = new MethodCompPanel(mtp,cb,codeVisitorList);
+		//フィールドとメソッドのパネル
+		fcp = new FieldCompPanel(javaPackage,cb, codeVisitorList);
+		mcp = new MethodCompPanel(javaPackage,cb,codeVisitorList);
 		 
 		//２つのタブを生成
 		cstp = new ViewTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
 		mtp = new MemberTabPane(fcp,mcp, cb);
 		mtp.setTableEditable(false);
-
+		
 		//２つのタブを加える
 		addTab("Compare", mtp);
 		addTab("View",cstp);
