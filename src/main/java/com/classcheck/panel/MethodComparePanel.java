@@ -30,7 +30,7 @@ import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-public class MethodCompPanel extends JPanel {
+public class MethodComparePanel extends JPanel {
 	private List<IClass> javaPackage;
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
@@ -41,7 +41,7 @@ public class MethodCompPanel extends JPanel {
 	private List<JComboBox<String>> boxList;
 	private DefaultTableModel tableModel;
 
-	public MethodCompPanel() {
+	public MethodComparePanel() {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
 		codeMap = new HashMap<MyClass, CodeVisitor>();
 		mtpSourceStatus = null;
@@ -50,7 +50,7 @@ public class MethodCompPanel extends JPanel {
 		setVisible(true);
 	}
 
-	public MethodCompPanel(List<IClass> javaPackage, ClassBuilder cb,
+	public MethodComparePanel(List<IClass> javaPackage, ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this();
 		this.javaPackage = javaPackage;

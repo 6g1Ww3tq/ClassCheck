@@ -22,9 +22,9 @@ public class GenerateToolBar extends JToolBar {
 	Action genAction;
 	ImageIcon genIcon;
 	private File baseDir;
-	private MemberTabPane mtp;
+	private MemberTabPanel mtp;
 
-	public GenerateToolBar(String name, MemberTabPane mtp,
+	public GenerateToolBar(String name, MemberTabPanel mtp,
 			int operation, FileNode baseDir) {
 		super(name, operation);
 

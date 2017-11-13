@@ -17,14 +17,14 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 
-public class ConstructorPane extends JPanel {
+public class ConstructorPanel extends JPanel {
 
 	private CodeVisitor codeVisitor;
 	private ButtonGroup group;
 	private Map<JRadioButton, ConstructorDeclaration> radioConstMap;
 	private Map<AbstractButton, String> abstractBtnMap;
 
-	public ConstructorPane(CodeVisitor codeVisitor) {
+	public ConstructorPanel(CodeVisitor codeVisitor) {
 		this.codeVisitor = codeVisitor;
 		setName(codeVisitor.getClassName());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

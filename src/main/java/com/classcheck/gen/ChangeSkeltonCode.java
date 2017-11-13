@@ -10,7 +10,7 @@ import java.util.Set;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.panel.MemberTabPane;
+import com.classcheck.panel.MemberTabPanel;
 import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -25,7 +25,7 @@ public class ChangeSkeltonCode {
 	private Map<MyClass, Map<String, String>> fieldChangeMap;
 	private Map<CodeVisitor, String> generatedCodesMap;
 
-	public ChangeSkeltonCode(MemberTabPane mtp,
+	public ChangeSkeltonCode(MemberTabPanel mtp,
 			Map<MyClass, CodeVisitor> tableMap,
 			Map<MyClass, Map<String, String>> fieldChangeMap,
 			Map<MyClass, Map<String, String>> methodChangeMap) {

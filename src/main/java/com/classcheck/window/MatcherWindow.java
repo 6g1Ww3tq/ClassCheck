@@ -13,7 +13,7 @@ import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.panel.GenerateToolBar;
-import com.classcheck.panel.MatcherTabbedPane;
+import com.classcheck.panel.MatcherTabbedPanel;
 import com.classcheck.tree.FileTree;
 
 public class MatcherWindow extends JFrame {
@@ -23,7 +23,7 @@ public class MatcherWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	MatcherTabbedPane mt;
+	MatcherTabbedPanel mt;
 	GenerateToolBar genToolBar;
 
 	private List<IClass> javaPackage;
@@ -46,7 +46,7 @@ public class MatcherWindow extends JFrame {
 
 	private void initComponent(ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList, FileTree baseDirTree) {
-		mt = new MatcherTabbedPane(javaPackage,cb,codeVisitorList,baseDirTree);
+		mt = new MatcherTabbedPanel(javaPackage,cb,codeVisitorList,baseDirTree);
 		
 		genToolBar = new GenerateToolBar("テストプログラムの生成",mt.getStp(),JToolBar.HORIZONTAL,baseDirTree.getRoot());
 		add(genToolBar,BorderLayout.NORTH);

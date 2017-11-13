@@ -30,16 +30,16 @@ import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.generic.Pocket;
 
-public class MemberTabPane extends JPanel{
+public class MemberTabPanel extends JPanel{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	//フィールドの対応付を行う
-	FieldCompPanel fcp;
+	FieldComparePanel fcp;
 	//メソッドの対応付を行う
-	MethodCompPanel mcp;
+	MethodComparePanel mcp;
 
 	JSplitPane holizontalSplitePane;
 	JSplitPane verticalSplitePane;
@@ -55,7 +55,7 @@ public class MemberTabPane extends JPanel{
 	StatusBar mcpSourceStatus;
 	StatusBar fcpSourceStatus;
 
-	CompTablePane tablePane;
+	ClassTablePanel tablePane;
 
 	//TODO
 	//使い方をよく見る
@@ -65,14 +65,14 @@ public class MemberTabPane extends JPanel{
 
 
 
-	public MemberTabPane(FieldCompPanel fcp,MethodCompPanel mcp, ClassBuilder cb) {
+	public MemberTabPanel(FieldComparePanel fcp,MethodComparePanel mcp, ClassBuilder cb) {
 		selectedMyClass = null;
 		this.fcp = fcp;
 		this.mcp = mcp;
 		this.myClassList = cb.getClasslist();
 		this.selectedSameFieldSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
 		this.selectedSameMethodSigMap = new HashMap<MyClass, Pocket<SelectedType>>();
-		this.tablePane = new CompTablePane(this,myClassList);
+		this.tablePane = new ClassTablePanel(this,myClassList);
 		//テーブル情報を追加
 		fcp.setTableModel(tablePane.getTableModel());
 		mcp.setTableModel(tablePane.getTableModel());
@@ -86,15 +86,15 @@ public class MemberTabPane extends JPanel{
 		tablePane.setTableEditable(isEditable);
 	}
 
-	public FieldCompPanel getFcp() {
+	public FieldComparePanel getFcp() {
 		return fcp;
 	}
 
-	public MethodCompPanel getMcp() {
+	public MethodComparePanel getMcp() {
 		return mcp;
 	}
 
-	public CompTablePane getTablePane() {
+	public ClassTablePanel getTablePane() {
 		return tablePane;
 	}
 

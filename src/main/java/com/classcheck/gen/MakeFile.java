@@ -11,7 +11,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 
 import com.classcheck.analyzer.source.CodeVisitor;
-import com.classcheck.panel.ConstructorPane;
+import com.classcheck.panel.ConstructorPanel;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -21,10 +21,10 @@ public class MakeFile {
 
 	private Map<CodeVisitor, String> generatedCodesMap;
 	private Map<String,String> fileMap;
-	private List<ConstructorPane> cPanelList;
+	private List<ConstructorPanel> cPanelList;
 	private Collection<CodeVisitor> codeCollection;
 
-	public MakeFile(Map<CodeVisitor, String> generatedCodesMap, List<ConstructorPane> cPaneList, Collection<CodeVisitor> codeCollection) {
+	public MakeFile(Map<CodeVisitor, String> generatedCodesMap, List<ConstructorPanel> cPaneList, Collection<CodeVisitor> codeCollection) {
 		this.generatedCodesMap = generatedCodesMap;
 		this.codeCollection = codeCollection;
 		this.cPanelList = cPaneList;
@@ -84,7 +84,7 @@ public class MakeFile {
 			String className,
 			HashMap<String, String> mockMethodMap,
 			List<String> mockParamsList,
-			ConstructorPane constructorPane) {
+			ConstructorPanel constructorPane) {
 		Enumeration<AbstractButton> buttons = constructorPane.getGroup().getElements();
 		Map<AbstractButton, String> abstructBtnMap = constructorPane.getAbstractBtnMap();
 		AbstractButton button;

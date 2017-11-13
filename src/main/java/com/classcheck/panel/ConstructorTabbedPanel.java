@@ -12,34 +12,34 @@ import javax.swing.JTabbedPane;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 
-public class ConstructorTabbedPane extends JTabbedPane {
+public class ConstructorTabbedPanel extends JTabbedPane {
 
-	private ArrayList<ConstructorPane> constructorPaneList;
+	private ArrayList<ConstructorPanel> constructorPaneList;
 	private Set<CodeVisitor> codeSet;
 
 
-	public ConstructorTabbedPane(Set<CodeVisitor> codeSet) {
+	public ConstructorTabbedPanel(Set<CodeVisitor> codeSet) {
 		this.codeSet = codeSet;
 		initComponent();
 		setVisible(true);
 	}
 	
-	public ArrayList<ConstructorPane> getConstructorPaneList() {
+	public ArrayList<ConstructorPanel> getConstructorPaneList() {
 		return constructorPaneList;
 	}
 
 	private void initComponent() {
 		JScrollPane jscrollPane;
-		ConstructorPane constructorPane = null;
-		this.constructorPaneList = new ArrayList<ConstructorPane>();
+		ConstructorPanel constructorPane = null;
+		this.constructorPaneList = new ArrayList<ConstructorPanel>();
 		
 		for(CodeVisitor codeVisitor : codeSet){
-			constructorPaneList.add(new ConstructorPane(codeVisitor));
+			constructorPaneList.add(new ConstructorPanel(codeVisitor));
 		}
 		
 		//タブを加える
 		for(Iterator it = constructorPaneList.iterator(); it.hasNext() ;){
-			constructorPane = (ConstructorPane) it.next();
+			constructorPane = (ConstructorPanel) it.next();
 			jscrollPane = new JScrollPane();
 			jscrollPane.setViewportView(constructorPane);
 			addTab(constructorPane.getName(),jscrollPane);

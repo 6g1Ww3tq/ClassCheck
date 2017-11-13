@@ -22,7 +22,7 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
 import com.classcheck.window.DebugMessageWindow;
 
-public class CompTablePane extends JPanel implements Serializable{
+public class ClassTablePanel extends JPanel implements Serializable{
 
 	/**
 	 * 
@@ -31,15 +31,15 @@ public class CompTablePane extends JPanel implements Serializable{
 	JScrollPane tableScrollPane;
 	DefaultTableModel tableModel;
 	JTable classCompTable;
-	MemberTabPane mtp;
-	FieldCompPanel fcp;
-	MethodCompPanel mcp;
+	MemberTabPanel mtp;
+	FieldComparePanel fcp;
+	MethodComparePanel mcp;
 	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
 
 	boolean isTableEditable = false;
 
-	public CompTablePane(MemberTabPane mtp, List<MyClass> myClassList) {
+	public ClassTablePanel(MemberTabPanel mtp, List<MyClass> myClassList) {
 		this.mtp = mtp;
 		this.myClassList = myClassList;
 		this.fcp = mtp.getFcp();

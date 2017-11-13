@@ -17,12 +17,12 @@ import org.apache.commons.io.FileUtils;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
-import com.classcheck.panel.CompTablePane;
-import com.classcheck.panel.ConstructorPane;
-import com.classcheck.panel.ConstructorTabbedPane;
-import com.classcheck.panel.FieldCompPanel;
-import com.classcheck.panel.MemberTabPane;
-import com.classcheck.panel.MethodCompPanel;
+import com.classcheck.panel.ClassTablePanel;
+import com.classcheck.panel.ConstructorPanel;
+import com.classcheck.panel.ConstructorTabbedPanel;
+import com.classcheck.panel.FieldComparePanel;
+import com.classcheck.panel.MemberTabPanel;
+import com.classcheck.panel.MethodComparePanel;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.SelectConstructorViewer;
 
@@ -41,12 +41,12 @@ public class GenerateTestProgram {
 	//フィールドの前と後を表す対応関係を抽出
 	private Map<MyClass, Map<String, String>> fieldChangeMap;
 
-	private MemberTabPane mtp;
-	private FieldCompPanel fcp;
-	private MethodCompPanel mcp;
-	private CompTablePane tablePane;
+	private MemberTabPanel mtp;
+	private FieldComparePanel fcp;
+	private MethodComparePanel mcp;
+	private ClassTablePanel tablePane;
 
-	public GenerateTestProgram(File baseDir, MemberTabPane mtp) {
+	public GenerateTestProgram(File baseDir, MemberTabPanel mtp) {
 		this.baseDir = baseDir;
 		this.mtp = mtp;
 		this.fcp = mtp.getFcp();
@@ -241,7 +241,7 @@ public class GenerateTestProgram {
 		Map<CodeVisitor, String> generatedCodesMap;
 		MakeFile makeFile = null;
 		SelectConstructorViewer scv = null;
-		List<ConstructorPane> cPaneList = null;
+		List<ConstructorPanel> cPaneList = null;
 		
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成

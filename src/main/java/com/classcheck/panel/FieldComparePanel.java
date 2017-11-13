@@ -29,7 +29,7 @@ import com.classcheck.autosource.Field;
 import com.classcheck.autosource.MyClass;
 import com.github.javaparser.ast.body.FieldDeclaration;
 
-public class FieldCompPanel extends JPanel{
+public class FieldComparePanel extends JPanel{
 
 	private List<IClass> javaPackage;
 	private ClassBuilder cb;
@@ -40,7 +40,7 @@ public class FieldCompPanel extends JPanel{
 	private ArrayList<JComboBox<String>> boxList;
 	private DefaultTableModel tableModel;
 
-	public FieldCompPanel(ClassBuilder cb) {
+	public FieldComparePanel(ClassBuilder cb) {
 		this.cb = cb;
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
 		codeMap = new HashMap<MyClass, CodeVisitor>();
@@ -50,7 +50,7 @@ public class FieldCompPanel extends JPanel{
 		setVisible(true);
 	}
 
-	public FieldCompPanel(List<IClass> javaPackage,
+	public FieldComparePanel(List<IClass> javaPackage,
 			ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList) {
 		this(cb);

@@ -20,12 +20,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import com.classcheck.analyzer.source.CodeVisitor;
-import com.classcheck.panel.ConstructorTabbedPane;
+import com.classcheck.panel.ConstructorTabbedPanel;
 
 public class SelectConstructorViewer extends JDialog {
 
 	private Map<CodeVisitor, String> generatedCodesMap;
-	private ConstructorTabbedPane ctp;
+	private ConstructorTabbedPanel ctp;
 	private HashMap<CodeVisitor, String> constructorMap;
 	private JButton okButton;
 	private JButton cancelButton;
@@ -54,7 +54,7 @@ public class SelectConstructorViewer extends JDialog {
 		return constructorMap;
 	}
 	
-	public ConstructorTabbedPane getCtp() {
+	public ConstructorTabbedPanel getCtp() {
 		return ctp;
 	}
 	
@@ -62,7 +62,7 @@ public class SelectConstructorViewer extends JDialog {
 		JPanel contentPane = (JPanel) getContentPane();
 		JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
 		this.constructorMap = new HashMap<CodeVisitor, String>();
-		this.ctp = new ConstructorTabbedPane(generatedCodesMap.keySet());
+		this.ctp = new ConstructorTabbedPanel(generatedCodesMap.keySet());
 		this.okButton = new JButton("OK");
 		this.cancelButton = new JButton("Cancel");
 		this.canceled = false;

@@ -10,10 +10,10 @@ import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.tree.FileTree;
 
-public class MatcherTabbedPane extends JTabbedPane {
+public class MatcherTabbedPanel extends JTabbedPane {
 	private List<IClass> javaPackage;
 
-	MemberTabPane mtp;
+	MemberTabPanel mtp;
 	ViewTabPanel cstp;
 	
 	//２つのタブで共有
@@ -21,14 +21,14 @@ public class MatcherTabbedPane extends JTabbedPane {
 	List<MyClass> myClassList;
 	List<CodeVisitor> codeVisitorList;
 	//右上のパネル(フィールド)
-	FieldCompPanel fcp;
+	FieldComparePanel fcp;
 	//右下のパネル(メソッド)
-	MethodCompPanel mcp;
+	MethodComparePanel mcp;
 	
 	//ユーザーのソースコードツリー
 	FileTree userFileTree;
 
-	public MatcherTabbedPane(List<IClass> javaPackage, ClassBuilder cb,
+	public MatcherTabbedPanel(List<IClass> javaPackage, ClassBuilder cb,
 			List<CodeVisitor> codeVisitorList,
 			FileTree fileTree) {
 		this.javaPackage = javaPackage;
@@ -41,13 +41,13 @@ public class MatcherTabbedPane extends JTabbedPane {
 
 	private void initComponent(){
 		//フィールドとメソッドのパネル
-		fcp = new FieldCompPanel(javaPackage,cb, codeVisitorList);
-		mcp = new MethodCompPanel(javaPackage,cb,codeVisitorList);
+		fcp = new FieldComparePanel(javaPackage,cb, codeVisitorList);
+		mcp = new MethodComparePanel(javaPackage,cb,codeVisitorList);
 		 
 		//２つのタブを生成
 		cstp = new ViewTabPanel(cb,userFileTree);
 		cstp.setTextAreaEditable(false);
-		mtp = new MemberTabPane(fcp,mcp, cb);
+		mtp = new MemberTabPanel(fcp,mcp, cb);
 		mtp.setTableEditable(false);
 		
 		//２つのタブを加える
@@ -55,11 +55,11 @@ public class MatcherTabbedPane extends JTabbedPane {
 		addTab("View",cstp);
 	}
 	
-	public MethodCompPanel getMethodCompPane() {
+	public MethodComparePanel getMethodCompPane() {
 		return mcp;
 	}
 	
-	public MemberTabPane getStp() {
+	public MemberTabPanel getStp() {
 		return mtp;
 	}
 }
