@@ -22,13 +22,13 @@ public class BasicType {
 	};
 	
 	/** クラス図で定義されたメソッド　*/
-	private Method method;
+	private Method umlMethod;
 	/** ソースコードで定義されたメソッド　*/
-	private MethodDeclaration methodDec;
+	private MethodDeclaration codeMethod;
 
-	public BasicType(Method method, MethodDeclaration methodDec) {
-		this.method = method;
-		this.methodDec = methodDec;
+	public BasicType(Method umlMethod, MethodDeclaration codeMethod) {
+		this.umlMethod = umlMethod;
+		this.codeMethod = codeMethod;
 	}
 
 	public boolean evaluate() {
@@ -36,17 +36,18 @@ public class BasicType {
 		//型が配列かどうか
 		boolean isArrayCode = false;
 		boolean isArrayUML = false;
-		String methodRtnType = method.getReturntype();
-		String splits[] = methodDec.getDeclarationAsString().split("\\(");
+		String methodRtnType = umlMethod.getReturntype();
+		methodRtnType = methodRtnType.replaceAll(" ", ""); //空白を削除（「void 」)
+		String splits[] = codeMethod.getDeclarationAsString().split("\\(");
 		splits = splits[0].split(" ");
 		String methodDecRtnType = splits[splits.length - 2];
 		
-		if (methodRtnType.contains("\\[\\]")) {
+		if (methodRtnType.contains("[]")) {
 			isArrayUML = true;
 			methodRtnType = methodRtnType.replaceAll("\\[\\]", "");
 		}
 		
-		if(methodDecRtnType.contains("\\[\\]")){ 
+		if(methodDecRtnType.contains("[]")){ 
 			isArrayCode = true;
 			methodDecRtnType = methodDecRtnType.replaceAll("\\[\\]", "");
 		}

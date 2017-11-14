@@ -27,15 +27,15 @@ public class ReferenceType {
 	private DefaultTableModel tableModel;
 
 	/** クラス図で定義されたメソッド　*/
-	private Method method;
+	private Method umlMethod;
 	/** ソースコードで定義されたメソッド　*/
-	private MethodDeclaration methodDec;
+	private MethodDeclaration codeMethod;
 
-	public ReferenceType(List<IClass> javaPackage, DefaultTableModel tableModel,Method method,MethodDeclaration methodDec) {
+	public ReferenceType(List<IClass> javaPackage, DefaultTableModel tableModel,Method umlMethod,MethodDeclaration codeMethod) {
 		this.javaPackage = javaPackage;
 		this.tableModel = tableModel;
-		this.method = method;
-		this.methodDec = methodDec;
+		this.umlMethod = umlMethod;
+		this.codeMethod = codeMethod;
 	}
 
 	public boolean evaluate() {
@@ -48,22 +48,22 @@ public class ReferenceType {
 		MyClass myClass;
 		CodeVisitor codeVisitor;
 		String umlClassName,codeClassName;
-		String methodRtnType = method.getReturntype();
-		String splits[] = methodDec.getDeclarationAsString().split("\\(");
+		String umlMethodRtnType = umlMethod.getReturntype();
+		String splits[] = codeMethod.getDeclarationAsString().split("\\(");
 		splits = splits[0].split(" ");
-		String methodDecRtnType = splits[splits.length - 2];
+		String codeMethodRtnType = splits[splits.length - 2];
 		int row = 0;
-		
-		if (methodRtnType.contains("\\[\\]")) {
+
+		if (umlMethodRtnType.contains("[]")) {
 			isArrayUML = true;
-			methodRtnType = methodRtnType.replaceAll("\\[\\]", "");
+			umlMethodRtnType = umlMethodRtnType.replaceAll("\\[\\]", "");
 		}
-		
-		if(methodDecRtnType.contains("\\[\\]")){ 
+
+		if(codeMethodRtnType.contains("[]")){ 
 			isArrayCode = true;
-			methodDecRtnType = methodDecRtnType.replaceAll("\\[\\]", "");
+			codeMethodRtnType = codeMethodRtnType.replaceAll("\\[\\]", "");
 		}
-		
+
 		//ソースコードとクラス図の定義が同じ配列、あるいは単一であるか判断する
 		if (isArrayUML != isArrayCode) {
 			rtnVal = false;
@@ -73,9 +73,11 @@ public class ReferenceType {
 
 		//javaパッケージの中に定義されているクラスかどうか調べる
 		for(IClass iClass : javaPackage){
-			if (iClass.getName().equals(methodDecRtnType)) {
-				rtnVal = true;
-				return rtnVal;
+			if (iClass.getName().equals(codeMethodRtnType)) {
+				if (iClass.getName().equals(umlMethodRtnType)) {
+					rtnVal = true;
+					return rtnVal;
+				}
 			}
 		}
 
@@ -86,10 +88,7 @@ public class ReferenceType {
 				myClass = ((MyClassCell) column_0).getMyClass();
 				umlClassName = myClass.getName();
 
-				System.out.println(">>>>umlClassName " + umlClassName);
-				System.out.println(">>>>methodRtnType " + methodRtnType);
-
-				if (umlClassName.equals(methodRtnType)) {
+				if (umlClassName.equals(umlMethodRtnType)) {
 					rtnVal = true;
 					break;
 				}
@@ -109,7 +108,7 @@ public class ReferenceType {
 					codeVisitor = (CodeVisitor) box_1.getSelectedItem();
 					codeClassName = codeVisitor.getClassName();
 
-					if (codeClassName.equals(methodDecRtnType)) {
+					if (codeClassName.equals(codeMethodRtnType)) {
 						rtnVal = true;
 					}else{
 						rtnVal = false;

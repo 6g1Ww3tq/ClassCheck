@@ -27,6 +27,7 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.type.BasicType;
 import com.classcheck.type.ParamCheck;
 import com.classcheck.type.ReferenceType;
+import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
@@ -92,7 +93,7 @@ public class MethodComparePanel extends JPanel {
 		double maxDistance = 0;
 		//最も距離が近かった文字列
 		String keyStr=null;
-		List<Method> methodList = myClass.getMethods();
+		List<Method> umlMethodList = myClass.getMethods();
 		List<MethodDeclaration> codeMethodList = null;
 		List<ConstructorDeclaration> codeConstructorList = null;
 		CodeVisitor codeVisitor = codeMap.get(myClass);
@@ -130,7 +131,7 @@ public class MethodComparePanel extends JPanel {
 				codeMethodList = codeVisitor.getMethodList();
 				codeConstructorList = codeVisitor.getConstructorList();
 
-				for (Method method : methodList) {
+				for (Method umlMethod : umlMethodList) {
 					popSb = new StringBuilder();
 					ArrayList<String> strList = new ArrayList<String>();
 					isConstructor = false;
@@ -139,13 +140,11 @@ public class MethodComparePanel extends JPanel {
 					 * コンストラクタは読み込まない
 					 * =>メソッド名とクラス名が同類のメソッドはコンストラクタ
 					 */
-					if (method.getName().equals(myClass.getName())) {
+					if (umlMethod.getName().equals(myClass.getName())) {
 						isConstructor = true;
 					}
 
 					if (isConstructor) {
-
-						System.out.println("*** ConstructorDeclaration ***");
 
 						//ソースコードのコンストラクタを追加
 						for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
@@ -155,10 +154,10 @@ public class MethodComparePanel extends JPanel {
 							//ソースコードのメソッドのパラメータ数と
 							//スケルトンコードのパラメータ個数の一致
 
-							if (constructorDeclaration.getParameters().size() == method.getParams().length && 
+							if (constructorDeclaration.getParameters().size() == umlMethod.getParams().length && 
 									//ソースコードのコンストラクタの修飾子と
 									//スケルトンコードの修飾子の一致
-									method.getModifiers().contains(
+									umlMethod.getModifiers().contains(
 											Modifier.toString(constructorDeclaration.getModifiers())
 											)){
 
@@ -167,29 +166,24 @@ public class MethodComparePanel extends JPanel {
 						}
 
 					}else{
-						System.out.println("*** method ***");
-						System.out.println("type is :"+method.getModifiers());
-
-						System.out.println("*** MethodDeclaration ***");
 						//ソースコードのメソッドを追加
-						for (MethodDeclaration methodDeclaration : codeMethodList) {
+						for (MethodDeclaration codeMethod : codeMethodList) {
 
-
-							System.out.println(Modifier.toString(methodDeclaration.getModifiers()));
-
+							if (codeMethod.getName().contains("main")) {
+								System.out.println("methodName : "+ codeMethod.getName());
+							}
 							//ソースコードのメソッドのパラメータ数と
 							//スケルトンコードのパラメータ個数の一致
 							//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
-							if (methodDeclaration.getParameters().size() == method.getParams().length && 
+							if (codeMethod.getParameters().size() == umlMethod.getParams().length && 
 									//ソースコードのメソッドの修飾子と
 									//スケルトンコードの修飾子の一致
-									method.getModifiers().contains(Modifier.toString(methodDeclaration.getModifiers())) &&
+									umlMethod.getModifiers().contains(Modifier.toString(codeMethod.getModifiers())) &&
 									//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-									(new ReferenceType(javaPackage,tableModel, method, methodDeclaration).evaluate() || 
-											new BasicType(method,methodDeclaration).evaluate()
-											) && 
-											new ParamCheck(javaPackage,tableModel,method.getParams(),methodDeclaration.getParameters()).evaluate()){
-								strList.add(methodDeclaration.getDeclarationAsString());
+									(new ReferenceType(javaPackage,tableModel, umlMethod, codeMethod).evaluate() || 
+											new BasicType(umlMethod,codeMethod).evaluate()) 
+											&& new ParamCheck(javaPackage,tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
+								strList.add(codeMethod.getDeclarationAsString());
 							}
 						}
 					}
@@ -203,7 +197,7 @@ public class MethodComparePanel extends JPanel {
 					keyStr = null;
 					for (String str : strList) {
 
-						distance = levensteinAlgorithm.getDistance(method.toSignature(), str);
+						distance = levensteinAlgorithm.getDistance(umlMethod.toSignature(), str);
 						if(maxDistance < distance){
 							maxDistance = distance;
 							keyStr = str;
@@ -211,7 +205,7 @@ public class MethodComparePanel extends JPanel {
 					}
 					methodComboBox.setSelectedItem(keyStr);
 					p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-					matcher = patern.matcher(method.getSignature());
+					matcher = patern.matcher(umlMethod.getSignature());
 					l = new JLabel(matcher.replaceAll(""));
 					l.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -221,10 +215,10 @@ public class MethodComparePanel extends JPanel {
 					popSb.append("<p>");
 
 					popSb.append("定義:<br>");
-					if (method.getOperation().getDefinition().length() == 0) {
+					if (umlMethod.getOperation().getDefinition().length() == 0) {
 						popSb.append("なし<br>");
 					}else{
-						String[] comments = method.getOperation().getDefinition().split("\\n", 0);
+						String[] comments = umlMethod.getOperation().getDefinition().split("\\n", 0);
 
 						for (String comment : comments) {
 							popSb.append(comment + "<br>");
@@ -232,25 +226,25 @@ public class MethodComparePanel extends JPanel {
 					}
 
 					popSb.append("本体条件:<br>");
-					if (method.getOperation().getBodyCondition().length() == 0) {
+					if (umlMethod.getOperation().getBodyCondition().length() == 0) {
 						popSb.append("なし<br>");
 					}else{
-						popSb.append("・"+method.getOperation().getBodyCondition()+"<br>");
+						popSb.append("・"+umlMethod.getOperation().getBodyCondition()+"<br>");
 					}
 
 					popSb.append("事前条件:<br>");
-					if (method.getOperation().getPreConditions().length == 0) {
+					if (umlMethod.getOperation().getPreConditions().length == 0) {
 						popSb.append("なし<br>");
 					}else{
-						for(String text : method.getOperation().getPreConditions()){
+						for(String text : umlMethod.getOperation().getPreConditions()){
 							popSb.append("・"+text+"<br>");
 						}
 					}
 					popSb.append("事後条件:<br>");
-					if (method.getOperation().getPostConditions().length == 0) {
+					if (umlMethod.getOperation().getPostConditions().length == 0) {
 						popSb.append("なし<br>");
 					}else{
-						for(String text : method.getOperation().getPostConditions()){
+						for(String text : umlMethod.getOperation().getPostConditions()){
 							popSb.append("・"+text+"<br>");
 						}
 					}
@@ -320,6 +314,7 @@ public class MethodComparePanel extends JPanel {
 			}
 		}
 
+		DebugMessageWindow.msgToOutPutTextArea();
 		return isSameMethodSelected;
 	}
 

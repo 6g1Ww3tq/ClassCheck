@@ -8,6 +8,8 @@ import javax.swing.table.DefaultTableModel;
 import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.autosource.MyClassCell;
+import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.type.Type;
 
@@ -15,15 +17,15 @@ public class ParamCheck {
 
 	private List<IClass> javaPackage;
 	private DefaultTableModel tableModel;
-	private String[] codeParams;
-	private List<Parameter> umlParams;
+	private String[] umlMethodParams;
+	private List<Parameter> codeMethodParams;
 
 	public ParamCheck(List<IClass> javaPackage, DefaultTableModel tableModel,
-			String[] params, List<Parameter> parameters) {
+			String[] umlMethodParams, List<Parameter> codeMethodParams) {
 		this.javaPackage = javaPackage;
 		this.tableModel = tableModel;
-		this.codeParams = params;
-		this.umlParams = parameters;
+		this.umlMethodParams = umlMethodParams;
+		this.codeMethodParams = codeMethodParams;
 	}
 
 	public boolean evaluate() {
@@ -32,16 +34,36 @@ public class ParamCheck {
 		JComboBox box_1;
 		MyClass myClass;
 		CodeVisitor codeVisitor;
-		Type umlDecType;
-		String codeDecType;
+		Parameter codeType;
+		String codeTypeStr;
+		String umlType;
 
+		//引数なしの場合
+		if (umlMethodParams.length == 0 &&
+				codeMethodParams.isEmpty()) {
+			rtnVal = true;
+			return rtnVal;
+		}
+		
 		try{
-			for(int i=0;i<codeParams.length;i++){
-				codeDecType = codeParams[i];
-				umlDecType = umlParams.get(i).getType();
+			System.out.println("umlMethodParams : "+umlMethodParams[0]);
+			System.out.println("codeMethodParams : "+codeMethodParams.toString());
+			for(int i=0;i<umlMethodParams.length;i++){
+				umlType = umlMethodParams[i];
+				codeType = codeMethodParams.get(i);
+				
+				//配列が「String args[]」のように後ろに［］が来るので型の後に来るように調整
+				if (codeType.toString().contains("[]")) {
+					codeTypeStr = codeType.toString().split(" ")[0] + "[]";
+				}else{
+					codeTypeStr = codeType.toString().split(" ")[0];
+				}
 
-				if (sameArrayType(umlDecType.toString(), codeDecType) &&
-						sameGeneralType(umlDecType.toString(), codeDecType)) {
+				//スケルトンコードのメソッドのパラメータのそれぞれについて１番目（型）を見る
+				umlType = umlType.split(" ")[0];
+
+				if (isSameType(codeTypeStr, umlType) &&
+						sameGeneralType(removeArray(codeTypeStr),removeArray(umlType))) {
 					rtnVal = true;
 				}else{
 					rtnVal = false;
@@ -50,33 +72,30 @@ public class ParamCheck {
 			}
 		}catch(NullPointerException e){
 			rtnVal = false;
-			e.printStackTrace();
+			System.out.println(e.toString());
 		}
-
 
 		return rtnVal;
 	}
 
 	/**
 	 * ソースコードとクラス図の定義が同じ配列、あるいは単一であるか判断する
-	 * @param umlDecType
-	 * @param codeDecType
+	 * @param codeType
+	 * @param umlType
 	 * @return
 	 */
-	private boolean sameArrayType(String umlDecType,String codeDecType){
+	private boolean isSameType(String codeType,String umlType){
 		boolean rtnVal = false;
 		//型が配列かどうか
 		boolean isArrayCode = false;
 		boolean isArrayUML = false;
 
-		if (umlDecType.contains("\\[\\]")) {
+		if (isArrayType(codeType)) {
 			isArrayUML = true;
-			umlDecType = umlDecType.replaceAll("\\[\\]", "");
 		}
 
-		if(codeDecType.contains("\\[\\]")){ 
+		if (isArrayType(umlType)) {
 			isArrayCode = true;
-			codeDecType = codeDecType.replaceAll("\\[\\]", "");
 		}
 
 		//ソースコードとクラス図の定義が同じ配列、あるいは単一であるか判断する
@@ -89,40 +108,87 @@ public class ParamCheck {
 		return rtnVal;
 	}
 
+	private boolean isArrayType(String type){
+		boolean isArray = false;
+
+		if (type.contains("[]")) {
+			isArray = true;
+		}
+		return isArray;
+	}
+
+	private String removeArray(String type){
+
+		if (type.contains("[]")) {
+			type = type.replaceAll("\\[\\]", "");
+		}
+
+		return type;
+	}
+
 	/**
 	 * ソースコードとクラス図の定義が同じ参照型、あるいはjavaパッケージ内にある同じ型
-	 * @param umlDecType
-	 * @param codeDecType
+	 * @param codeType
+	 * @param umlType
 	 * @return
 	 */
-	private boolean sameGeneralType(String umlDecType,String codeDecType){
+	private boolean sameGeneralType(String codeType,String umlType){
 		boolean rtnVal = false;
-		boolean isContainCode = false;
-		boolean isContainUML = false;
+		//型が配列かどうか
+		boolean isArrayCode = false;
+		boolean isArrayUML = false;
+		Object column_0,column_1;
+		JComboBox box_1;
+		MyClass myClass;
+		CodeVisitor codeVisitor;
+		String umlClassName,codeClassName;
+		int row = 0;
 
 		//javaパッケージの中に定義されているクラスかどうか調べる
 		for(IClass iClass : javaPackage){
-			if (iClass.getName().equals(umlDecType)) {
-				isContainUML = true;
+			if (iClass.getName().equals(codeType)) {
+				if (iClass.getName().equals(umlType)) {
+					rtnVal = true;
+					return rtnVal;
+				}
+
 			}
 		}
 
-		//同様
-		for(IClass iClass : javaPackage){
-			if (iClass.getName().equals(codeDecType)) {
-				isContainCode = true;
-			}
-		}
+		for (row = 0 ; row < tableModel.getRowCount() ; row++){
+			column_0 = tableModel.getValueAt(row, 0);
 
-		if (isContainUML && 
-				isContainCode) {
-			if (umlDecType.equals(codeDecType)) {
-				rtnVal = true;
-			}else{
+			if (column_0 instanceof MyClassCell ){
+				myClass = ((MyClassCell) column_0).getMyClass();
+				umlClassName = myClass.getName();
+
+				if (umlClassName.equals(umlType)) {
+					rtnVal = true;
+					break;
+				}
+
+			} else {
 				rtnVal = false;
+				break;
 			}
-		}else{
-			rtnVal = false;
+		}
+
+		if (rtnVal) {
+			column_1 = tableModel.getValueAt(row, 1);
+
+			if(column_1 instanceof JComboBox){
+				box_1 = (JComboBox) column_1;
+				if (box_1.getSelectedItem() instanceof CodeVisitor){
+					codeVisitor = (CodeVisitor) box_1.getSelectedItem();
+					codeClassName = codeVisitor.getClassName();
+
+					if (codeClassName.equals(codeType)) {
+						rtnVal = true;
+					}else{
+						rtnVal = false;
+					}
+				}
+			}
 		}
 
 		return rtnVal;
