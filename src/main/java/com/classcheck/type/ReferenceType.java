@@ -7,10 +7,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
+import com.classcheck.autosource.Field;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
-import com.classcheck.window.DebugMessageWindow;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 /**
@@ -26,16 +27,49 @@ public class ReferenceType {
 	private List<IClass> javaPackage;
 	private DefaultTableModel tableModel;
 
-	/** クラス図で定義されたメソッド　*/
-	private Method umlMethod;
-	/** ソースコードで定義されたメソッド　*/
-	private MethodDeclaration codeMethod;
+	/** クラス図で定義された型　*/
+	private String umlType;
+	/** ソースコードで定義された型　*/
+	private String codeType;
 
-	public ReferenceType(List<IClass> javaPackage, DefaultTableModel tableModel,Method umlMethod,MethodDeclaration codeMethod) {
+	private ReferenceType(List<IClass> javaPackage,DefaultTableModel tableModel){
 		this.javaPackage = javaPackage;
 		this.tableModel = tableModel;
-		this.umlMethod = umlMethod;
-		this.codeMethod = codeMethod;
+	}
+
+	public ReferenceType(List<IClass> javaPackage, DefaultTableModel tableModel,Method umlMethod,MethodDeclaration codeMethod) {
+		this(javaPackage,tableModel);
+		initMethod(umlMethod,codeMethod);
+	}
+
+	public ReferenceType(List<IClass> javaPackage,
+			DefaultTableModel tableModel, Field umlField,
+			FieldDeclaration codeField) {
+		this(javaPackage,tableModel);
+		initField(umlField,codeField);
+	}
+
+	private void initField(Field umlField, FieldDeclaration codeField) {
+		this.umlType = umlField.getType();
+		this.codeType = codeField.toString();
+		String splits[] = codeType.split("=");
+		splits = splits[0].split(" ");
+		//配列が「String args[]」のように後ろに［］が来るので型の後に来るように調整
+		if (codeType.contains("[]")) {
+			codeType = splits[splits.length - 2] + "[]";
+		}else{
+			codeType = splits[splits.length - 2];
+		}
+
+		System.out.println("umlType(R):"+umlType);
+		System.out.println("codeType(R):"+codeType);
+	}
+
+	private void initMethod(Method umlMethod, MethodDeclaration codeMethod) {
+		umlType = umlMethod.getReturntype();
+		String splits[] = codeMethod.getDeclarationAsString().split("\\(");
+		splits = splits[0].split(" ");
+		codeType = splits[splits.length - 2];
 	}
 
 	public boolean evaluate() {
@@ -48,20 +82,16 @@ public class ReferenceType {
 		MyClass myClass;
 		CodeVisitor codeVisitor;
 		String umlClassName,codeClassName;
-		String umlMethodRtnType = umlMethod.getReturntype();
-		String splits[] = codeMethod.getDeclarationAsString().split("\\(");
-		splits = splits[0].split(" ");
-		String codeMethodRtnType = splits[splits.length - 2];
 		int row = 0;
 
-		if (umlMethodRtnType.contains("[]")) {
+		if (umlType.contains("[]")) {
 			isArrayUML = true;
-			umlMethodRtnType = umlMethodRtnType.replaceAll("\\[\\]", "");
+			umlType = umlType.replaceAll("\\[\\]", "");
 		}
 
-		if(codeMethodRtnType.contains("[]")){ 
+		if(codeType.contains("[]")){ 
 			isArrayCode = true;
-			codeMethodRtnType = codeMethodRtnType.replaceAll("\\[\\]", "");
+			codeType = codeType.replaceAll("\\[\\]", "");
 		}
 
 		//ソースコードとクラス図の定義が同じ配列、あるいは単一であるか判断する
@@ -73,8 +103,8 @@ public class ReferenceType {
 
 		//javaパッケージの中に定義されているクラスかどうか調べる
 		for(IClass iClass : javaPackage){
-			if (iClass.getName().equals(codeMethodRtnType)) {
-				if (iClass.getName().equals(umlMethodRtnType)) {
+			if (iClass.getName().equals(codeType)) {
+				if (iClass.getName().equals(umlType)) {
 					rtnVal = true;
 					return rtnVal;
 				}
@@ -88,7 +118,7 @@ public class ReferenceType {
 				myClass = ((MyClassCell) column_0).getMyClass();
 				umlClassName = myClass.getName();
 
-				if (umlClassName.equals(umlMethodRtnType)) {
+				if (umlClassName.equals(umlType)) {
 					rtnVal = true;
 					break;
 				}
@@ -108,7 +138,7 @@ public class ReferenceType {
 					codeVisitor = (CodeVisitor) box_1.getSelectedItem();
 					codeClassName = codeVisitor.getClassName();
 
-					if (codeClassName.equals(codeMethodRtnType)) {
+					if (codeClassName.equals(codeType)) {
 						rtnVal = true;
 					}else{
 						rtnVal = false;

@@ -27,6 +27,8 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Field;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.type.BasicType;
+import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.FieldDeclaration;
 
 public class FieldComparePanel extends JPanel{
@@ -93,7 +95,7 @@ public class FieldComparePanel extends JPanel{
 		double maxDistance = 0;
 		//最も距離が近かった文字列
 		String keyStr=null;
-		List<Field> fieldList = myClass.getFields();
+		List<Field> umlFieldList = myClass.getFields();
 		List<FieldDeclaration> codeFieldList = null;
 		CodeVisitor codeVisitor = codeMap.get(myClass);
 		JLabel l = null;
@@ -132,19 +134,31 @@ public class FieldComparePanel extends JPanel{
 			if (codeVisitor != null){
 				codeFieldList = codeVisitor.getFieldList();
 
-				for (Field field : fieldList){
+				for (Field umlField : umlFieldList){
 
 					ArrayList<String> strList = new ArrayList<String>();
+					
+					if (umlField.getName().equals("a")) {
+						System.out.println(umlField.toString());
+					}
 
-					for (FieldDeclaration fieldDeclaration : codeFieldList) {
+					for (FieldDeclaration codeField : codeFieldList) {
 						//TODO
 						//型を比較するメソッドを作る（型はソースコードに依存する、また基本型の場合も考えるようにする)
 						//ソースコードのメソッドの修飾子と
 						//スケルトンコードの修飾子の一致
-						if (field.getModifiers().contains(
-								Modifier.toString(fieldDeclaration.getModifiers())
-								)){
-							strList.add(fieldDeclaration.toString().replaceAll(";", ""));
+						if (umlField.getModifiers().contains(Modifier.toString(codeField.getModifiers()))){
+							//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
+							
+							if (codeField.toString().equals("args")) {
+								System.out.println(codeField.toString());
+							}
+							
+							if(new ReferenceType(javaPackage,tableModel, umlField, codeField).evaluate() || 
+									new BasicType(umlField,codeField).evaluate()){
+										strList.add(codeField.toString().replaceAll(";", ""));
+
+									}
 						}
 					}
 
@@ -165,7 +179,7 @@ public class FieldComparePanel extends JPanel{
 
 					for (String str : strList){
 
-						distance = levensteinAlgorithm.getDistance(field.toString(), str);
+						distance = levensteinAlgorithm.getDistance(umlField.toString(), str);
 						if (maxDistance < distance) {
 							maxDistance = distance;
 							keyStr = str;
@@ -174,11 +188,11 @@ public class FieldComparePanel extends JPanel{
 
 					fieldComboBox.setSelectedItem(keyStr);
 					p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-					matcher = patern.matcher(field.toString());
+					matcher = patern.matcher(umlField.toString());
 					l = new JLabel(matcher.replaceAll("").replaceAll(";", ""));
 					l.setAlignmentX(CENTER_ALIGNMENT);
 
-					attr = field.getAttribute();
+					attr = umlField.getAttribute();
 					//ポップアップテキストを加える
 					popSb.append("<html>");
 					popSb.append("<p>");
