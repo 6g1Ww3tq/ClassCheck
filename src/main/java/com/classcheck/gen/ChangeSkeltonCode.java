@@ -97,6 +97,8 @@ public class ChangeSkeltonCode {
 			}
 
 			//メソッド変更
+			//TODO
+			//start.Point()になってしまう
 			msr = new MethodSigReplace(fsr.getBase());
 
 			for (String befMethodStr : methodMap.keySet()){

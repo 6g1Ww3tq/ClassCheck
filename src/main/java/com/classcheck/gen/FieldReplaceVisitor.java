@@ -48,6 +48,8 @@ public class FieldReplaceVisitor extends VoidVisitorAdapter<Void> {
 
 		Matcher matcher;
 
+		//TODO
+		//「javaパッケージのクラスも参照する」
 		for(MyClass myClass : tableMap.keySet()){
 			//フィールドのクラスとスケルトンコードのクラスといずれか一つに一致
 			if (field.toString().contains(myClass.getName())) {
@@ -56,7 +58,6 @@ public class FieldReplaceVisitor extends VoidVisitorAdapter<Void> {
 				field.setType(aftType);
 
 				matcher = varPattern.matcher(field.toString());
-
 
 				if (matcher.find()) {
 					//マッチした文字列を取得(変数名の抽出)

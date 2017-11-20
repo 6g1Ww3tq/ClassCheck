@@ -14,6 +14,7 @@ public class MethodStmtsReplace extends Replace {
 	private Map<MyClass, Map<String, String>> methodChangeMap;
 	private HashMap<String, MyClass> variableBefMap;
 	private HashMap<String, CodeVisitor> variableAftMap;
+	//フィールドの変数名
 	private Set<String> varKeys;
 
 	Pattern pattern;
@@ -58,24 +59,34 @@ public class MethodStmtsReplace extends Replace {
 		Map<String, String> methodMap;
 		Pattern aftPtn = Pattern.compile(" [a-zA-Z_0-9]+\\(");
 		Matcher aftMatcher;
+		String instanceMethod;
 
 		for (String key : varKeys){
 			
 			if (line.contains(key)) {
 				matcher = pattern.matcher(line);
+				if (!matcher.find()) {
+					continue;
+				}
+				instanceMethod = matcher.group();
+				instanceMethod = instanceMethod.replaceAll("\\.", "");
+				//置換前の文字列を設定
+				setBefore(matcher.group());
+				
+				//フィールドの変数名の型が持つメソッドを返却する
 				methodMap = methodChangeMap.get(variableBefMap.get(key));
 
 				for(String befMethod : methodMap.keySet()){
-
-					if (matcher.find()) {
-						setBefore(matcher.group());
-						aftMatcher = aftPtn.matcher(methodMap.get(befMethod));
 						
-						if (aftMatcher.find()) {
-							setAfter("."+aftMatcher.group().replaceAll(" ", ""));
-						}
-						return line.contains(before) && !lineNumList.contains(new Integer(lineNum));
+					if (!befMethod.contains(instanceMethod)) {
+						continue;
 					}
+
+					aftMatcher = aftPtn.matcher(methodMap.get(befMethod));
+					if (aftMatcher.find()) {
+						setAfter("."+aftMatcher.group().replaceAll(" ", ""));
+					}
+					return line.contains(before) && !lineNumList.contains(new Integer(lineNum));
 				}
 			}
 		}

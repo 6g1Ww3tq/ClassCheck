@@ -262,6 +262,9 @@ public class ClassTablePanel extends JPanel implements Serializable{
 					}
 
 					if (visitor != null && myClassCell != null && codeMap != null) {
+						
+						//TODO
+						//umlのクラスに対応するソースコード側のクラスを結びつけているので確認する
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
 						//メソッドパネルの更新

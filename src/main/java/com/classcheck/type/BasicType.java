@@ -6,6 +6,7 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.Field;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
@@ -28,12 +29,27 @@ public class BasicType {
 	/** ソースコードで定義された型　*/
 	private String codeType;
 
-	public BasicType(Method umlMethod, MethodDeclaration codeMethod) {
-		initMethod(umlMethod, codeMethod);
+	public BasicType(String umlType,String codeType) {
+		this.umlType = umlType;
+		this.codeType = codeType;
 	}
-
+	
+	/**
+	 * 宣言されている型が一致するかどうか調べるクラス
+	 * @param umlField
+	 * @param codeField
+	 */
 	public BasicType(Field umlField, FieldDeclaration codeField) {
 		initField(umlField,codeField);
+	}
+
+	private void initConstructor(Method umlMethod,
+			ConstructorDeclaration codeConstructor) {
+		umlType = umlMethod.getReturntype();
+		umlType = umlType.replaceAll(" ", ""); //空白を削除（「void 」)
+		String splits[] = codeConstructor.getDeclarationAsString().split("\\(");
+		splits = splits[0].split(" ");
+		codeType = splits[splits.length - 2];
 	}
 
 	private void initField(Field umlField, FieldDeclaration codeField) {

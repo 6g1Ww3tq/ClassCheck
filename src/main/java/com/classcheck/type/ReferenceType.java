@@ -18,8 +18,11 @@ import com.github.javaparser.ast.body.MethodDeclaration;
  * ソースコードで宣言されている参照型が
  * テーブルと対応付けた型になっているか
  * あるいは
- * 「java」パッケージで定義されているクラスであるか
+ * 「java」パッケージで定義されているクラスや
+ * 基本型
+ * であるか
  * どうか調べるクラス
+ * 
  * @author masa
  *
  */
@@ -111,6 +114,13 @@ public class ReferenceType {
 			}
 		}
 
+		//同じ基本型であるかどうかを調べる
+		if (new BasicType(umlType, codeType).evaluate()) {
+			rtnVal = true;
+			return rtnVal;
+		}
+
+
 		for (row = 0 ; row < tableModel.getRowCount() ; row++){
 			column_0 = tableModel.getValueAt(row, 0);
 
@@ -123,7 +133,7 @@ public class ReferenceType {
 					break;
 				}
 
-			} else {
+			}else{
 				rtnVal = false;
 				break;
 			}
@@ -132,17 +142,32 @@ public class ReferenceType {
 		if (rtnVal) {
 			column_1 = tableModel.getValueAt(row, 1);
 
+			/*
+			 *なぜかテーブルのアイテムがCodeVisitorクラスと
+			 *JComboBoxの時がある 
+			 */
 			if(column_1 instanceof JComboBox){
 				box_1 = (JComboBox) column_1;
 				if (box_1.getSelectedItem() instanceof CodeVisitor){
 					codeVisitor = (CodeVisitor) box_1.getSelectedItem();
 					codeClassName = codeVisitor.getClassName();
 
+					System.out.println("codeClassName:"+codeClassName);
 					if (codeClassName.equals(codeType)) {
 						rtnVal = true;
 					}else{
 						rtnVal = false;
 					}
+				}
+			}else if(column_1 instanceof CodeVisitor){
+				codeVisitor = (CodeVisitor) column_1;
+				codeClassName = codeVisitor.getClassName();
+
+				System.out.println("codeClassName:"+codeClassName);
+				if (codeClassName.equals(codeType)) {
+					rtnVal = true;
+				}else{
+					rtnVal = false;
 				}
 			}
 		}

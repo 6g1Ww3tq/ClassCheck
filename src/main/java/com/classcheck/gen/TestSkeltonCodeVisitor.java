@@ -63,7 +63,7 @@ public class TestSkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 		Statement st;
 		StringBuilder sb = new StringBuilder();
 
-		//make Expectatioon State
+		//make Expectation State
 		for(int i=0;i<stmts.size();i++){
 			st = stmts.get(i);
 

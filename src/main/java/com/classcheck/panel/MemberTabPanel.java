@@ -285,7 +285,7 @@ public class MemberTabPanel extends JPanel{
 
 						jtrSelClass.setToolTipText(popSb.toString());
 						//パネルの更新
-						reLoadMemberPane(selectedMyClass,false);
+						reLoadMemberPane(selectedMyClass,true);
 					}
 				}
 
@@ -592,6 +592,10 @@ public class MemberTabPanel extends JPanel{
 
 						generatable = !checkSameItemSelected(i, box_1, fieldPanelList);
 
+						if (generatable == false) {
+							System.out.println(generatable);
+						}
+						
 						if (!generatable) {
 							return generatable;
 						}
@@ -626,6 +630,7 @@ public class MemberTabPanel extends JPanel{
 						box_1 = (JComboBox) comp;
 
 						generatable = !checkSameItemSelected(i, box_1, methodPanelList);
+						
 						if (!generatable) {
 							return generatable;
 						}
@@ -700,17 +705,29 @@ public class MemberTabPanel extends JPanel{
 	public boolean isFieldEpmty() {
 		boolean generatable = true;
 		List<JPanel> fieldPanelList;
+		JPanel panel;
+		Component comp;
+		JComboBox box_1;
 
 		for(MyClass myClass : generatableMap.keySet()){
 			fieldPanelList = fcp.getMapPanelList().get(myClass);
 
-			//（左）...（右)...
-			//のラベルを含めるので1
-			if (fieldPanelList.size() <= 1) {
-				generatable = false;
-				break;
-			}
+			for(int i = 0; i<fieldPanelList.size();i++){
+				panel = fieldPanelList.get(i);
 
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
+
+					if(comp instanceof JComboBox){
+						box_1 = (JComboBox) comp;
+						
+						if (box_1.getSelectedItem() == null) {
+							generatable = false;
+							return generatable;
+						}
+					}
+				}
+			}
 		}
 
 		return generatable;
@@ -719,17 +736,29 @@ public class MemberTabPanel extends JPanel{
 	public boolean isMethodEmpty() {
 		boolean generatable = true;
 		List<JPanel> methodPanelList;
+		JPanel panel;
+		Component comp;
+		JComboBox box_1;
 
 		for(MyClass myClass : generatableMap.keySet()){
 			methodPanelList = mcp.getMapPanelList().get(myClass);
 
-			//（左）...（右)...
-			//のラベルを含めるので1
-			if (methodPanelList.size() <= 1) {
-				generatable = false;
-				break;
-			}
+			for(int i = 0; i<methodPanelList.size();i++){
+				panel = methodPanelList.get(i);
 
+				for(int j = 0; j<panel.getComponentCount();j++){
+					comp = panel.getComponent(j);
+
+					if(comp instanceof JComboBox){
+						box_1 = (JComboBox) comp;
+						
+						if (box_1.getSelectedItem() == null) {
+							generatable = false;
+							return generatable;
+						}
+					}
+				}
+			}
 		}
 		return generatable;
 	}

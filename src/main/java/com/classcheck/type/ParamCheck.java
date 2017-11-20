@@ -46,8 +46,8 @@ public class ParamCheck {
 		}
 		
 		try{
-			System.out.println("umlMethodParams : "+umlMethodParams[0]);
-			System.out.println("codeMethodParams : "+codeMethodParams.toString());
+			System.out.println("umlMethodParams : "+umlMethodParams);
+			System.out.println("codeMethodParams : "+codeMethodParams);
 			for(int i=0;i<umlMethodParams.length;i++){
 				umlType = umlMethodParams[i];
 				codeType = codeMethodParams.get(i);
@@ -128,6 +128,7 @@ public class ParamCheck {
 
 	/**
 	 * ソースコードとクラス図の定義が同じ参照型、あるいはjavaパッケージ内にある同じ型
+	 * または基本的な型であるかどうかを比較する
 	 * @param codeType
 	 * @param umlType
 	 * @return
@@ -153,6 +154,12 @@ public class ParamCheck {
 				}
 
 			}
+		}
+
+		//同じ基本型であるかどうかを調べる
+		if (new BasicType(umlType, codeType).evaluate()) {
+			rtnVal = true;
+			return rtnVal;
 		}
 
 		for (row = 0 ; row < tableModel.getRowCount() ; row++){

@@ -242,7 +242,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 							//のようなステートメントがメソッド内で書かれているか
 							//チェックを行う
 							if (scv.isWrittenNewSt()) {
-								JOptionPane.showMessageDialog(getParent(), "シーケンス図のメッセージが不正です", "error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(getParent(), "クラス図またはシーケンス図のメッセージが不正です", "error", JOptionPane.ERROR_MESSAGE);
 								return ;
 							}
 						}

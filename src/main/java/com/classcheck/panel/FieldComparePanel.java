@@ -27,7 +27,6 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Field;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.type.BasicType;
 import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.FieldDeclaration;
 
@@ -42,20 +41,20 @@ public class FieldComparePanel extends JPanel{
 	private ArrayList<JComboBox<String>> boxList;
 	private DefaultTableModel tableModel;
 
-	public FieldComparePanel(ClassBuilder cb) {
+	public FieldComparePanel(ClassBuilder cb, HashMap<MyClass, CodeVisitor> codeMap) {
 		this.cb = cb;
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
-		codeMap = new HashMap<MyClass, CodeVisitor>();
+		this.codeMap = codeMap;
 		fcpSourceStatus = null;
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		setVisible(true);
 	}
 
-	public FieldComparePanel(List<IClass> javaPackage,
-			ClassBuilder cb,
-			List<CodeVisitor> codeVisitorList) {
-		this(cb);
+	public FieldComparePanel(List<IClass> javaPackage, ClassBuilder cb,
+			List<CodeVisitor> codeVisitorList,
+			HashMap<MyClass, CodeVisitor> codeMap) {
+		this(cb,codeMap);
 		this.javaPackage = javaPackage;
 		this.codeVisitorList = codeVisitorList;
 
@@ -97,13 +96,13 @@ public class FieldComparePanel extends JPanel{
 		String keyStr=null;
 		List<Field> umlFieldList = myClass.getFields();
 		List<FieldDeclaration> codeFieldList = null;
-		CodeVisitor codeVisitor = codeMap.get(myClass);
+		CodeVisitor codeVisitor = this.codeMap.get(myClass);
 		JLabel l = null;
 		JPanel p = null;
 		JComboBox<String> fieldComboBox = null;
 
 		//同じシグネチャーが選択されているかどうかを調べる
-		boxList = new ArrayList<JComboBox<String>>();
+		this.boxList = new ArrayList<JComboBox<String>>();
 		boolean isSameFieldSelected = false;
 
 		//フィールドの説明を加える
@@ -137,10 +136,6 @@ public class FieldComparePanel extends JPanel{
 				for (Field umlField : umlFieldList){
 
 					ArrayList<String> strList = new ArrayList<String>();
-					
-					if (umlField.getName().equals("a")) {
-						System.out.println(umlField.toString());
-					}
 
 					for (FieldDeclaration codeField : codeFieldList) {
 						//TODO
@@ -149,16 +144,10 @@ public class FieldComparePanel extends JPanel{
 						//スケルトンコードの修飾子の一致
 						if (umlField.getModifiers().contains(Modifier.toString(codeField.getModifiers()))){
 							//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-							
-							if (codeField.toString().equals("args")) {
-								System.out.println(codeField.toString());
-							}
-							
-							if(new ReferenceType(javaPackage,tableModel, umlField, codeField).evaluate() || 
-									new BasicType(umlField,codeField).evaluate()){
-										strList.add(codeField.toString().replaceAll(";", ""));
+							if(new ReferenceType(this.javaPackage,this.tableModel, umlField, codeField).evaluate()){
+								strList.add(codeField.toString().replaceAll(";", ""));
 
-									}
+							}
 						}
 					}
 
@@ -171,7 +160,7 @@ public class FieldComparePanel extends JPanel{
 
 					fieldComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 					fieldComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
-					boxList.add(fieldComboBox);
+					this.boxList.add(fieldComboBox);
 					//レーベンシュタイン距離を初期化
 					distance = 0;
 					maxDistance = 0;
@@ -258,8 +247,8 @@ public class FieldComparePanel extends JPanel{
 		String strBox_1,strBox_2;
 		Object obj;
 
-		for (int i=0; i < boxList.size() ; i++){
-			box_1 = boxList.get(i);
+		for (int i=0; i < this.boxList.size() ; i++){
+			box_1 = this.boxList.get(i);
 
 			obj = box_1.getSelectedItem();
 
@@ -269,8 +258,8 @@ public class FieldComparePanel extends JPanel{
 
 			strBox_1 = obj.toString();
 
-			for(int j=0; j < boxList.size() ; j++){
-				box_2 = boxList.get(j);
+			for(int j=0; j < this.boxList.size() ; j++){
+				box_2 = this.boxList.get(j);
 
 				obj = box_2.getSelectedItem();
 

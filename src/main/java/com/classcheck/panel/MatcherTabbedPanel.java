@@ -1,5 +1,6 @@
 package com.classcheck.panel;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
@@ -40,9 +41,13 @@ public class MatcherTabbedPanel extends JTabbedPane {
 	}
 
 	private void initComponent(){
+		//umlのスケルトンコードとソースコードの対応付けを行う
+		//テーブルのマップ
+		HashMap<MyClass, CodeVisitor> codeMap = new HashMap<MyClass, CodeVisitor>();
+
 		//フィールドとメソッドのパネル
-		fcp = new FieldComparePanel(javaPackage,cb, codeVisitorList);
-		mcp = new MethodComparePanel(javaPackage,cb,codeVisitorList);
+		fcp = new FieldComparePanel(javaPackage,cb, codeVisitorList,codeMap);
+		mcp = new MethodComparePanel(javaPackage,cb,codeVisitorList,codeMap);
 		 
 		//２つのタブを生成
 		cstp = new ViewTabPanel(cb,userFileTree);

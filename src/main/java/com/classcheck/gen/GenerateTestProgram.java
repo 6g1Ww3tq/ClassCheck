@@ -163,7 +163,7 @@ public class GenerateTestProgram {
 							label = (JLabel) component;
 
 							if (!label.getText().
-									contains("(左)astahのフィールド")) {
+									contains("(左)スケルトンコードのフィールド")) {
 								befFieldStr = label.getText().replaceAll("^\\s+","");
 							}else{
 								continue;
@@ -200,7 +200,7 @@ public class GenerateTestProgram {
 							label = (JLabel) component;
 
 							if (!label.getText().
-									contains("(左)astahのメソッド")) {
+									contains("(左)スケルトンコードのメソッド")) {
 								befMethodStr = label.getText().replaceAll("^\\s+","");
 							}else{
 								continue;

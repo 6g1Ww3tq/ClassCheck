@@ -35,16 +35,16 @@ public class MethodComparePanel extends JPanel {
 	private List<IClass> javaPackage;
 	Map<MyClass, List<JPanel>> mapPanelList;
 	List<CodeVisitor> codeVisitorList;
-	Map<MyClass, CodeVisitor> codeMap;
+	HashMap<MyClass, CodeVisitor> codeMap;
 
 	private StatusBar mtpSourceStatus;
 
 	private List<JComboBox<String>> boxList;
 	private DefaultTableModel tableModel;
 
-	public MethodComparePanel() {
+	public MethodComparePanel(HashMap<MyClass, CodeVisitor> codeMap) {
 		mapPanelList = new HashMap<MyClass, List<JPanel>>();
-		codeMap = new HashMap<MyClass, CodeVisitor>();
+		this.codeMap = codeMap;
 		mtpSourceStatus = null;
 
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
@@ -52,8 +52,9 @@ public class MethodComparePanel extends JPanel {
 	}
 
 	public MethodComparePanel(List<IClass> javaPackage, ClassBuilder cb,
-			List<CodeVisitor> codeVisitorList) {
-		this();
+			List<CodeVisitor> codeVisitorList,
+			HashMap<MyClass, CodeVisitor> codeMap) {
+		this(codeMap);
 		this.javaPackage = javaPackage;
 		this.codeVisitorList = codeVisitorList;
 
@@ -85,7 +86,7 @@ public class MethodComparePanel extends JPanel {
 	}
 
 	public boolean initComponent(final MyClass myClass,boolean isAllChange){
-		List<JPanel> panelList = mapPanelList.get(myClass);
+		List<JPanel> panelList = this.mapPanelList.get(myClass);
 		LevensteinDistance levensteinAlgorithm = new LevensteinDistance();
 		//tmp
 		double distance = 0;
@@ -96,7 +97,7 @@ public class MethodComparePanel extends JPanel {
 		List<Method> umlMethodList = myClass.getMethods();
 		List<MethodDeclaration> codeMethodList = null;
 		List<ConstructorDeclaration> codeConstructorList = null;
-		CodeVisitor codeVisitor = codeMap.get(myClass);
+		CodeVisitor codeVisitor = this.codeMap.get(myClass);
 		JLabel l = null;
 		JPanel p = null;
 		JComboBox<String> methodComboBox = null;
@@ -104,8 +105,6 @@ public class MethodComparePanel extends JPanel {
 		//同じシグネチャーが選択されているかどうかを調べる
 		boxList = new ArrayList<JComboBox<String>>();
 		boolean isSameMethodSelected = false;
-		//コンストラクタかどうか判定する
-		boolean isConstructor = false;
 
 		//ポップアップテキスト
 		StringBuilder popSb = null;
@@ -115,6 +114,8 @@ public class MethodComparePanel extends JPanel {
 		Pattern patern = Pattern.compile(regex);
 		Matcher matcher;
 
+		System.out.println("***initCompoenent***(myClass):"+myClass.getName());
+		System.out.println("***initCompoenent***(CodeVisitor):"+codeVisitor.getClassName());
 		if (isAllChange) {
 			panelList.clear();
 
@@ -134,57 +135,52 @@ public class MethodComparePanel extends JPanel {
 				for (Method umlMethod : umlMethodList) {
 					popSb = new StringBuilder();
 					ArrayList<String> strList = new ArrayList<String>();
-					isConstructor = false;
 
-					/*
-					 * コンストラクタは読み込まない
-					 * =>メソッド名とクラス名が同類のメソッドはコンストラクタ
-					 */
-					if (umlMethod.getName().equals(myClass.getName())) {
-						isConstructor = true;
-					}
+					//ソースコードのコンストラクタを追加
+					System.out.println("ConstructerList(add):");
+					for (ConstructorDeclaration codeConstructor : codeConstructorList) {
 
-					if (isConstructor) {
+						System.out.println(Modifier.toString(codeConstructor.getModifiers()));
 
-						//ソースコードのコンストラクタを追加
-						for (ConstructorDeclaration constructorDeclaration : codeConstructorList) {
-
-							System.out.println(Modifier.toString(constructorDeclaration.getModifiers()));
-
-							//ソースコードのメソッドのパラメータ数と
-							//スケルトンコードのパラメータ個数の一致
-
-							if (constructorDeclaration.getParameters().size() == umlMethod.getParams().length && 
-									//ソースコードのコンストラクタの修飾子と
-									//スケルトンコードの修飾子の一致
-									umlMethod.getModifiers().contains(
-											Modifier.toString(constructorDeclaration.getModifiers())
-											)){
-
-								strList.add(constructorDeclaration.getDeclarationAsString());
-							}
+						//ソースコードのメソッドのパラメータ数と
+						//スケルトンコードのパラメータ個数の一致
+						
+						if (codeConstructor.getName().contains("Point")) {
+							System.out.println();
 						}
 
-					}else{
-						//ソースコードのメソッドを追加
-						for (MethodDeclaration codeMethod : codeMethodList) {
+						if (codeConstructor.getParameters().size() == umlMethod.getParams().length && 
+								//ソースコードのコンストラクタの修飾子と
+								//スケルトンコードの修飾子の一致
+								umlMethod.getModifiers().contains(Modifier.toString(codeConstructor.getModifiers())) && 
+								//パラメータの型の一致
+								new ParamCheck(javaPackage, tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate()){
+							strList.add(codeConstructor.getDeclarationAsString());
+							System.out.println("strList(add):"+codeConstructor.getDeclarationAsString());
+						}
+					}
 
-							if (codeMethod.getName().contains("main")) {
-								System.out.println("methodName : "+ codeMethod.getName());
-							}
-							//ソースコードのメソッドのパラメータ数と
-							//スケルトンコードのパラメータ個数の一致
-							//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
-							if (codeMethod.getParameters().size() == umlMethod.getParams().length && 
-									//ソースコードのメソッドの修飾子と
-									//スケルトンコードの修飾子の一致
-									umlMethod.getModifiers().contains(Modifier.toString(codeMethod.getModifiers())) &&
-									//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-									(new ReferenceType(javaPackage,tableModel, umlMethod, codeMethod).evaluate() || 
-											new BasicType(umlMethod,codeMethod).evaluate()) 
-											&& new ParamCheck(javaPackage,tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
-								strList.add(codeMethod.getDeclarationAsString());
-							}
+					//ソースコードのメソッドを追加
+					//TODO
+					//デフォルトだと返り値の型やパラメータの型が一致するが
+					//テーブルを変えるとうまくロジックが働かなくなる
+					System.out.println("codeMethodList(add):");
+					for (MethodDeclaration codeMethod : codeMethodList) {
+
+						System.out.println("codeMethod:"+codeMethod.getName());
+						//ソースコードのメソッドのパラメータ数と
+						//スケルトンコードのパラメータ個数の一致
+						//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
+						if (codeMethod.getParameters().size() == umlMethod.getParams().length && 
+								//ソースコードのメソッドの修飾子と
+								//スケルトンコードの修飾子の一致
+								umlMethod.getModifiers().contains(Modifier.toString(codeMethod.getModifiers())) &&
+								//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
+								new ReferenceType(javaPackage,tableModel, umlMethod, codeMethod).evaluate() && 
+								//パラメータの型の一致
+								new ParamCheck(javaPackage,tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
+							strList.add(codeMethod.getDeclarationAsString());
+							System.out.println("strList(add):"+codeMethod.getDeclarationAsString());
 						}
 					}
 
@@ -256,6 +252,9 @@ public class MethodComparePanel extends JPanel {
 					p.add(l);
 					p.add(methodComboBox);
 					panelList.add(p);
+					
+					System.out.println("****"+codeVisitor.getClassName()+"****");
+					System.out.println(strList);
 				}
 
 			}
