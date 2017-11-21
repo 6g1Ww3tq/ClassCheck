@@ -138,16 +138,14 @@ public class FieldComparePanel extends JPanel{
 					ArrayList<String> strList = new ArrayList<String>();
 
 					for (FieldDeclaration codeField : codeFieldList) {
-						//TODO
 						//型を比較するメソッドを作る（型はソースコードに依存する、また基本型の場合も考えるようにする)
 						//ソースコードのメソッドの修飾子と
 						//スケルトンコードの修飾子の一致
-						if (umlField.getModifiers().contains(Modifier.toString(codeField.getModifiers()))){
-							//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-							if(new ReferenceType(this.javaPackage,this.tableModel, umlField, codeField).evaluate()){
-								strList.add(codeField.toString().replaceAll(";", ""));
-
-							}
+						//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
+						if (umlField.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeField.getModifiers())) && 
+								//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
+								new ReferenceType(this.javaPackage,this.tableModel, umlField, codeField).evaluate()){
+							strList.add(codeField.toString().replaceAll(";", ""));
 						}
 					}
 

@@ -209,8 +209,8 @@ public class ViewTabPanel extends JPanel{
 					if (userObj instanceof MyClass) {
 						MyClass myClass = (MyClass) userObj;
 						astahTextArea.setText(myClass.toString());
-						astahSourceStatus.setText("Astah Source Code : " + myClass.getName());
-						astahTreeStatus.setText("Astah-Class : " + myClass.getName()) ;
+						astahSourceStatus.setText("Skelton Code : " + myClass.getName());
+						astahTreeStatus.setText("Skelton-Class : " + myClass.getName()) ;
 					}
 				}
 			}

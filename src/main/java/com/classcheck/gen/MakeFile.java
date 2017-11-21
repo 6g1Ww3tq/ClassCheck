@@ -89,6 +89,8 @@ public class MakeFile {
 		Map<AbstractButton, String> abstructBtnMap = constructorPane.getAbstractBtnMap();
 		AbstractButton button;
 		AbstractButton selectedButton = null;
+		String paramStr,constructorStr;
+		String[] split;
 
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();
@@ -107,7 +109,8 @@ public class MakeFile {
 			sb.append("\r\t"+"public " + "void " + methodName +"(");
 
 			for(int i=0;i < mockParamsList.size();i++){
-				sb.append(mockParamsList.get(i));
+				paramStr = mockParamsList.get(i);
+				sb.append(paramStr);
 
 				if(i<mockParamsList.size()-1){
 					sb.append(",");
@@ -127,7 +130,8 @@ public class MakeFile {
 				
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
-					sb.append(abstructBtnMap.get(selectedButton) +";\n");
+					constructorStr = abstructBtnMap.get(selectedButton);
+					sb.append(constructorStr +";\n");
 				}else{
 					//デフォルトコンストラクタ
 					sb.append(className + "()"+";\n");

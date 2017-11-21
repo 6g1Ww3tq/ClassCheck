@@ -24,7 +24,6 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.type.BasicType;
 import com.classcheck.type.ParamCheck;
 import com.classcheck.type.ReferenceType;
 import com.classcheck.window.DebugMessageWindow;
@@ -136,27 +135,24 @@ public class MethodComparePanel extends JPanel {
 					popSb = new StringBuilder();
 					ArrayList<String> strList = new ArrayList<String>();
 
+					System.out.println("umlMethod(Name):"+umlMethod.getName());
+
 					//ソースコードのコンストラクタを追加
-					System.out.println("ConstructerList(add):");
 					for (ConstructorDeclaration codeConstructor : codeConstructorList) {
 
-						System.out.println(Modifier.toString(codeConstructor.getModifiers()));
+						System.out.println("codeConstructor(modify):"+Modifier.toString(codeConstructor.getModifiers()));
+						System.out.println("umlMethod(modify):"+umlMethod.getModifiers());
 
 						//ソースコードのメソッドのパラメータ数と
 						//スケルトンコードのパラメータ個数の一致
-						
-						if (codeConstructor.getName().contains("Point")) {
-							System.out.println();
-						}
-
 						if (codeConstructor.getParameters().size() == umlMethod.getParams().length && 
 								//ソースコードのコンストラクタの修飾子と
 								//スケルトンコードの修飾子の一致
-								umlMethod.getModifiers().contains(Modifier.toString(codeConstructor.getModifiers())) && 
+								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
+								umlMethod.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeConstructor.getModifiers())) && 
 								//パラメータの型の一致
-								new ParamCheck(javaPackage, tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate()){
+								new ParamCheck(this.javaPackage, this.tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate()){
 							strList.add(codeConstructor.getDeclarationAsString());
-							System.out.println("strList(add):"+codeConstructor.getDeclarationAsString());
 						}
 					}
 
@@ -164,23 +160,24 @@ public class MethodComparePanel extends JPanel {
 					//TODO
 					//デフォルトだと返り値の型やパラメータの型が一致するが
 					//テーブルを変えるとうまくロジックが働かなくなる
-					System.out.println("codeMethodList(add):");
 					for (MethodDeclaration codeMethod : codeMethodList) {
 
-						System.out.println("codeMethod:"+codeMethod.getName());
+						System.out.println("codeMethod(modify):"+Modifier.toString(codeMethod.getModifiers()));
+						System.out.println("umlMethod(modify):"+umlMethod.getModifiers());
+
 						//ソースコードのメソッドのパラメータ数と
 						//スケルトンコードのパラメータ個数の一致
 						//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
 						if (codeMethod.getParameters().size() == umlMethod.getParams().length && 
 								//ソースコードのメソッドの修飾子と
 								//スケルトンコードの修飾子の一致
-								umlMethod.getModifiers().contains(Modifier.toString(codeMethod.getModifiers())) &&
+								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
+								umlMethod.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeMethod.getModifiers())) &&
 								//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-								new ReferenceType(javaPackage,tableModel, umlMethod, codeMethod).evaluate() && 
+								new ReferenceType(this.javaPackage,this.tableModel, umlMethod, codeMethod).evaluate() && 
 								//パラメータの型の一致
-								new ParamCheck(javaPackage,tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
+								new ParamCheck(this.javaPackage,this.tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
 							strList.add(codeMethod.getDeclarationAsString());
-							System.out.println("strList(add):"+codeMethod.getDeclarationAsString());
 						}
 					}
 
@@ -252,9 +249,6 @@ public class MethodComparePanel extends JPanel {
 					p.add(l);
 					p.add(methodComboBox);
 					panelList.add(p);
-					
-					System.out.println("****"+codeVisitor.getClassName()+"****");
-					System.out.println(strList);
 				}
 
 			}

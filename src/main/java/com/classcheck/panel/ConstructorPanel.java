@@ -44,6 +44,10 @@ public class ConstructorPanel extends JPanel {
 		return abstractBtnMap;
 	}
 
+	//TODO
+	//シーケンス図を基にモックしている部分を考えて
+	//フィールドをモックする
+	//そしてそれに合わせたコンストラクタのみを選択可能とする
 	private void initComponent() {
 		this.group = new ButtonGroup();
 		this.radioConstMap = new HashMap<JRadioButton, ConstructorDeclaration>();
