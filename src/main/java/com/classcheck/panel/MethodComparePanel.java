@@ -134,14 +134,15 @@ public class MethodComparePanel extends JPanel {
 				for (Method umlMethod : umlMethodList) {
 					popSb = new StringBuilder();
 					ArrayList<String> strList = new ArrayList<String>();
-
-					System.out.println("umlMethod(Name):"+umlMethod.getName());
+					String umlMethod_modify_str = umlMethod.getModifiers();
+					//最後の空白スペースを取り除く
+					if (umlMethod_modify_str.endsWith(" ")) {
+						umlMethod_modify_str = umlMethod_modify_str.substring(0, umlMethod_modify_str.lastIndexOf(" "));
+					}
 
 					//ソースコードのコンストラクタを追加
 					for (ConstructorDeclaration codeConstructor : codeConstructorList) {
-
-						System.out.println("codeConstructor(modify):"+Modifier.toString(codeConstructor.getModifiers()));
-						System.out.println("umlMethod(modify):"+umlMethod.getModifiers());
+						String codeConstructor_modify_str = Modifier.toString(codeConstructor.getModifiers());
 
 						//ソースコードのメソッドのパラメータ数と
 						//スケルトンコードのパラメータ個数の一致
@@ -149,7 +150,7 @@ public class MethodComparePanel extends JPanel {
 								//ソースコードのコンストラクタの修飾子と
 								//スケルトンコードの修飾子の一致
 								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
-								umlMethod.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeConstructor.getModifiers())) && 
+								umlMethod_modify_str.equals(codeConstructor_modify_str) && 
 								//パラメータの型の一致
 								new ParamCheck(this.javaPackage, this.tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate()){
 							strList.add(codeConstructor.getDeclarationAsString());
@@ -161,9 +162,7 @@ public class MethodComparePanel extends JPanel {
 					//デフォルトだと返り値の型やパラメータの型が一致するが
 					//テーブルを変えるとうまくロジックが働かなくなる
 					for (MethodDeclaration codeMethod : codeMethodList) {
-
-						System.out.println("codeMethod(modify):"+Modifier.toString(codeMethod.getModifiers()));
-						System.out.println("umlMethod(modify):"+umlMethod.getModifiers());
+						String codeMethod_modify_str = Modifier.toString(codeMethod.getModifiers());
 
 						//ソースコードのメソッドのパラメータ数と
 						//スケルトンコードのパラメータ個数の一致
@@ -172,7 +171,7 @@ public class MethodComparePanel extends JPanel {
 								//ソースコードのメソッドの修飾子と
 								//スケルトンコードの修飾子の一致
 								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
-								umlMethod.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeMethod.getModifiers())) &&
+								umlMethod_modify_str.equals(codeMethod_modify_str) &&
 								//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
 								new ReferenceType(this.javaPackage,this.tableModel, umlMethod, codeMethod).evaluate() && 
 								//パラメータの型の一致

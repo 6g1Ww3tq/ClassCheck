@@ -6,8 +6,6 @@ import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +105,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		config.activate();
 
 		codeVisitorList = new ArrayList<CodeVisitor>();
-		
+
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 		ToolTipManager.sharedInstance().setReshowDelay(250);
 		ToolTipManager.sharedInstance().setDismissDelay(60000);
@@ -118,7 +116,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		JPanel actionPane = new JPanel();
 		JPanel debugPane = new JPanel();
 		JPanel northPane = new JPanel();
-		
+
 		actionPane.setLayout(new FlowLayout());
 		debugCheckBox = new JCheckBox();
 
@@ -148,7 +146,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"フォルダを選択してください" +
 				"</html>");
 		folderPane.add(folderTextField);
-		
+
 		debugPane.add(new JLabel("デバックモード:"));
 		debugPane.add(debugCheckBox);
 
@@ -164,9 +162,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void initEvents() {
-		
+
 		debugCheckBox.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (debugCheckBox.isSelected()) {
@@ -176,7 +174,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				}
 			}
 		});
-		
+
 		expBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -202,7 +200,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<IClass> javaPackage;
-				
+				File file;
+
 				SourceGenerator sg = null;
 				MatcherWindow ctw = null;
 
@@ -217,6 +216,21 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					return ;
 				}
 				
+				
+				if (!folderTextField.getText().isEmpty()) {
+					file = new File(folderTextField.getText());
+
+					if (!file.isDirectory()) {
+						JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+						return ;
+					}
+				}else{
+					JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+
+				makeCodeVisitorList(folderTextField.getText());
+
 				config.activate();
 				create_class_sequence_list();
 
@@ -310,19 +324,17 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		initVariables();
 
 		File file;
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Future<?> future;
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setDragEnabled(true);
-		
+
 		if (!MatcherWindow.isClosed()) {
 			JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
 			return ;
 		}
-		
+
 		if (!folderTextField.getText().isEmpty()) {
 			file = new File(folderTextField.getText());
-			
+
 			if (!file.isDirectory()) {
 				chooser.setCurrentDirectory(new File(projectPath));
 			}else{
@@ -333,68 +345,72 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		}
 
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
+
 		int rtnVal = chooser.showOpenDialog(parentComponent);
 		if(rtnVal == JFileChooser.APPROVE_OPTION) {
-			future = executor.submit(new Callable<String>() {
-
-				@Override
-				public String call() throws Exception {
-					SourceAnalyzer sa = null; 
-					FileNode fileNode = null;
-					baseDirTree = new FileTree(new FileNode(chooser.getSelectedFile()) , ".java$");
-					StringBuilder sb = new StringBuilder();
-					Iterator<FileNode> it = baseDirTree.iterator();
-
-					while (it.hasNext()) {
-						fileNode = (FileNode) it.next();
-
-						if (fileNode!=null) {
-							try {
-								sa = new SourceAnalyzer(fileNode);
-
-								sa.doAnalyze();
-
-								sb.append(fileNode+"\n");
-								codeVisitorList.add(sa.getCodeVisitor());
-
-							} catch (IOException e) {
-								// TODO 自動生成された catch ブロック
-								e.printStackTrace();
-							}
-						}
-
-					}
-
-					System.out.println(sb.toString());
-
-					return null;
-				}
-			});
-
-			try {
-				future.get(3, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			} catch (TimeoutException e) {
-				// TODO 自動生成された catch ブロック
-				System.out.println("time out!!");
-				future.cancel(true);
-				baseDirTree = null;
-				e.printStackTrace();
-			}
-
-			executor.shutdownNow();
-			DebugMessageWindow.msgToOutPutTextArea();
-
 			//テキストフィールドにフォルダパスを入力
 			folderTextField.setText(chooser.getSelectedFile().getPath());
 		}
 
+	}
+
+	private void makeCodeVisitorList(final String projectPath){
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<?> future;
+
+		future = executor.submit(new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				SourceAnalyzer sa = null; 
+				FileNode fileNode = null;
+				baseDirTree = new FileTree(new FileNode(projectPath) , ".java$");
+				StringBuilder sb = new StringBuilder();
+				Iterator<FileNode> it = baseDirTree.iterator();
+
+				while (it.hasNext()) {
+					fileNode = (FileNode) it.next();
+
+					if (fileNode!=null) {
+						try {
+							sa = new SourceAnalyzer(fileNode);
+
+							sa.doAnalyze();
+
+							sb.append(fileNode+"\n");
+							codeVisitorList.add(sa.getCodeVisitor());
+
+						} catch (IOException e) {
+							// TODO 自動生成された catch ブロック
+							e.printStackTrace();
+						}
+					}
+
+				}
+
+				System.out.println(sb.toString());
+
+				return null;
+			}
+		});
+
+		try {
+			future.get(3, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO 自動生成された catch ブロック
+			System.out.println("time out!!");
+			future.cancel(true);
+			baseDirTree = null;
+			e.printStackTrace();
+		}
+
+		executor.shutdownNow();
+		DebugMessageWindow.msgToOutPutTextArea();
 	}
 
 	@Override

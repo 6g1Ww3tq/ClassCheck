@@ -62,14 +62,14 @@ public class GenerateToolBar extends JToolBar {
 				
 				if(!mtp.isFieldEpmty()){
 					JOptionPane.showMessageDialog(getParent(), "フィールドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
-					JOptionPane.showMessageDialog(getParent(), "クラス図,シーケンス図に対応するフィールドを定義してください", "info", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "クラス図の修飾子や型を参考にソースコードを修正してください", "info", JOptionPane.INFORMATION_MESSAGE);
 					gs = GenerateState.FIELDNULL;
 					return ;
 				}
 
 				if(!mtp.isMethodEmpty()){
 					JOptionPane.showMessageDialog(getParent(), "メソッドの選択ができない空のクラスがあります", "error", JOptionPane.ERROR_MESSAGE);
-					JOptionPane.showMessageDialog(getParent(), "クラス図,シーケンス図に対応するメソッドを定義してください", "info", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "クラス図のシグネチャを参考にソースコードを修正してください", "info", JOptionPane.INFORMATION_MESSAGE);
 					gs = GenerateState.METHODNULL;
 					return ;
 				}

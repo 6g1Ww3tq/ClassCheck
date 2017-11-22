@@ -142,7 +142,23 @@ public class FieldComparePanel extends JPanel{
 						//ソースコードのメソッドの修飾子と
 						//スケルトンコードの修飾子の一致
 						//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
-						if (umlField.getModifiers().replaceAll(" ", "").equals(Modifier.toString(codeField.getModifiers())) && 
+						String umlField_modify_str = umlField.getModifiers();
+						String codeField_modify_str = Modifier.toString(codeField.getModifiers());
+						
+						//最後の空白スペースを取り除く
+						if (umlField_modify_str.endsWith(" ")) {
+							umlField_modify_str = umlField_modify_str.substring(0, umlField_modify_str.lastIndexOf(" "));
+						}
+						
+						if (umlField_modify_str.contains("static") || 
+								codeField_modify_str.contains("static")) {
+							System.out.println("===static===");
+							System.out.println("umlField_modify_str:"+umlField_modify_str);
+							System.out.println("codeField_modify_str:"+codeField_modify_str);
+							System.out.println("code_is_static:"+Modifier.isStatic(codeField.getModifiers()));
+						}
+
+						if (umlField_modify_str.equals(codeField_modify_str) && 
 								//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
 								new ReferenceType(this.javaPackage,this.tableModel, umlField, codeField).evaluate()){
 							strList.add(codeField.toString().replaceAll(";", ""));
