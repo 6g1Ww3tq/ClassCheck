@@ -39,7 +39,6 @@ public class GenerateToolBar extends JToolBar {
 	}
 
 	private void initComponent() {
-		//TODO
 		//ツールバーにアイコンを入れ,テストプログラムを生成するイベントも作る
 		genIcon = new ImageIcon(GenerateToolBar.class.getResource("/icons/start.png"));
 		genAction = new AbstractAction("genAction",genIcon) {
@@ -86,7 +85,6 @@ public class GenerateToolBar extends JToolBar {
 					return ;
 				}
 
-				//TODO
 				//すべてのクラスのフィールドを調べる
 				if (!mtp.isFieldGeneratable()) {
 					JOptionPane.showMessageDialog(getParent(), "同じフィールドを選択しないでください", "error", JOptionPane.ERROR_MESSAGE);

@@ -44,10 +44,8 @@ public class SourceGenerator {
 			projectAccessor = api.getProjectAccessor();
 			window = api.getViewManager().getMainFrame();
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (InvalidUsingException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 
@@ -62,10 +60,8 @@ public class SourceGenerator {
 			this.projectAccessor = projectAccessor;
 			window = api.getViewManager().getMainFrame();
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (InvalidUsingException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 
@@ -88,7 +84,6 @@ public class SourceGenerator {
 			return classList;
 
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (ProjectNotFoundException e) {
 			e.printStackTrace();
@@ -112,7 +107,6 @@ public class SourceGenerator {
 			getAllClasses(imodel,classList,packageName);
 			return classList;
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (ProjectNotFoundException e) {
 			e.printStackTrace();

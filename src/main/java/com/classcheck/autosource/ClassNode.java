@@ -13,7 +13,6 @@ public class ClassNode extends DefaultMutableTreeNode{
 	MyClass myClass;
 	
 	public ClassNode() {
-		// TODO 自動生成されたコンストラクター・スタブ
 	}
 	
 	public ClassNode(MyClass myclass) {

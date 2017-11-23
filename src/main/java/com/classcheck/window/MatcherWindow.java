@@ -61,8 +61,6 @@ public class MatcherWindow extends JFrame {
 
 		@Override
 		public void windowActivated(WindowEvent e) {
-			// TODO 自動生成されたメソッド・スタブ
-			
 		}
 
 		@Override
@@ -77,20 +75,14 @@ public class MatcherWindow extends JFrame {
 
 		@Override
 		public void windowDeactivated(WindowEvent e) {
-			// TODO 自動生成されたメソッド・スタブ
-			
 		}
 
 		@Override
 		public void windowDeiconified(WindowEvent e) {
-			// TODO 自動生成されたメソッド・スタブ
-			
 		}
 
 		@Override
 		public void windowIconified(WindowEvent e) {
-			// TODO 自動生成されたメソッド・スタブ
-			
 		}
 
 		@Override

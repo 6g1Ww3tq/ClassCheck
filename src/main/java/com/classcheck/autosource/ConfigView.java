@@ -295,7 +295,6 @@ public class ConfigView extends JFrame implements ActionListener {
 		     return s;
 
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(window.getParent(), "Unexpected error has occurred.", "Alert", JOptionPane.ERROR_MESSAGE);
 		} catch (ProjectNotFoundException e) {

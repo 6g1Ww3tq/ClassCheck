@@ -29,13 +29,11 @@ public class VariableVisitor extends VoidVisitorAdapter<Void> {
 
 	@Override
 	public void visit(FieldDeclaration n, Void arg) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.visit(n, arg);
 	}
 	
 	@Override
 	public void visit(MethodDeclaration n, Void arg) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.visit(n, arg);
 	}
 }

@@ -66,7 +66,6 @@ public class LocalDecReplaceVisitor extends VoidVisitorAdapter<Void> {
 				blockSt = JavaParser.parseBlock(lines.toString());
 				n.setBody(blockSt);
 			} catch (ParseException e) {
-				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
 

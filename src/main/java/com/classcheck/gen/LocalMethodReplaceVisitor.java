@@ -151,7 +151,6 @@ public class LocalMethodReplaceVisitor extends VoidVisitorAdapter<Void> {
 				blockSt = JavaParser.parseBlock(lines.toString());
 				n.setBody(blockSt);
 			} catch (ParseException e) {
-				// TODO 自動生成された catch ブロック
 				System.out.println("***error**");
 				System.out.println(lines.toString());
 				System.out.println(e);

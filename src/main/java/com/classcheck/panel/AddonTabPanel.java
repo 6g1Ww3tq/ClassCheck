@@ -265,7 +265,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 						ctw = new MatcherWindow(javaPackage,cb,codeVisitorList,baseDirTree);
 						ctw.setTitle("テストプログラムの生成");
 					} catch (UnExpectedException e1) {
-						// TODO 自動生成された catch ブロック
 						e1.printStackTrace();
 					}
 				}else{
@@ -292,7 +291,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					ConfigView cv = new ConfigView(config,api.getViewManager().getMainFrame());
 					cv.setVisible(true);
 				} catch (InvalidUsingException e1) {
-					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
 				}
 			}
@@ -380,7 +378,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 							codeVisitorList.add(sa.getCodeVisitor());
 
 						} catch (IOException e) {
-							// TODO 自動生成された catch ブロック
 							e.printStackTrace();
 						}
 					}
@@ -396,13 +393,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		try {
 			future.get(3, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (TimeoutException e) {
-			// TODO 自動生成された catch ブロック
 			System.out.println("time out!!");
 			future.cancel(true);
 			baseDirTree = null;

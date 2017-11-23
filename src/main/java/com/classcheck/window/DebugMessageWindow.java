@@ -62,7 +62,6 @@ public class DebugMessageWindow extends JFrame {
 			try {
 				doc.remove(0, doc.getLength());
 			} catch (BadLocationException e) {
-				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
 
@@ -73,7 +72,6 @@ public class DebugMessageWindow extends JFrame {
 		try {
 			doc.insertString(doc.getLength(), msg, attr);
 		} catch (BadLocationException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 	}

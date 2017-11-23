@@ -60,10 +60,8 @@ implements IPluginExtraTabView, ProjectEventListener,ActionListener{
 			ProjectAccessor projectAccessor = api.getProjectAccessor();
 			window = api.getViewManager().getMainFrame();
 		} catch (ClassNotFoundException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (InvalidUsingException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 

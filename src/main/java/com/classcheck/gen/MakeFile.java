@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.panel.ConstructorPanel;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.Parameter;
 
 public class MakeFile {
 
@@ -73,7 +71,6 @@ public class MakeFile {
 
 				fileMap.put(fileName, sb.toString());
 			} catch (ParseException e) {
-				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
 
@@ -90,7 +87,6 @@ public class MakeFile {
 		AbstractButton button;
 		AbstractButton selectedButton = null;
 		String paramStr,constructorStr;
-		String[] split;
 
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();

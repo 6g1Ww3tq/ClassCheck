@@ -158,9 +158,6 @@ public class MethodComparePanel extends JPanel {
 					}
 
 					//ソースコードのメソッドを追加
-					//TODO
-					//デフォルトだと返り値の型やパラメータの型が一致するが
-					//テーブルを変えるとうまくロジックが働かなくなる
 					for (MethodDeclaration codeMethod : codeMethodList) {
 						String codeMethod_modify_str = Modifier.toString(codeMethod.getModifiers());
 

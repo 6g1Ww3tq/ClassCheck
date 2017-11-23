@@ -2,18 +2,11 @@ package com.mysample;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 import com.change_vision.jude.api.inf.AstahAPI;
-import com.change_vision.jude.api.inf.exception.InvalidEditingException;
-import com.change_vision.jude.api.inf.exception.LicenseNotFoundException;
-import com.change_vision.jude.api.inf.exception.NonCompatibleException;
-import com.change_vision.jude.api.inf.exception.ProjectLockedException;
-import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
 import com.change_vision.jude.api.inf.project.ProjectEvent;
 import com.change_vision.jude.api.inf.project.ProjectEventListener;
@@ -58,17 +51,11 @@ public class SampleFrame extends JFrame implements ProjectEventListener{
 
 	@Override
 	public void projectChanged(ProjectEvent e) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 	@Override
 	public void projectClosed(ProjectEvent e) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 	@Override
 	public void projectOpened(ProjectEvent e) {
-		// TODO 自動生成されたメソッド・スタブ
-
 	}
 }

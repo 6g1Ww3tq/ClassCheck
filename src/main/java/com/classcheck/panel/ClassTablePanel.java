@@ -263,7 +263,6 @@ public class ClassTablePanel extends JPanel implements Serializable{
 
 					if (visitor != null && myClassCell != null && codeMap != null) {
 						
-						//TODO
 						//umlのクラスに対応するソースコード側のクラスを結びつけているので確認する
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
@@ -283,12 +282,10 @@ public class ClassTablePanel extends JPanel implements Serializable{
 	}
 
 	private DefaultTableModel loadTableModel() {
-		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
 
 	private boolean isConfigFileExist() {
-		// TODO 自動生成されたメソッド・スタブ
 		return false;
 	}
 

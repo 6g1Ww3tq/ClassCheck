@@ -127,40 +127,30 @@ public class ConfigJDialog extends JDialog implements Serializable{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 自動生成されたメソッド・スタブ
-
 			}
 		});
 		mnBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 自動生成されたメソッド・スタブ
-
 			}
 		});
 		paramBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 自動生成されたメソッド・スタブ
-
 			}
 		});
 		okBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 自動生成されたメソッド・スタブ
-
 			}
 		});
 		cancelBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO 自動生成されたメソッド・スタブ
-
 			}
 		});
 

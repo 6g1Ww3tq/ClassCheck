@@ -65,7 +65,6 @@ public class CheckMember {
 				}
 			}
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		return false;
@@ -103,7 +102,6 @@ public class CheckMember {
 			br.close();
 
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 

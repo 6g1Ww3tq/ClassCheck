@@ -57,8 +57,6 @@ public class MemberTabPanel extends JPanel{
 
 	ClassTablePanel tablePane;
 
-	//TODO
-	//使い方をよく見る
 	Map<MyClass, Boolean> generatableMap = new HashMap<MyClass, Boolean>();
 
 	MyClass selectedMyClass;
@@ -132,17 +130,13 @@ public class MemberTabPanel extends JPanel{
 		for (MyClass myClass : myClassList) {
 			child = new ClassNode(myClass);
 			astahRoot.add(child);
-			//デフォルトでパネルに初期値データを入れる
-			//フィールド
+			//デフォルトでフィールドのパネルに初期値データを入れる
 			isSameFieldSelected = fcp.initComponent(myClass, true);
-			//TODO
-			//フィールド用を作る＃1
 			selectedSameFieldSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 
-			//メソッド
+			//デフォルトでメソッドのパネルに初期値データを入れる
+			isSameFieldSelected = fcp.initComponent(myClass, true);
 			isSameMethodSelected = mcp.initComponent(myClass,true);
-			//TODO
-			//メソッド用を作る＃1
 			selectedSameMethodSigMap.put(myClass, new Pocket<SelectedType>(SelectedType.OTHER));
 
 			generatableMap.put(myClass, !isSameMethodSelected);
@@ -340,8 +334,6 @@ public class MemberTabPanel extends JPanel{
 				if (methodCodeSigBox != null) {
 					obj = methodCodeSigBox.getSelectedItem();
 
-					//TODO
-					//nullでない
 					if (obj != null) {
 						methodCodeSigList.add(obj.toString());
 					}
@@ -350,7 +342,6 @@ public class MemberTabPanel extends JPanel{
 			}
 		}
 
-		//TODO
 		//ステータスバーによるエラーチェック(フィールド)
 		for (JPanel panel : fieldPanelList) {
 			for (int i = 0; i < panel.getComponentCount(); i++) {
@@ -364,8 +355,6 @@ public class MemberTabPanel extends JPanel{
 				if (fieldCodeSigBox != null) {
 					obj = fieldCodeSigBox.getSelectedItem();
 
-					//TODO
-					//nullでない
 					if (obj != null) {
 						fieldCodeSigList.add(obj.toString());
 					}
@@ -569,7 +558,6 @@ public class MemberTabPanel extends JPanel{
 
 	}
 
-	//TODO
 	//同じフィールドがないかどうか調べる
 	public boolean isFieldGeneratable(){
 		boolean generatable = true;

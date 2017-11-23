@@ -84,14 +84,12 @@ public abstract class Replace implements Strategy{
 			}
 
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					// TODO 自動生成された catch ブロック
 					e.printStackTrace();
 				}
 			}

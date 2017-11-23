@@ -1,7 +1,6 @@
 package com.classcheck.gen;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,6 @@ public class ChangeSkeltonCode {
 			try {
 				clMyClass = myClass.clone();
 			} catch (CloneNotSupportedException e1) {
-				// TODO 自動生成された catch ブロック
 				e1.printStackTrace();
 			}
 			//空のメソッドやnewが使われているメソッドは除外する
@@ -97,8 +95,6 @@ public class ChangeSkeltonCode {
 			}
 
 			//メソッド変更
-			//TODO
-			//start.Point()になってしまう
 			msr = new MethodSigReplace(fsr.getBase());
 
 			for (String befMethodStr : methodMap.keySet()){
@@ -132,7 +128,6 @@ public class ChangeSkeltonCode {
 				//変換後のクラス名と内容を記録
 				generatedCodesMap.put(methodCodeMap.get(myClass), cnr.getBase());
 			} catch (ParseException e) {
-				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
 

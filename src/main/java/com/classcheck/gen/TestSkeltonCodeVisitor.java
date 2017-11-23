@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -76,8 +75,6 @@ public class TestSkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 		}
 
 		mockMethodMap.put(methodName, sb.toString());
-
-		// TODO 自動生成されたメソッド・スタブ
 		super.visit(n, arg);
 	}
 }

@@ -48,7 +48,6 @@ public class TextMessageWindow extends JFrame {
 		try {
 			doc.insertString(doc.getLength(), msg, attr);
 		} catch (BadLocationException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 	}

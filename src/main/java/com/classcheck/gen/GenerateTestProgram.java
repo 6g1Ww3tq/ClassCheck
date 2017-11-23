@@ -19,7 +19,6 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
 import com.classcheck.panel.ClassTablePanel;
 import com.classcheck.panel.ConstructorPanel;
-import com.classcheck.panel.ConstructorTabbedPanel;
 import com.classcheck.panel.FieldComparePanel;
 import com.classcheck.panel.MemberTabPanel;
 import com.classcheck.panel.MethodComparePanel;
@@ -255,7 +254,6 @@ public class GenerateTestProgram {
 			successed = !scv.isCanceled();
 			cPaneList = scv.getCtp().getConstructorPaneList();
 
-			//TODO
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			makeFile = new MakeFile(generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
@@ -271,7 +269,6 @@ public class GenerateTestProgram {
 			//ファイル出力
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		
@@ -289,7 +286,6 @@ public class GenerateTestProgram {
 		try {
 			FileUtils.forceMkdir(outDir);
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 

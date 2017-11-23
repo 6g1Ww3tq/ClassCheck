@@ -166,12 +166,7 @@ public class FieldComparePanel extends JPanel{
 					}
 
 
-					//TODO
-					//メソッド同様に
-					//修飾子が合わないやつは弾く
-
 					popSb = new StringBuilder();
-
 					fieldComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
 					fieldComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					this.boxList.add(fieldComboBox);
