@@ -49,7 +49,7 @@ public class DebugMessageWindow extends JFrame {
 		System.setOut(out);
 	}
 
-	public static void msgToOutPutTextArea(){
+	public static void msgToTextArea(){
 		if(isDebugMode){
 			MutableAttributeSet attr = new SimpleAttributeSet();
 			StyleConstants.setForeground(attr, Color.black);

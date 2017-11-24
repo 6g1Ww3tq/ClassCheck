@@ -229,7 +229,7 @@ public class ClassTablePanel extends JPanel implements Serializable{
 				System.out.println(throwableStackTraceElement.getClassName() + "#" + throwableStackTraceElement.getMethodName() + "(" + throwableStackTraceElement.getLineNumber() + ")");
 			}
 		}
-		DebugMessageWindow.msgToOutPutTextArea();
+		DebugMessageWindow.msgToTextArea();
 
 	}
 
@@ -274,7 +274,7 @@ public class ClassTablePanel extends JPanel implements Serializable{
 
 					System.out.println("visitor : \n"+visitor);
 					System.out.println("myClassCell : \n"+myClassCell);
-					DebugMessageWindow.msgToOutPutTextArea();
+					DebugMessageWindow.msgToTextArea();
 
 				}
 			}

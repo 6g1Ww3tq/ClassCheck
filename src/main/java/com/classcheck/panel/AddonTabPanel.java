@@ -182,7 +182,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				DebugMessageWindow.clearText();
 				//				new ConfigJDialog(false);
 				System.out.println("実験しました。。。");
-				DebugMessageWindow.msgToOutPutTextArea();
+				DebugMessageWindow.msgToTextArea();
 			}
 		});
 
@@ -404,7 +404,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		}
 
 		executor.shutdownNow();
-		DebugMessageWindow.msgToOutPutTextArea();
+		DebugMessageWindow.msgToTextArea();
 	}
 
 	@Override

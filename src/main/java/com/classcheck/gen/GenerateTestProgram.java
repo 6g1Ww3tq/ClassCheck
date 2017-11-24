@@ -86,7 +86,7 @@ public class GenerateTestProgram {
 			}
 		}
 
-		DebugMessageWindow.msgToOutPutTextArea();
+		DebugMessageWindow.msgToTextArea();
 	}
 
 	private void makeChangeMap() {
@@ -264,7 +264,7 @@ public class GenerateTestProgram {
 				System.out.println(fileMap.get(fileName));
 			}
 			
-			DebugMessageWindow.msgToOutPutTextArea();
+			DebugMessageWindow.msgToTextArea();
 
 			//ファイル出力
 			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
@@ -282,7 +282,7 @@ public class GenerateTestProgram {
 	private void makeTestDir() {
 		outDir = new File(baseDir.getPath()+"/test");
 		System.out.println(outDir);
-		DebugMessageWindow.msgToOutPutTextArea();
+		DebugMessageWindow.msgToTextArea();
 		try {
 			FileUtils.forceMkdir(outDir);
 		} catch (IOException e) {

@@ -191,7 +191,7 @@ public class ViewTabPanel extends JPanel{
 					} catch (IOException e1) {
 						DebugMessageWindow.clearText();
 						System.out.println(e1);
-						DebugMessageWindow.msgToOutPutTextArea();
+						DebugMessageWindow.msgToTextArea();
 					}
 				}
 			}

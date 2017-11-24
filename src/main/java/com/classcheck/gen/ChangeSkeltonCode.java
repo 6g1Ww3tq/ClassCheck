@@ -131,7 +131,7 @@ public class ChangeSkeltonCode {
 				e.printStackTrace();
 			}
 
-			DebugMessageWindow.msgToOutPutTextArea();
+			DebugMessageWindow.msgToTextArea();
 
 		}
 	}

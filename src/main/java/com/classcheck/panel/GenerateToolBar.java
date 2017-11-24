@@ -107,7 +107,7 @@ public class GenerateToolBar extends JToolBar {
 					}
 				}
 				
-				DebugMessageWindow.msgToOutPutTextArea();
+				DebugMessageWindow.msgToTextArea();
 
 			}
 		};
