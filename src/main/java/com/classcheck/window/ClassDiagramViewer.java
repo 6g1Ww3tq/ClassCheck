@@ -10,7 +10,7 @@ import javax.swing.text.ChangedCharSetException;
 
 import com.classcheck.autosource.ClassColorChenger;
 import com.classcheck.autosource.ExportClassDiagram;
-import com.classcheck.panel.ImageTabbedPanel;
+import com.classcheck.panel.ClassImageTabbedPanel;
 
 public class ClassDiagramViewer extends JFrame {
 	private static boolean isOpened = false;
@@ -30,7 +30,7 @@ public class ClassDiagramViewer extends JFrame {
 	private void initComponent() {
 		Container container = getContentPane();
 		
-		container.add(new ImageTabbedPanel(exportPath));
+		container.add(new ClassImageTabbedPanel(exportPath));
 		
 		setTitle("クラス図");
 		setLocationRelativeTo(null);

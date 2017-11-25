@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 
 public class ImageView extends JPanel {
@@ -17,15 +18,17 @@ public class ImageView extends JPanel {
 	private BufferedImage bufImage;
 	private Dimension preferredSize;
 	private double scale_width,scale_height;
-	
-	public ImageView(File picFile, double scale_width, double scale_height) {
+	private JScrollPane scrollPane;
+
+	public ImageView(File picFile, double scale_width, double scale_height,JScrollPane scrollPane) {
 		this.picFile = picFile;
 		this.scale_width = scale_width;
 		this.scale_height = scale_height;
+		this.scrollPane = scrollPane;
 		initComponent();
-//		initEvent();
+		//		initEvent();
 	}
-	
+
 	public double getScale_width() {
 		return scale_width;
 	}
@@ -47,9 +50,12 @@ public class ImageView extends JPanel {
 	}
 
 	private void initComponent() {
+		int width,height;
 		try {
 			bufImage = ImageIO.read(picFile);
-			this.preferredSize = new Dimension(bufImage.getWidth(), bufImage.getHeight());
+			width = bufImage.getWidth();
+			height = bufImage.getHeight();
+			this.preferredSize = new Dimension(width, height);
 			setPreferredSize(this.preferredSize);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,8 +63,8 @@ public class ImageView extends JPanel {
 
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
-	
-	
+
+
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -70,11 +76,17 @@ public class ImageView extends JPanel {
 
 		// paint the image here with no scaling
 		g2d.drawImage(bufImage, 0, 0, preferredSize.width, preferredSize.height, this);
+
+		super.setPreferredSize(preferredSize);
+		scrollPane.setPreferredSize(new Dimension(preferredSize.width, preferredSize.height));
 	}
 	
 	@Override
-	public void setPreferredSize(Dimension preferredSize) {
-		super.setPreferredSize(preferredSize);
-		this.preferredSize = preferredSize;
+	public Dimension getPreferredSize() {
+		return preferredSize;
+	}
+
+	public void setScrollPane(JScrollPane scrollPane_center) {
+		this.scrollPane = scrollPane_center;
 	}
 }

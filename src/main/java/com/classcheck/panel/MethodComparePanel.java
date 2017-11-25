@@ -114,8 +114,8 @@ public class MethodComparePanel extends JPanel {
 		Pattern patern = Pattern.compile(regex);
 		Matcher matcher;
 
-		System.out.println("***initCompoenent***(myClass):"+myClass.getName());
-		System.out.println("***initCompoenent***(CodeVisitor):"+codeVisitor.getClassName());
+		//System.out.println("***initCompoenent***(myClass):"+myClass.getName());
+		//System.out.println("***initCompoenent***(CodeVisitor):"+codeVisitor.getClassName());
 		if (isAllChange) {
 			panelList.clear();
 

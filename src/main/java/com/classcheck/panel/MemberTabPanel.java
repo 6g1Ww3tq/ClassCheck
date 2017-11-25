@@ -62,6 +62,10 @@ public class MemberTabPanel extends JPanel{
 
 	MyClass selectedMyClass;
 
+	private JPanel classNamePane;
+
+	private JPanel classFieldMethodPane;
+
 
 
 	public MemberTabPanel(FieldComparePanel fcp,MethodComparePanel mcp, ClassBuilder cb) {
@@ -106,7 +110,7 @@ public class MemberTabPanel extends JPanel{
 	}
 
 	private void initComponent(){
-		JPanel panel,classNamePane,classFieldMethodPane;
+		JPanel panel;
 		ClassNode child = null;
 		holizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -117,10 +121,6 @@ public class MemberTabPanel extends JPanel{
 		jtree.setMinimumSize(new Dimension(150,200));
 
 		classNamePane = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		jtrSelClass = new JLabel();
-		jtrSelClass.setFont(new Font("SansSerif", Font.BOLD, 18));
-		jtrSelClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		classNamePane.add(jtrSelClass);
 
 		//フィールド
 		boolean isSameFieldSelected = false;
@@ -236,7 +236,16 @@ public class MemberTabPanel extends JPanel{
 						selectedMyClass = (MyClass) userObj;
 						iClass = selectedMyClass.getIClass();
 						//jtreeで選択したクラスを表示
+						jtrSelClass = new JLabel();
+						jtrSelClass.setFont(new Font("SansSerif", Font.BOLD, 18));
+						jtrSelClass.setCursor(new Cursor(Cursor.HAND_CURSOR));
 						jtrSelClass.setText(selectedMyClass.getName());
+						classNamePane.removeAll();
+						classNamePane.revalidate();
+						classNamePane.repaint();
+						classNamePane.add(jtrSelClass);
+						//クラス図を表示
+						jtrSelClass.addMouseListener(new LabelMouseAdapter(selectedMyClass, jtrSelClass, getParent()));
 
 						//説明を加える
 						popSb.append("<html>");
@@ -279,8 +288,6 @@ public class MemberTabPanel extends JPanel{
 						popSb.append("</html>");
 
 						jtrSelClass.setToolTipText(popSb.toString());
-						//クラス図を表示
-						jtrSelClass.addMouseListener(new LabelMouseAdapter(selectedMyClass, jtrSelClass, getParent()));
 						//パネルの更新
 						reLoadMemberPane(selectedMyClass,true);
 					}
