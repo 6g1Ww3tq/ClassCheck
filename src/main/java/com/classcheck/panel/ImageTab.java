@@ -1,23 +1,25 @@
 package com.classcheck.panel;
 
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class ImageTab extends JPanel {
 	private File picFile;
-	private BufferedImage bufImage;
-	private boolean pressed = false;
-	private int px,py,rx,ry;
+	private ImageView imageView;
+	private JPanel zoomLabel_north;
+	private JButton zoomInButton;
+	private JButton zoomOutButton;
+	private JLabel zoomPacent;
+	private JScrollPane scrollPane_center;
 
 	public ImageTab(File file) {
 		this.picFile = file;
@@ -26,43 +28,53 @@ public class ImageTab extends JPanel {
 	}
 
 	private void initComponent() {
-		px = py = rx = ry = 0;
+		double scale_width  = 1;
+		double scale_height = 1;
+		zoomLabel_north = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		zoomInButton = new JButton("ZoomIn",new ImageIcon(getClass().getResource("/icons/zoomin.png")));
+		zoomOutButton = new JButton("ZoomOut",new ImageIcon(getClass().getResource("/icons/zoomout.png")));
+		zoomPacent = new JLabel("100%");
+		imageView = new ImageView(picFile,scale_width,scale_height);
+		scrollPane_center = new JScrollPane(imageView);
+		zoomLabel_north.add(zoomInButton);
+		zoomLabel_north.add(zoomOutButton);
+		zoomLabel_north.add(zoomPacent);
 
-		try {
-			bufImage = ImageIO.read(picFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		this.setLayout(new BorderLayout());
+		add(zoomLabel_north,BorderLayout.NORTH);
+		add(scrollPane_center,BorderLayout.CENTER);
 	}
 
 	private void initEvent() {
-		addMouseListener(new MouseAdapter() {
+		zoomInButton.addActionListener(new ActionListener() {
 			@Override
-			public void mousePressed(MouseEvent e) {
-				super.mousePressed(e);
-				pressed = true;
-				px = e.getX();
-				py = e.getY();
-				setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			public void actionPerformed(ActionEvent e) {
+				double ten_rate = 0.1;
+				double scale_width  = imageView.getScale_width();
+				double scale_height = imageView.getScale_height();
+				imageView.setScale_width(scale_width+ten_rate);
+				imageView.setScale_height(scale_height+ten_rate);
+				imageView.repaint();
+				double rate_double = scale_height+ten_rate;
+				double parcent_double = rate_double * 100;
+				int parcent_int = Double.valueOf(parcent_double).intValue();
+				zoomPacent.setText(parcent_int + "%");
 			}
+		});
 
+		zoomOutButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				super.mouseReleased(e);
-				pressed = false;
-				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			}
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				super.mouseDragged(e);
-
-				rx = e.getX();
-				ry = e.getY();
-				repaint();
-				setCursor(new Cursor(Cursor.MOVE_CURSOR));
+			public void actionPerformed(ActionEvent e) {
+				double ten_rate = 0.1;
+				double scale_width  = imageView.getScale_width();
+				double scale_height = imageView.getScale_height();
+				imageView.setScale_width(scale_width-ten_rate);
+				imageView.setScale_height(scale_height-ten_rate);
+				imageView.repaint();
+				double rate_double = scale_height-ten_rate;
+				double parcent_double = rate_double * 100;
+				int parcent_int = Double.valueOf(parcent_double).intValue();
+				zoomPacent.setText(parcent_int + "%");
 			}
 		});
 	}
@@ -71,21 +83,4 @@ public class ImageTab extends JPanel {
 		return picFile;
 	}
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
-
-		// Backup original transform
-		AffineTransform originalTransform = g2d.getTransform();
-
-		g2d.translate(rx, ry);
-		//		g2d.scale(zoom, zoom);
-
-		// paint the image here with no scaling
-		g2d.drawImage(bufImage, 0,0,null);
-
-		// Restore original transform
-		g2d.setTransform(originalTransform);
-	}
 }

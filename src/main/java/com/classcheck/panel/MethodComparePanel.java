@@ -3,8 +3,6 @@ package com.classcheck.panel;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,25 +14,19 @@ import java.util.regex.Pattern;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.lucene.search.spell.LevensteinDistance;
 
 import com.change_vision.jude.api.inf.model.IClass;
-import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
-import com.classcheck.autosource.ClassColorChenger;
-import com.classcheck.autosource.ClassSearcher;
-import com.classcheck.autosource.DiagramManager;
-import com.classcheck.autosource.ExportClassDiagram;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
+import com.classcheck.panel.event.LabelMouseAdapter;
 import com.classcheck.type.ParamCheck;
 import com.classcheck.type.ReferenceType;
-import com.classcheck.window.ClassDiagramViewer;
 import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -253,42 +245,7 @@ public class MethodComparePanel extends JPanel {
 					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					
 					//クラス図を表示
-					l.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							
-							if (ClassDiagramViewer.isOpened()) {
-								JOptionPane.showMessageDialog(getParent(), "クラス図のイメージウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
-								return ;
-							}
-							
-							System.out.println("@@@@Diagrams@@@");
-							DiagramManager dm = new DiagramManager();
-							ClassSearcher cav;
-							ClassColorChenger ccc;
-							ExportClassDiagram ecd;
-							ClassDiagramViewer cdv;
-							List<IClassDiagram> allDiagramList = dm.getClassDiagram();
-							String projectPath = dm.getProjectPath();
-							List<IClassDiagram> findDiagramList;
-							
-							cav = new ClassSearcher(allDiagramList);
-							findDiagramList = cav.findIClassDiagram(myClass.getIClass());
-							
-							ccc = new ClassColorChenger(myClass.getIClass());
-							ccc.changeColor("#BE850F");
-							
-							ecd = new ExportClassDiagram(findDiagramList,projectPath);
-							ecd.exportImages();
-							
-							cdv = new ClassDiagramViewer(ecd.getExportPath());
-							
-							System.out.println(findDiagramList.toString());
-							DebugMessageWindow.msgToTextArea();
-							
-							super.mouseClicked(e);
-						}
-					});
+					l.addMouseListener(new LabelMouseAdapter(myClass, l, getParent()));
 					
 					p.add(l);
 					p.add(methodComboBox);

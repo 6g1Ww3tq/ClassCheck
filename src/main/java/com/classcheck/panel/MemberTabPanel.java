@@ -29,6 +29,7 @@ import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.generic.Pocket;
+import com.classcheck.panel.event.LabelMouseAdapter;
 
 public class MemberTabPanel extends JPanel{
 	/**
@@ -278,6 +279,8 @@ public class MemberTabPanel extends JPanel{
 						popSb.append("</html>");
 
 						jtrSelClass.setToolTipText(popSb.toString());
+						//クラス図を表示
+						jtrSelClass.addMouseListener(new LabelMouseAdapter(selectedMyClass, jtrSelClass, getParent()));
 						//パネルの更新
 						reLoadMemberPane(selectedMyClass,true);
 					}
@@ -583,7 +586,7 @@ public class MemberTabPanel extends JPanel{
 						if (generatable == false) {
 							System.out.println(generatable);
 						}
-						
+
 						if (!generatable) {
 							return generatable;
 						}
@@ -618,7 +621,7 @@ public class MemberTabPanel extends JPanel{
 						box_1 = (JComboBox) comp;
 
 						generatable = !checkSameItemSelected(i, box_1, methodPanelList);
-						
+
 						if (!generatable) {
 							return generatable;
 						}
@@ -708,7 +711,7 @@ public class MemberTabPanel extends JPanel{
 
 					if(comp instanceof JComboBox){
 						box_1 = (JComboBox) comp;
-						
+
 						if (box_1.getSelectedItem() == null) {
 							generatable = false;
 							return generatable;
@@ -739,7 +742,7 @@ public class MemberTabPanel extends JPanel{
 
 					if(comp instanceof JComboBox){
 						box_1 = (JComboBox) comp;
-						
+
 						if (box_1.getSelectedItem() == null) {
 							generatable = false;
 							return generatable;

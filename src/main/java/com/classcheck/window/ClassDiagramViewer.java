@@ -6,15 +6,22 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.text.ChangedCharSetException;
 
+import com.classcheck.autosource.ClassColorChenger;
+import com.classcheck.autosource.ExportClassDiagram;
 import com.classcheck.panel.ImageTabbedPanel;
 
 public class ClassDiagramViewer extends JFrame {
 	private static boolean isOpened = false;
+	private ClassColorChenger ccc;
 	private String exportPath;
+	private ExportClassDiagram ecd;
 
-	public ClassDiagramViewer(String exportPath) {
+	public ClassDiagramViewer(String exportPath, ClassColorChenger ccc, ExportClassDiagram ecd) {
 		this.exportPath = exportPath;
+		this.ccc = ccc;
+		this.ecd = ecd;
 
 		initComponent();
 		initEvent();
@@ -23,7 +30,6 @@ public class ClassDiagramViewer extends JFrame {
 	private void initComponent() {
 		Container container = getContentPane();
 		
-		System.out.println("exportPath:"+exportPath);
 		container.add(new ImageTabbedPanel(exportPath));
 		
 		setTitle("クラス図");
@@ -43,12 +49,18 @@ public class ClassDiagramViewer extends JFrame {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				isOpened = false;
+				//クローズしたらクラスの色を元の黒に戻し
+				//画像フォルダ(.tmp/)を削除
+				ccc.changeColor(ClassColorChenger.getDefaultColor());
+				ecd.removeImages();
 				super.windowClosed(e);
 			}
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
 				isOpened = false;
+				ccc.changeColor(ClassColorChenger.getDefaultColor());
+				ecd.removeImages();
 				super.windowClosing(e);
 			}
 		});

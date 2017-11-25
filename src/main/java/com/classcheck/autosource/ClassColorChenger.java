@@ -14,6 +14,10 @@ public class ClassColorChenger {
 		this.targetClass = iClass;
 	}
 
+	public static String getDefaultColor() {
+		return defaultColor;
+	}
+	
 	public void changeColor(String color) {
 		try {
 			IPresentation[] presentations = targetClass.getPresentations();
