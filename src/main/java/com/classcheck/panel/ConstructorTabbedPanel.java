@@ -1,12 +1,9 @@
 package com.classcheck.panel;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 

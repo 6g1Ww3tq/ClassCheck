@@ -29,6 +29,7 @@ public class SelectConstructorViewer extends JDialog {
 	private HashMap<CodeVisitor, String> constructorMap;
 	private JButton okButton;
 	private JButton cancelButton;
+	private static boolean opened = false;
 	private boolean canceled;
 
 	public SelectConstructorViewer(Map<CodeVisitor, String> generatedCodesMap) {
@@ -65,6 +66,7 @@ public class SelectConstructorViewer extends JDialog {
 		this.ctp = new ConstructorTabbedPanel(generatedCodesMap.keySet());
 		this.okButton = new JButton("OK");
 		this.cancelButton = new JButton("Cancel");
+		this.opened = true;
 		this.canceled = false;
 		
 		buttonPane.add(okButton);
@@ -84,6 +86,7 @@ public class SelectConstructorViewer extends JDialog {
 				Window w = SwingUtilities.getWindowAncestor(c);
 				w.dispose();
 				canceled = false;
+				opened = false;
 			}
 		});
 		
@@ -100,13 +103,21 @@ public class SelectConstructorViewer extends JDialog {
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
+			public void windowOpened(WindowEvent e) {
+				super.windowOpened(e);
+				opened = true;
+			}
+
+			@Override
 			public void windowClosed(WindowEvent e) {
+				opened = false;
 				canceled = true;
 				super.windowClosed(e);
 			}
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
+				opened = false;
 				canceled = true;
 				super.windowClosing(e);
 			}

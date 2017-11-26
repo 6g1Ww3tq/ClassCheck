@@ -24,6 +24,7 @@ import com.classcheck.panel.MemberTabPanel;
 import com.classcheck.panel.MethodComparePanel;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.SelectConstructorViewer;
+import com.classcheck.window.TestCodeEditWindow;
 
 public class GenerateTestProgram {
 	//出力元となるディレクトリ
@@ -241,6 +242,7 @@ public class GenerateTestProgram {
 		MakeFile makeFile = null;
 		SelectConstructorViewer scv = null;
 		List<ConstructorPanel> cPaneList = null;
+		TestCodeEditWindow tced = null;
 		
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
@@ -252,12 +254,26 @@ public class GenerateTestProgram {
 			generatedCodesMap = cmc.getGeneratedCodesMap();
 			scv = new SelectConstructorViewer(generatedCodesMap);
 			successed = !scv.isCanceled();
+			
+			if (scv.isCanceled()) {
+				successed = false;
+				return successed;
+			}
+			
 			cPaneList = scv.getCtp().getConstructorPaneList();
 
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			makeFile = new MakeFile(generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
+			
+			//ユーザによるテストプログラムの編集
+			tced = new TestCodeEditWindow(fileMap);
+			if (tced.isCanceled()) {
+				successed = false;
+				return successed;
+			}
+			
 			
 			for(String fileName : fileMap.keySet()){
 				System.out.println("FileName : " + fileName);

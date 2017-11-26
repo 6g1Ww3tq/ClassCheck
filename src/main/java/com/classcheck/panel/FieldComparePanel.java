@@ -27,7 +27,7 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Field;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.panel.event.LabelMouseAdapter;
+import com.classcheck.panel.event.ClassLabelMouseAdapter;
 import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.FieldDeclaration;
 
@@ -236,7 +236,7 @@ public class FieldComparePanel extends JPanel{
 					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 					//クラス図を表示
-					l.addMouseListener(new LabelMouseAdapter(myClass, l, getParent()));
+					l.addMouseListener(new ClassLabelMouseAdapter(myClass, l, getParent()));
 
 					p.add(l);
 					p.add(fieldComboBox);

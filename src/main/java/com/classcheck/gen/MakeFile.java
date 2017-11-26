@@ -116,34 +116,46 @@ public class MakeFile {
 			sb.append(")"+ " {" +"\n");
 
 			//init
-			sb.append("\r\t"+"//init"+"\n");
+			sb.append("\r\t"+"/*==================初期化（コンストラクタ）=================="+"\n");
+			sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*"+"\n");
+			sb.append("\r\t"+"*\t\t\t※コンストラクタを編集してください\t\t\t*"+"\n");
+			sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*/"+"\n");
 			//そのクラスのコンストラクタを書く(コンストラクタの隣にラジオボタンを作る?)
 			//ただし@Mockedのパラメータを入れるか
 			//プリミティブだけを入れるのか
 			//どうかを考える
+			sb.append("\n");
 			if (selectedButton != null) {
 				sb.append("\r\t"+ className +" object " + "=" +" "+"new ");
 				
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
 					constructorStr = abstructBtnMap.get(selectedButton);
-					sb.append(constructorStr +";\n");
+					sb.append(constructorStr +";");
 				}else{
 					//デフォルトコンストラクタ
-					sb.append(className + "()"+";\n");
+					sb.append(className + "()"+";");
 				}
+				
+				sb.append("        ");
+				sb.append("// <=== コンストラクタを編集してください");
+				sb.append("\n");
 			}
+			sb.append("\n");
+			sb.append("\r\t"+"//=========================================================="+"\n");
 
+			sb.append("\n");
 			//record
-			sb.append("\r\t"+"//record"+"\n");
+			sb.append("\r\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
 			sb.append("\r\t"+"new StrictExpectations() {"+"\n");
 			sb.append("\r\t\t"+"{"+"\n");
 			sb.append(mockMethodMap.get(methodName));
 			sb.append("\r\t\t"+"}"+"\n");
 			sb.append("\r\t"+"};"+"\n");
 
+			sb.append("\n");
 			//Replay
-			sb.append("\r\t"+"//replay"+"\n");
+			sb.append("\r\t"+"//シーケンス図の呼び出し"+"\n");
 			sb.append("\r\t"+"object."+methodName+"()"+";\n");
 
 			sb.append("\n");

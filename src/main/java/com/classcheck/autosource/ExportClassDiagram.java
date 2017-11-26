@@ -21,14 +21,14 @@ public class ExportClassDiagram {
 		this.projectPath = projectPath; 
 		this.exportPath = projectPath + "/.tmp";
 	}
-	
+
 	public String getExportPath() {
 		return exportPath;
 	}
 
 	public void exportImages() {
 		IClassDiagram classDiagram;
-		
+
 		for(int i_classDiagrams=0;i_classDiagrams<classDiagrams.size();i_classDiagrams++){
 			classDiagram = classDiagrams.get(i_classDiagrams);
 			try {
@@ -40,12 +40,41 @@ public class ExportClassDiagram {
 			}
 		}
 	}
-	
+
 	public void removeImages() {
 		try {
 			FileUtils.deleteDirectory(new File(exportPath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean removeDirectory(String dir) throws NullPointerException{
+		File removeDir = new File(dir);
+		boolean removed = false;
+
+		if (existExportDirectory(dir)) {
+			try {
+				FileUtils.deleteDirectory(removeDir);
+				removed = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return removed;
+	}
+
+	public boolean existExportDirectory(String dir) throws NullPointerException{
+		boolean isExist = false;
+		File exportDir = new File(dir);
+
+		if (exportDir.isDirectory()) {
+			isExist = true;
+		}else{
+			isExist = false;
+		}
+
+		return isExist;
 	}
 }

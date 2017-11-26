@@ -18,13 +18,13 @@ import com.classcheck.autosource.MyClass;
 import com.classcheck.window.ClassDiagramViewer;
 import com.classcheck.window.DebugMessageWindow;
 
-public class LabelMouseAdapter extends MouseAdapter {
+public class ClassLabelMouseAdapter extends MouseAdapter {
 
 	private MyClass targetClass;
 	private JLabel label;
 	private Container parent;
 
-	public LabelMouseAdapter(MyClass targetClass,JLabel label,Container parent) {
+	public ClassLabelMouseAdapter(MyClass targetClass,JLabel label,Container parent) {
 		this.targetClass = targetClass;
 		this.label = label;
 		this.parent = parent;
@@ -55,6 +55,7 @@ public class LabelMouseAdapter extends MouseAdapter {
 		ccc.changeColor("#BE850F");
 
 		ecd = new ExportClassDiagram(findDiagramList,projectPath);
+		ecd.removeDirectory(ecd.getExportPath());
 		ecd.exportImages();
 
 		cdv = new ClassDiagramViewer(ecd.getExportPath(),ccc,ecd);
