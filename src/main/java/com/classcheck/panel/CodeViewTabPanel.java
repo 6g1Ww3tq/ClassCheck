@@ -3,22 +3,21 @@ package com.classcheck.panel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.io.FileUtils;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
-import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
@@ -26,7 +25,7 @@ import com.classcheck.tree.FileNode;
 import com.classcheck.tree.FileTree;
 import com.classcheck.window.DebugMessageWindow;
 
-public class ViewTabPanel extends JPanel{
+public class CodeViewTabPanel extends JPanel{
 	/**
 	 * 
 	 */
@@ -39,8 +38,8 @@ public class ViewTabPanel extends JPanel{
 	JTree astahJTree;
 	DefaultMutableTreeNode astahRoot;
 	MutableFileNode userRoot;
-	JTextArea userTextArea;
-	JTextArea astahTextArea;
+	RSyntaxTextArea userEditor;
+	RSyntaxTextArea skeltonEditor;
 
 	StatusBar userTreeStatus;
 	StatusBar userSourceStatus;
@@ -50,7 +49,7 @@ public class ViewTabPanel extends JPanel{
 	List<MyClass> myClassList;
 	FileTree userFileTree;
 
-	public ViewTabPanel(ClassBuilder cb, FileTree userFileTree) {
+	public CodeViewTabPanel(ClassBuilder cb, FileTree userFileTree) {
 		this.myClassList = cb.getClasslist();
 		this.userFileTree = userFileTree;
 		setLayout(new BorderLayout());
@@ -60,8 +59,8 @@ public class ViewTabPanel extends JPanel{
 	}
 
 	public void setTextAreaEditable(boolean isEditable){
-		astahTextArea.setEditable(isEditable);
-		userTextArea.setEditable(isEditable);
+		skeltonEditor.setEditable(isEditable);
+		userEditor.setEditable(isEditable);
 	}
 
 	private void makeFileNodeTree(){
@@ -90,8 +89,12 @@ public class ViewTabPanel extends JPanel{
 		userHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		astahHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		userTextArea = new JTextArea(20, 20);
-		astahTextArea = new JTextArea(20, 20);
+		userEditor = new RSyntaxTextArea(20, 60);
+		skeltonEditor = new RSyntaxTextArea(20, 60);
+		userEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		userEditor.setCodeFoldingEnabled(true);
+		skeltonEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		skeltonEditor.setCodeFoldingEnabled(true);
 
 
 		//astah tree logic
@@ -125,7 +128,7 @@ public class ViewTabPanel extends JPanel{
 
 		//user textArea(右）
 		panel = new JPanel(new BorderLayout());
-		panel.add(userTextArea,BorderLayout.CENTER);
+		panel.add(userEditor,BorderLayout.CENTER);
 		userSourceStatus = new StatusBar(panel, "Your Source Code");
 		panel.add(userSourceStatus,BorderLayout.SOUTH);
 		JScrollPane textAreaScrollPane = new JScrollPane(panel);
@@ -151,7 +154,7 @@ public class ViewTabPanel extends JPanel{
 
 		//astah textArea(右）
 		panel = new JPanel(new BorderLayout());
-		panel.add(astahTextArea,BorderLayout.CENTER);
+		panel.add(skeltonEditor,BorderLayout.CENTER);
 		astahSourceStatus = new StatusBar(panel, "Skelton Code");
 		panel.add(astahSourceStatus,BorderLayout.SOUTH);
 		JScrollPane astahTextAreaScrollPane = new JScrollPane(panel);
@@ -185,7 +188,7 @@ public class ViewTabPanel extends JPanel{
 					FileNode fileNode = muFileNode.getFileNode();
 
 					try {
-						userTextArea.setText(FileUtils.readFileToString(fileNode));
+						userEditor.setText(FileUtils.readFileToString(fileNode));
 						userSourceStatus.setText("Your Source Code : " + fileNode.getName());
 						userTreeStatus.setText("Your-Class : " + fileNode.getName()) ;
 					} catch (IOException e1) {
@@ -194,6 +197,7 @@ public class ViewTabPanel extends JPanel{
 						DebugMessageWindow.msgToTextArea();
 					}
 				}
+
 			}
 		});
 
@@ -208,7 +212,7 @@ public class ViewTabPanel extends JPanel{
 					Object userObj = selectedNode.getUserObject();
 					if (userObj instanceof MyClass) {
 						MyClass myClass = (MyClass) userObj;
-						astahTextArea.setText(myClass.toString());
+						skeltonEditor.setText(myClass.toString());
 						astahSourceStatus.setText("Skelton Code : " + myClass.getName());
 						astahTreeStatus.setText("Skelton-Class : " + myClass.getName()) ;
 					}

@@ -15,7 +15,7 @@ public class MatcherTabbedPanel extends JTabbedPane {
 	private List<IClass> javaPackage;
 
 	MemberTabPanel mtp;
-	ViewTabPanel cstp;
+	CodeViewTabPanel cvtp;
 	
 	//２つのタブで共有
 	ClassBuilder cb;
@@ -50,14 +50,14 @@ public class MatcherTabbedPanel extends JTabbedPane {
 		mcp = new MethodComparePanel(javaPackage,cb,codeVisitorList,codeMap);
 		 
 		//２つのタブを生成
-		cstp = new ViewTabPanel(cb,userFileTree);
-		cstp.setTextAreaEditable(false);
+		cvtp = new CodeViewTabPanel(cb,userFileTree);
+		cvtp.setTextAreaEditable(false);
 		mtp = new MemberTabPanel(fcp,mcp, cb);
 		mtp.setTableEditable(false);
 		
 		//２つのタブを加える
 		addTab("Compare", mtp);
-		addTab("View",cstp);
+		addTab("View",cvtp);
 	}
 	
 	public MethodComparePanel getMethodCompPane() {
