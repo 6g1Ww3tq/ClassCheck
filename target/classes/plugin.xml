@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <!--
+   <extension point="com.change_vision.astah.ui.actionSets">
+      <actionSet
+            label="%action_set_label"
+            visible="true"
+            id="classcheck.ClassCheck.actionSet">
+         <menu
+               id="ClassCheck"
+               label="%menu_group"
+               path="tool/ClassCheck">
+         </menu>
+         <action
+			   label="%menu_label"
+               icon="icons/sample.gif"
+               class="com.classcheck.TemplateAction"
+               tooltip="%menu_tooltip"
+               menubarPath="tool/ClassCheck/"
+               id="ClassCheck">
+         </action>
+     </actionSet>
+   </extension>
+  -->
+   
+   <extension point="com.change_vision.astah.ui.view">
+    <view
+      id="com.classcheck.ClassCheck"
+      type="extraTab"
+      class="com.classcheck.panel.AddonTabPanel" />
+  </extension> 
+
+<!--
+   <extension point="com.change_vision.astah.ui.view">
+    <view
+      id="com.classcheck.ClassCheck"
+      type="extraTab"
+      class="com.classcheck.CompileTabView" />
+  </extension> 
+  -->
+
+</plugin>
