@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -20,6 +19,10 @@ public class TestCodeTabbedPane extends JTabbedPane {
 		this.exportFileMap = exportFileMap;
 		this.exportEditCodeMap = new HashMap<String, RSyntaxTextArea>();
 		initComponent();
+	}
+	
+	public HashMap<String, RSyntaxTextArea> getExportEditCodeMap() {
+		return exportEditCodeMap;
 	}
 
 	private void initComponent() {
@@ -37,6 +40,7 @@ public class TestCodeTabbedPane extends JTabbedPane {
 			scrollPane.setViewportView(editTextArea);
 			scrollPane.setLineNumbersEnabled(true);
 			addTab(exportFileName, icon, scrollPane);
+			exportEditCodeMap.put(exportFileName, editTextArea);
 		}
 	}
 }

@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.FileUtils;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
@@ -59,7 +60,6 @@ public class GenerateTestProgram {
 
 		makeChangeMap();
 		viewChangeMap();
-		makeTestDir();
 		successed = makeFile();
 		
 		return successed;
@@ -243,6 +243,7 @@ public class GenerateTestProgram {
 		SelectConstructorViewer scv = null;
 		List<ConstructorPanel> cPaneList = null;
 		TestCodeEditWindow tced = null;
+		HashMap<String, RSyntaxTextArea> exportEditCodeMap;
 		
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
@@ -254,36 +255,44 @@ public class GenerateTestProgram {
 			generatedCodesMap = cmc.getGeneratedCodesMap();
 			scv = new SelectConstructorViewer(generatedCodesMap);
 			successed = !scv.isCanceled();
-			
 			if (scv.isCanceled()) {
 				successed = false;
 				return successed;
 			}
 			
-			cPaneList = scv.getCtp().getConstructorPaneList();
-
 			//加工後の文字列をテスト用にする(javaparserを使用する)
+			cPaneList = scv.getCtp().getConstructorPaneList();
 			makeFile = new MakeFile(generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
 			
 			//ユーザによるテストプログラムの編集
 			tced = new TestCodeEditWindow(fileMap);
+			successed = !tced.isCanceled();
 			if (tced.isCanceled()) {
 				successed = false;
 				return successed;
 			}
-			
+
+			//ユーザーがテストコードを修正したあとのテストコード
+			exportEditCodeMap = tced.getExportEditCodeMap();
 			
 			for(String fileName : fileMap.keySet()){
 				System.out.println("FileName : " + fileName);
 				System.out.println(fileMap.get(fileName));
 			}
 			
-			DebugMessageWindow.msgToTextArea();
+			//テストディレクトリの作成
+			makeTestDir();
 
-			//ファイル出力
-			FileUtils.writeStringToFile(new File(outDir.getPath()+"/hello.txt"), "hello world");
+			//テストコードを出力していく
+			for (String exportFileName : exportEditCodeMap.keySet()) {
+				RSyntaxTextArea userEditCode_Str = exportEditCodeMap.get(exportFileName);
+				//ファイル出力
+				FileUtils.writeStringToFile(new File(outDir.getPath()+"/"+exportFileName), userEditCode_Str.getText());
+			}
+
+			DebugMessageWindow.msgToTextArea();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
