@@ -70,8 +70,8 @@ public class TestSkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 				break;
 			}
 
-			sb.append("\r\t\t"+st.toString()+"\n");
-			sb.append("\r\t\t"+"times=1" + "\n");
+			sb.append("\r\t\t\t"+st.toString()+"\n");
+			sb.append("\r\t\t\t"+"times=1" + "\n");
 		}
 
 		mockMethodMap.put(methodName, sb.toString());

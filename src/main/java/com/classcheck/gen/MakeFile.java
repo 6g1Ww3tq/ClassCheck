@@ -1,6 +1,7 @@
 package com.classcheck.gen;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -87,6 +88,8 @@ public class MakeFile {
 		AbstractButton button;
 		AbstractButton selectedButton = null;
 		String paramStr,constructorStr;
+		List<String> paramStrList = null;
+		String[] split_str = null;
 
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();
@@ -99,6 +102,7 @@ public class MakeFile {
 
 
 		for(String methodName : mockMethodMap.keySet()){
+			paramStrList = new ArrayList<String>();
 			sb.append("\n");
 			sb.append("\r\t"+"@Test"+"\n");
 			//パラメータに@Mockedを使うかどうか
@@ -107,6 +111,10 @@ public class MakeFile {
 			for(int i=0;i < mockParamsList.size();i++){
 				paramStr = mockParamsList.get(i);
 				sb.append(paramStr);
+				
+				//モックの変数名をリストに加える
+				split_str = paramStr.split(" ");
+				paramStrList.add(split_str[split_str.length - 1]);
 
 				if(i<mockParamsList.size()-1){
 					sb.append(",");
@@ -115,6 +123,9 @@ public class MakeFile {
 
 			sb.append(")"+ " {" +"\n");
 
+			//try-catch
+			sb.append("\r\t"+"try {"+"\n");
+			
 			//init
 			sb.append("\r\t"+"/*==================初期化（コンストラクタ）=================="+"\n");
 			sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*"+"\n");
@@ -126,7 +137,7 @@ public class MakeFile {
 			//どうかを考える
 			sb.append("\n");
 			if (selectedButton != null) {
-				sb.append("\r\t"+ className +" object " + "=" +" "+"new ");
+				sb.append("\r\t\t"+ className +" object " + "=" +" "+"new "); //objectはテストするクラスに対してのオブジェクト
 				
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
@@ -145,19 +156,42 @@ public class MakeFile {
 			sb.append("\r\t"+"//=========================================================="+"\n");
 
 			sb.append("\n");
+			
+			//reflectionを用いてフィールド(privateでも)にモックオブジェクトをセットする
+			sb.append("\r\t\t"+"//フィールドにセットする"+"\n"); 
+			sb.append("\r\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
+			for(int i_paramStrList = 0 ;i_paramStrList<paramStrList.size();i_paramStrList++){
+				String mockFieldName = paramStrList.get(i_paramStrList);
+				sb.append("\r\t\t"+"Field field_"+i_paramStrList+"clazz.getDeclaredField("+mockFieldName+");"+"\n"); 
+				sb.append("\r\t\t"+"field_"+i_paramStrList+".setAccessible(true);"+"\n"); 
+				sb.append("\r\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
+			}
+
 			//record
-			sb.append("\r\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
-			sb.append("\r\t"+"new StrictExpectations() {"+"\n");
-			sb.append("\r\t\t"+"{"+"\n");
+			sb.append("\r\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
+			sb.append("\r\t\t"+"new StrictExpectations() {"+"\n");
+			sb.append("\r\t\t\t"+"{"+"\n");
 			sb.append(mockMethodMap.get(methodName));
-			sb.append("\r\t\t"+"}"+"\n");
-			sb.append("\r\t"+"};"+"\n");
+			sb.append("\r\t\t\t"+"}"+"\n");
+			sb.append("\r\t\t"+"};"+"\n");
 
 			sb.append("\n");
 			//Replay
-			sb.append("\r\t"+"//シーケンス図の呼び出し"+"\n");
-			sb.append("\r\t"+"object."+methodName+"()"+";\n");
+			sb.append("\r\t\t"+"//シーケンス図の呼び出し"+"\n");
+			sb.append("\r\t\t"+"object."+methodName+"()"+";\n");
+			sb.append("\n");
 
+			//throw-error catch
+			sb.append("\r\t"+"} catch (NoSuchFieldException e) {"+"\n");
+			sb.append("\r\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t"+"} catch (SecurityException e) {"+"\n");
+			sb.append("\r\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t"+"} catch (IllegalArgumentException e) {"+"\n");
+			sb.append("\r\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t"+"} catch (IllegalAccessException e) {"+"\n");
+			sb.append("\r\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t"+"}"+"\n");
+			
 			sb.append("\n");
 			sb.append("\r}\n");
 		}
@@ -171,7 +205,8 @@ public class MakeFile {
 		sb.append("import mockit.StrictExpectations;\n" +
 				"import mockit.Mocked;\n" +
 				"\n"+
-				"import org.junit.Test;\n\n");
+				"import org.junit.Test;\n\n"+
+				"import java.lang.reflect.Field;\n\n");
 	}
 
 }
