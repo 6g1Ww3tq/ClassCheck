@@ -11,19 +11,36 @@ import java.util.Map;
 import javax.swing.AbstractButton;
 
 import com.classcheck.analyzer.source.CodeVisitor;
+import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 
-public class MakeFile {
+public class MakeTestFile {
+	//テーブルの対応付け
+	private Map<MyClass,CodeVisitor> tableMap;
+
+	//アスタクラス->メッセージの前と後を表す対応関係を抽出
+	private Map<MyClass, Map<String, String>> methodChangeMap;
+
+	//フィールドの前と後を表す対応関係を抽出
+	private Map<MyClass, Map<String, String>> fieldChangeMap;
 
 	private Map<CodeVisitor, String> generatedCodesMap;
 	private Map<String,String> fileMap;
 	private List<ConstructorPanel> cPanelList;
 	private Collection<CodeVisitor> codeCollection;
 
-	public MakeFile(Map<CodeVisitor, String> generatedCodesMap, List<ConstructorPanel> cPaneList, Collection<CodeVisitor> codeCollection) {
+	public MakeTestFile(Map<MyClass, CodeVisitor> tableMap,
+			Map<MyClass, Map<String, String>> methodChangeMap,
+			Map<MyClass, Map<String, String>> fieldChangeMap,
+			Map<CodeVisitor, String> generatedCodesMap,
+			List<ConstructorPanel> cPaneList,
+			Collection<CodeVisitor> codeCollection) {
+		this.tableMap = tableMap;
+		this.methodChangeMap = methodChangeMap;
+		this.fieldChangeMap = fieldChangeMap;
 		this.generatedCodesMap = generatedCodesMap;
 		this.codeCollection = codeCollection;
 		this.cPanelList = cPaneList;
@@ -52,7 +69,7 @@ public class MakeFile {
 			try {
 				cu = JavaParser.parse(new ByteArrayInputStream(skeltonCode.getBytes()));
 				//引数にすべてのcoddevisitorのSetを入れる
-				skeVisitor = new TestSkeltonCodeVisitor(codeCollection);
+				skeVisitor = new TestSkeltonCodeVisitor(codeVisitor,tableMap,fieldChangeMap,methodChangeMap,codeCollection);
 				cu.accept(skeVisitor, null);
 
 				mockParamsList = skeVisitor.getMockFieldList();
@@ -88,7 +105,7 @@ public class MakeFile {
 		AbstractButton button;
 		AbstractButton selectedButton = null;
 		String paramStr,constructorStr;
-		List<String> paramStrList = null;
+		List<String> mockParamStrList = null;
 		String[] split_str = null;
 
 		while(buttons.hasMoreElements()){
@@ -102,7 +119,7 @@ public class MakeFile {
 
 
 		for(String methodName : mockMethodMap.keySet()){
-			paramStrList = new ArrayList<String>();
+			mockParamStrList = new ArrayList<String>();
 			sb.append("\n");
 			sb.append("\r\t"+"@Test"+"\n");
 			//パラメータに@Mockedを使うかどうか
@@ -114,7 +131,7 @@ public class MakeFile {
 				
 				//モックの変数名をリストに加える
 				split_str = paramStr.split(" ");
-				paramStrList.add(split_str[split_str.length - 1]);
+				mockParamStrList.add(split_str[split_str.length - 1]);
 
 				if(i<mockParamsList.size()-1){
 					sb.append(",");
@@ -135,6 +152,8 @@ public class MakeFile {
 			//ただし@Mockedのパラメータを入れるか
 			//プリミティブだけを入れるのか
 			//どうかを考える
+			//FIXME
+			//オブジェクトのコンストラクタは参照型だとnull,プリミティブ型だと0にするようにする
 			sb.append("\n");
 			if (selectedButton != null) {
 				sb.append("\r\t\t"+ className +" object " + "=" +" "+"new "); //objectはテストするクラスに対してのオブジェクト
@@ -160,9 +179,9 @@ public class MakeFile {
 			//reflectionを用いてフィールド(privateでも)にモックオブジェクトをセットする
 			sb.append("\r\t\t"+"//フィールドにセットする"+"\n"); 
 			sb.append("\r\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
-			for(int i_paramStrList = 0 ;i_paramStrList<paramStrList.size();i_paramStrList++){
-				String mockFieldName = paramStrList.get(i_paramStrList);
-				sb.append("\r\t\t"+"Field field_"+i_paramStrList+"clazz.getDeclaredField("+mockFieldName+");"+"\n"); 
+			for(int i_paramStrList = 0 ;i_paramStrList<mockParamStrList.size();i_paramStrList++){
+				String mockFieldName = mockParamStrList.get(i_paramStrList);
+				sb.append("\r\t\t"+"Field field_"+i_paramStrList+ " = " +"clazz.getDeclaredField("+"\""+mockFieldName+"\""+");"+"\n"); 
 				sb.append("\r\t\t"+"field_"+i_paramStrList+".setAccessible(true);"+"\n"); 
 				sb.append("\r\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
 			}
@@ -176,7 +195,13 @@ public class MakeFile {
 			sb.append("\r\t\t"+"};"+"\n");
 
 			sb.append("\n");
+
 			//Replay
+			//FIXME
+			//メソッドは引数がある場合もあるしない場合もあるので修正する
+			//また、引数がある場合はユーザに修正を促すようにする
+			//ex) object.methodName() , object.methodName(1)
+			//引数は参照型だとnull,プリミティブ型だと0にするようにする
 			sb.append("\r\t\t"+"//シーケンス図の呼び出し"+"\n");
 			sb.append("\r\t\t"+"object."+methodName+"()"+";\n");
 			sb.append("\n");

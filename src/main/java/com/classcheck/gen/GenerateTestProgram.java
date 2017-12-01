@@ -239,7 +239,7 @@ public class GenerateTestProgram {
 		Map<String,String> fileMap;
 		StringBuilder sb = null;
 		Map<CodeVisitor, String> generatedCodesMap;
-		MakeFile makeFile = null;
+		MakeTestFile makeFile = null;
 		SelectConstructorViewer scv = null;
 		List<ConstructorPanel> cPaneList = null;
 		TestCodeEditWindow tced = null;
@@ -262,7 +262,7 @@ public class GenerateTestProgram {
 			
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			cPaneList = scv.getCtp().getConstructorPaneList();
-			makeFile = new MakeFile(generatedCodesMap,cPaneList,tableMap.values());
+			makeFile = new MakeTestFile(tableMap,methodChangeMap,fieldChangeMap,generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
 			
