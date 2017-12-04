@@ -10,6 +10,9 @@ import java.util.Map;
 
 import javax.swing.AbstractButton;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
@@ -59,6 +62,7 @@ public class MakeTestFile {
 		HashMap<String, String> mockMethodMap;
 		TestSkeltonCodeVisitor skeVisitor= null;
 		CompilationUnit cu = null;
+		HashMap<String, String> variableFieldNameMap;
 
 		for(CodeVisitor codeVisitor : generatedCodesMap.keySet()){
 			fileName = codeVisitor.getClassName() + "Test" + ".java";
@@ -70,6 +74,7 @@ public class MakeTestFile {
 				cu = JavaParser.parse(new ByteArrayInputStream(skeltonCode.getBytes()));
 				//引数にすべてのcoddevisitorのSetを入れる
 				skeVisitor = new TestSkeltonCodeVisitor(codeVisitor,tableMap,fieldChangeMap,methodChangeMap,codeCollection);
+				variableFieldNameMap = skeVisitor.getVariableFieldNameMap();
 				cu.accept(skeVisitor, null);
 
 				mockParamsList = skeVisitor.getMockFieldList();
@@ -81,6 +86,7 @@ public class MakeTestFile {
 					if(cPanelList.get(i).getCodeVisitor().equals(codeVisitor)){
 						makeMethod(sb,
 								codeVisitor.getClassName(),
+								variableFieldNameMap,
 								mockMethodMap,
 								mockParamsList,
 								cPanelList.get(i));
@@ -97,6 +103,7 @@ public class MakeTestFile {
 
 	private void makeMethod(StringBuilder sb,
 			String className,
+			HashMap<String, String> variableFieldNameMap,
 			HashMap<String, String> mockMethodMap,
 			List<String> mockParamsList,
 			ConstructorPanel constructorPane) {
@@ -107,6 +114,7 @@ public class MakeTestFile {
 		String paramStr,constructorStr;
 		List<String> mockParamStrList = null;
 		String[] split_str = null;
+		BidiMap<String, String> inverseVariableFieldNameMap = new DualHashBidiMap<String, String>(variableFieldNameMap).inverseBidiMap();
 
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();
@@ -144,15 +152,14 @@ public class MakeTestFile {
 			sb.append("\r\t"+"try {"+"\n");
 			
 			//init
-			sb.append("\r\t"+"/*==================初期化（コンストラクタ）=================="+"\n");
-			sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*"+"\n");
-			sb.append("\r\t"+"*\t\t\t※コンストラクタを編集してください\t\t\t*"+"\n");
-			sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*/"+"\n");
+			sb.append("\r\t"+"//==================初期化（コンストラクタ）=================="+"\n");
+			//sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*"+"\n");
+			//sb.append("\r\t"+"*\t\t\t※コンストラクタを編集してください\t\t\t*"+"\n");
+			//sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*/"+"\n");
 			//そのクラスのコンストラクタを書く(コンストラクタの隣にラジオボタンを作る?)
 			//ただし@Mockedのパラメータを入れるか
 			//プリミティブだけを入れるのか
 			//どうかを考える
-			//FIXME
 			//オブジェクトのコンストラクタは参照型だとnull,プリミティブ型だと0にするようにする
 			sb.append("\n");
 			if (selectedButton != null) {
@@ -160,15 +167,18 @@ public class MakeTestFile {
 				
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
+					InitialParamValues ipv;
 					constructorStr = abstructBtnMap.get(selectedButton);
+					ipv = new InitialParamValues(constructorStr);
+					constructorStr = ipv.setUpDefaultValues_str();
 					sb.append(constructorStr +";");
 				}else{
 					//デフォルトコンストラクタ
 					sb.append(className + "()"+";");
 				}
 				
-				sb.append("        ");
-				sb.append("// <=== コンストラクタを編集してください");
+				//sb.append("        ");
+				//sb.append("// <=== コンストラクタを編集してください");
 				sb.append("\n");
 			}
 			sb.append("\n");
@@ -181,7 +191,7 @@ public class MakeTestFile {
 			sb.append("\r\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
 			for(int i_paramStrList = 0 ;i_paramStrList<mockParamStrList.size();i_paramStrList++){
 				String mockFieldName = mockParamStrList.get(i_paramStrList);
-				sb.append("\r\t\t"+"Field field_"+i_paramStrList+ " = " +"clazz.getDeclaredField("+"\""+mockFieldName+"\""+");"+"\n"); 
+				sb.append("\r\t\t"+"Field field_"+i_paramStrList+ " = " +"clazz.getDeclaredField("+"\""+inverseVariableFieldNameMap.get(mockFieldName)+"\""+");"+"\n"); 
 				sb.append("\r\t\t"+"field_"+i_paramStrList+".setAccessible(true);"+"\n"); 
 				sb.append("\r\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
 			}

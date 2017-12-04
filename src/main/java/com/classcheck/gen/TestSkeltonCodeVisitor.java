@@ -48,6 +48,10 @@ public class TestSkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 		this.variableFieldNameMap = new HashMap<String, String>();
 		this.myClass = interactCodeClass_from_table(codeVisitor.getClassName());
 	}
+	
+	public HashMap<String, String> getVariableFieldNameMap() {
+		return variableFieldNameMap;
+	}
 
 	public List<String> getMockFieldList() {
 		return mockFinalParamsList;

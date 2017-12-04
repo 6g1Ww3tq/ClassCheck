@@ -60,7 +60,6 @@ public class ConstructorPanel extends JPanel {
 		float distanceMax = -1;
 		String fieldParams;
 		StringBuilder radioTextSB = new StringBuilder();
-		StringBuilder sb = null;;
 		LevensteinDistance ld = new LevensteinDistance();
 
 		for(int i=0;i<fieldList.size();i++){
@@ -82,7 +81,10 @@ public class ConstructorPanel extends JPanel {
 				radioButton = new JRadioButton(radioTextSB.toString());
 				radioConstMap.put(radioButton, constructor);
 
-				sb = new StringBuilder();
+				/*
+				 *パラメータの変数名だけを取得するアルゴリズム
+				 *
+				StringBuilder sb = new StringBuilder();
 				sb.append(constructor.getName());
 				sb.append("(");
 				paramList = constructor.getParameters();
@@ -96,8 +98,14 @@ public class ConstructorPanel extends JPanel {
 					}
 				}
 				sb.append(")");
-
 				abstractBtnMap.put((AbstractButton)radioButton, sb.toString());
+				*/
+				
+				/*
+				 * パラメータの型と変数名を取得するアルゴリズム
+				 */
+				abstractBtnMap.put((AbstractButton)radioButton, radioButton.getText());
+
 				group.add(radioButton);
 				add(radioButton);
 
