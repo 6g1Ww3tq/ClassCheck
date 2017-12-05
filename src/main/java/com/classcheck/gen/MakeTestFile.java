@@ -126,17 +126,18 @@ public class MakeTestFile {
 		}
 
 
-		for(String methodName : mockMethodMap.keySet()){
+		for(String methodSigNature_str : mockMethodMap.keySet()){
+			DisassemblyMethodSignature disassemblyMethod = new DisassemblyMethodSignature(methodSigNature_str);
 			mockParamStrList = new ArrayList<String>();
 			sb.append("\n");
 			sb.append("\r\t"+"@Test"+"\n");
 			//パラメータに@Mockedを使うかどうか
-			sb.append("\r\t"+"public " + "void " + methodName +"(");
+			sb.append("\r\t"+"public " + "void " + disassemblyMethod.getMethodName() + "_" + "Test" + "(");
 
 			for(int i=0;i < mockParamsList.size();i++){
 				paramStr = mockParamsList.get(i);
 				sb.append(paramStr);
-				
+
 				//モックの変数名をリストに加える
 				split_str = paramStr.split(" ");
 				mockParamStrList.add(split_str[split_str.length - 1]);
@@ -150,42 +151,29 @@ public class MakeTestFile {
 
 			//try-catch
 			sb.append("\r\t"+"try {"+"\n");
-			
+
 			//init
-			sb.append("\r\t"+"//==================初期化（コンストラクタ）=================="+"\n");
-			//sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*"+"\n");
-			//sb.append("\r\t"+"*\t\t\t※コンストラクタを編集してください\t\t\t*"+"\n");
-			//sb.append("\r\t"+"*\t\t\t\t\t\t\t\t\t\t\t\t*/"+"\n");
-			//そのクラスのコンストラクタを書く(コンストラクタの隣にラジオボタンを作る?)
-			//ただし@Mockedのパラメータを入れるか
-			//プリミティブだけを入れるのか
-			//どうかを考える
-			//オブジェクトのコンストラクタは参照型だとnull,プリミティブ型だと0にするようにする
 			sb.append("\n");
 			if (selectedButton != null) {
+				sb.append("\r\t\t"+"//初期化"+"\n"); 
 				sb.append("\r\t\t"+ className +" object " + "=" +" "+"new "); //objectはテストするクラスに対してのオブジェクト
-				
+
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
-					InitialParamValues ipv;
+					DisassemblyMethodSignature dm;
 					constructorStr = abstructBtnMap.get(selectedButton);
-					ipv = new InitialParamValues(constructorStr);
-					constructorStr = ipv.setUpDefaultValues_str();
+					dm = new DisassemblyMethodSignature(constructorStr);
+					constructorStr = dm.toString();
 					sb.append(constructorStr +";");
 				}else{
 					//デフォルトコンストラクタ
 					sb.append(className + "()"+";");
 				}
-				
-				//sb.append("        ");
-				//sb.append("// <=== コンストラクタを編集してください");
+
 				sb.append("\n");
 			}
 			sb.append("\n");
-			sb.append("\r\t"+"//=========================================================="+"\n");
 
-			sb.append("\n");
-			
 			//reflectionを用いてフィールド(privateでも)にモックオブジェクトをセットする
 			sb.append("\r\t\t"+"//フィールドにセットする"+"\n"); 
 			sb.append("\r\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
@@ -200,20 +188,19 @@ public class MakeTestFile {
 			sb.append("\r\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
 			sb.append("\r\t\t"+"new StrictExpectations() {"+"\n");
 			sb.append("\r\t\t\t"+"{"+"\n");
-			sb.append(mockMethodMap.get(methodName));
+			sb.append(mockMethodMap.get(methodSigNature_str));
 			sb.append("\r\t\t\t"+"}"+"\n");
 			sb.append("\r\t\t"+"};"+"\n");
 
 			sb.append("\n");
 
 			//Replay
-			//FIXME
 			//メソッドは引数がある場合もあるしない場合もあるので修正する
 			//また、引数がある場合はユーザに修正を促すようにする
-			//ex) object.methodName() , object.methodName(1)
+			//ex) object.methodSigNature_str() , object.methodSigNature_str(1)
 			//引数は参照型だとnull,プリミティブ型だと0にするようにする
 			sb.append("\r\t\t"+"//シーケンス図の呼び出し"+"\n");
-			sb.append("\r\t\t"+"object."+methodName+"()"+";\n");
+			sb.append("\r\t\t"+"object."+disassemblyMethod+";\n");
 			sb.append("\n");
 
 			//throw-error catch
@@ -226,7 +213,7 @@ public class MakeTestFile {
 			sb.append("\r\t"+"} catch (IllegalAccessException e) {"+"\n");
 			sb.append("\r\t"+"e.printStackTrace();"+"\n");
 			sb.append("\r\t"+"}"+"\n");
-			
+
 			sb.append("\n");
 			sb.append("\r}\n");
 		}

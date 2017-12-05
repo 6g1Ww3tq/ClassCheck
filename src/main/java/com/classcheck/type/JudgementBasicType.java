@@ -3,13 +3,11 @@ package com.classcheck.type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JudgementType {
+public class JudgementBasicType {
 
-	private String paramType_str;
 	private Map typeValuesMap;
 
-	public JudgementType(String paramType_str) {
-		this.paramType_str = paramType_str;
+	public JudgementBasicType() {
 		initTypeValuesMap();
 	}
 
@@ -26,12 +24,12 @@ public class JudgementType {
 		typeValuesMap.put("double", "0");
 	}
 
-	public String toDefaultValue_Str() {
+	public String toDefaultValue_Str(String paramType_str) {
 		String defaultValue_str = null;
 
 		if (typeValuesMap.containsKey(paramType_str)) {
 			//基本型の初期値
-			Object obj = typeValuesMap.get(this.paramType_str);
+			Object obj = typeValuesMap.get(paramType_str);
 
 			if (obj instanceof String) {
 				defaultValue_str = (String) obj;

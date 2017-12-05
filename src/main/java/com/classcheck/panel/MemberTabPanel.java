@@ -288,8 +288,10 @@ public class MemberTabPanel extends JPanel{
 						popSb.append("</html>");
 
 						jtrSelClass.setToolTipText(popSb.toString());
+
 						//パネルの更新
-						reLoadMemberPane(selectedMyClass,true);
+						//ユーザーがJComboBoxのリストのアイテム値を変更した時に記憶しておく
+						reLoadMemberPane(selectedMyClass,false);
 					}
 				}
 

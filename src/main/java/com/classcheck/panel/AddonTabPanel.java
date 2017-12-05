@@ -94,7 +94,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void initDebugWindow(){
-		debugWindow = new DebugMessageWindow("Debug",true);
+		debugWindow = new DebugMessageWindow(debugCheckBox,"Debug",true);
 	}
 
 	private void initVariables() {
