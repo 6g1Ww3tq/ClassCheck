@@ -32,7 +32,7 @@ public class GenerateTestProgram {
 	File baseDir;
 	//出力先テストディレクトリ
 	File outDir;
-	
+
 	//テーブルの対応付け
 	private Map<MyClass,CodeVisitor> tableMap;
 
@@ -61,7 +61,12 @@ public class GenerateTestProgram {
 		makeChangeMap();
 		viewChangeMap();
 		successed = makeFile();
-		
+
+		if (successed) {
+			makeLibDir();
+		}
+
+		DebugMessageWindow.msgToTextArea();
 		return successed;
 	}
 
@@ -244,12 +249,12 @@ public class GenerateTestProgram {
 		List<ConstructorPanel> cPaneList = null;
 		TestCodeEditWindow tced = null;
 		HashMap<String, RSyntaxTextArea> exportEditCodeMap;
-		
+
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
 			ChangeSkeltonCode cmc = new ChangeSkeltonCode(mtp,tableMap,fieldChangeMap,methodChangeMap);
 			cmc.change();
-			
+
 			//テストプログラムの
 			//初期化コンストラクタの指定
 			generatedCodesMap = cmc.getGeneratedCodesMap();
@@ -259,13 +264,13 @@ public class GenerateTestProgram {
 				successed = false;
 				return successed;
 			}
-			
+
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			cPaneList = scv.getCtp().getConstructorPaneList();
 			makeFile = new MakeTestFile(tableMap,methodChangeMap,fieldChangeMap,generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
-			
+
 			//ユーザによるテストプログラムの編集
 			tced = new TestCodeEditWindow(fileMap);
 			successed = !tced.isCanceled();
@@ -276,12 +281,12 @@ public class GenerateTestProgram {
 
 			//ユーザーがテストコードを修正したあとのテストコード
 			exportEditCodeMap = tced.getExportEditCodeMap();
-			
+
 			for(String fileName : fileMap.keySet()){
 				System.out.println("FileName : " + fileName);
 				System.out.println(fileMap.get(fileName));
 			}
-			
+
 			//テストディレクトリの作成
 			makeTestDir();
 
@@ -296,7 +301,7 @@ public class GenerateTestProgram {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return successed;
 	}
 
@@ -307,12 +312,26 @@ public class GenerateTestProgram {
 	private void makeTestDir() {
 		outDir = new File(baseDir.getPath()+"/test");
 		System.out.println(outDir);
-		DebugMessageWindow.msgToTextArea();
 		try {
 			FileUtils.forceMkdir(outDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	private void makeLibDir() {
+		try {
+			ClassLoader classLoader = getClass().getClassLoader();
+			File outLibDir = new File(baseDir.getPath()+"/test/lib");
+
+			FileUtils.copyURLToFile(classLoader.getResource("/lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar"), new File(outLibDir.getAbsolutePath() + "/hamcrest/hamcrest-core/hamcrest-core-1.3.jar"));
+			FileUtils.copyURLToFile(classLoader.getResource("/lib/jmockit/jmockit-1.33.jar"),new File(outLibDir.getAbsolutePath() + "/jmockit/jmockit-1.33.jar"));
+			FileUtils.copyURLToFile(classLoader.getResource("/lib/junit/junit-4.12.jar"),new File(outLibDir.getAbsolutePath() + "/junit/junit-4.12.jar"));
+		}catch (IOException e){
+			System.out.println(e.toString());
+			e.printStackTrace();
+		} 
 
 	}
 }

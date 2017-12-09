@@ -130,8 +130,8 @@ public class TestSkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 			}
 
 			statement_str = replaceMethodSignatureFollowSouceCode(statement_str,fieldTypeClass);
-			sb.append("\r\t\t\t"+statement_str+"\n");
-			sb.append("\r\t\t\t"+"times=1" + "\n");
+			sb.append("\r\t\t\t\t"+statement_str+"\n");
+			sb.append("\r\t\t\t\t"+"times=1;" + "\n");
 		}
 
 		mockMethodMap.put(methodSigNature_str, sb.toString());

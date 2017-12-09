@@ -10,12 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import com.change_vision.jude.api.inf.model.IClassDiagram;
+import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.classcheck.autosource.ClassColorChenger;
 import com.classcheck.autosource.ClassSearcher;
 import com.classcheck.autosource.DiagramManager;
-import com.classcheck.autosource.ExportClassDiagram;
+import com.classcheck.autosource.ExportDiagram;
 import com.classcheck.autosource.MyClass;
-import com.classcheck.window.ClassDiagramViewer;
+import com.classcheck.autosource.SequenceSearcher;
+import com.classcheck.window.Class_Sequence_DiagramViewer;
 import com.classcheck.window.DebugMessageWindow;
 
 public class ClassLabelMouseAdapter extends MouseAdapter {
@@ -33,34 +35,45 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		if (ClassDiagramViewer.isOpened()) {
-			JOptionPane.showMessageDialog(parent, "クラス図のイメージウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
+		if (Class_Sequence_DiagramViewer.isOpened()) {
+			JOptionPane.showMessageDialog(parent, "UML図のイメージウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
 			return ;
 		}
 
 		System.out.println("@@@@Diagrams@@@");
+		Object obj = e.getSource();
+		JLabel clickedLabel = null;
 		DiagramManager dm = new DiagramManager();
-		ClassSearcher cav;
+		ClassSearcher cs;
+		SequenceSearcher ss = null;
 		ClassColorChenger ccc;
-		ExportClassDiagram ecd;
-		ClassDiagramViewer cdv;
-		List<IClassDiagram> allDiagramList = dm.getClassDiagram();
+		ExportDiagram ecd;
+		Class_Sequence_DiagramViewer cdv;
+		List<IClassDiagram> allIClassDiagram = dm.getAllClassDiagramList();
+		List<IClassDiagram> findClassDiagramList;
+		List<ISequenceDiagram> allISequenceDiagram = dm.getAllISequenceDiagramList();
+		List<ISequenceDiagram> findSequenceDiagramList = null;
 		String projectPath = dm.getProjectPath();
-		List<IClassDiagram> findDiagramList;
+		
+		if (obj instanceof JLabel) {
+			clickedLabel = (JLabel) obj;
+			ss = new SequenceSearcher(allISequenceDiagram,"#672A92");
+			findSequenceDiagramList = ss.findISequenceDiagram(targetClass.getIClass(),clickedLabel);
+		}
 
-		cav = new ClassSearcher(allDiagramList);
-		findDiagramList = cav.findIClassDiagram(targetClass.getIClass());
+		cs = new ClassSearcher(allIClassDiagram);
+		findClassDiagramList = cs.findIClassDiagram(targetClass.getIClass());
 
 		ccc = new ClassColorChenger(targetClass.getIClass());
-		ccc.changeColor("#BE850F");
+		ccc.changeColor("#672A92");
 
-		ecd = new ExportClassDiagram(findDiagramList,projectPath);
+		ecd = new ExportDiagram(findClassDiagramList,findSequenceDiagramList,projectPath);
 		ecd.removeDirectory(ecd.getExportPath());
 		ecd.exportImages();
 
-		cdv = new ClassDiagramViewer(ecd.getExportPath(),ccc,ecd);
+		cdv = new Class_Sequence_DiagramViewer(ecd.getExportPath(),ccc,ss,ecd,findClassDiagramList);
 
-		System.out.println(findDiagramList.toString());
+		System.out.println(findClassDiagramList.toString());
 		DebugMessageWindow.msgToTextArea();
 
 		super.mouseClicked(e);

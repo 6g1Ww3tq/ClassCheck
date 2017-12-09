@@ -76,7 +76,7 @@ public class TestCodeEditWindow extends JDialog {
 		buttonPane.add(okButton);
 		buttonPane.add(cancelButton);
 
-		setTitle("コンストラクタの修正");
+		setTitle("テストコード");
 		this.setLayout(new BorderLayout());
 		add(tctp,BorderLayout.CENTER);
 		add(buttonPane,BorderLayout.SOUTH);

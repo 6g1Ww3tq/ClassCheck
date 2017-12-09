@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class ClassImageTab extends JPanel {
+public class Class_Sequence_ImageTab extends JPanel {
 	private String classDiagramName;
 	private File picFile;
 	private ImageView imageView;
@@ -23,7 +23,7 @@ public class ClassImageTab extends JPanel {
 	private JLabel zoomPacent;
 	private JScrollPane scrollPane_center;
 
-	public ClassImageTab(String classDiagramName, File file) {
+	public Class_Sequence_ImageTab(String classDiagramName, File file) {
 		this.classDiagramName = classDiagramName;
 		this.picFile = file;
 		initComponent();

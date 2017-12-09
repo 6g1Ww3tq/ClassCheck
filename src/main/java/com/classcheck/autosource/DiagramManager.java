@@ -10,6 +10,7 @@ import com.change_vision.jude.api.inf.model.IDiagram;
 import com.change_vision.jude.api.inf.model.IModel;
 import com.change_vision.jude.api.inf.model.INamedElement;
 import com.change_vision.jude.api.inf.model.IPackage;
+import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
 
 public class DiagramManager {
@@ -37,7 +38,7 @@ public class DiagramManager {
 		return projectPath;
 	}
 
-	public List<IClassDiagram> getClassDiagram(){
+	public List<IClassDiagram> getAllClassDiagramList(){
 		List<IClassDiagram> diagramList = new ArrayList<IClassDiagram>();
 		
 		IDiagram[] diagrams = rootModel.getDiagrams();
@@ -59,6 +60,53 @@ public class DiagramManager {
 		}
 
 		return diagramList;
+	}
+	
+	public List<ISequenceDiagram> getAllISequenceDiagramList(){
+		List<ISequenceDiagram> diagramList = new ArrayList<ISequenceDiagram>();
+		
+		IDiagram[] diagrams = rootModel.getDiagrams();
+		
+		for(int i=0;i<diagrams.length;i++){
+			if (diagrams[i] instanceof ISequenceDiagram) {
+				ISequenceDiagram classDiagram = (ISequenceDiagram) diagrams[i];
+				diagramList.add(classDiagram);
+			}
+		}
+		
+
+		try {
+			getAllSequenceDiagrams(rootModel, diagramList,null);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (ProjectNotFoundException e) {
+			e.printStackTrace();
+		}
+		return diagramList;
+	}
+
+	private void getAllSequenceDiagrams(INamedElement element,
+			List<ISequenceDiagram> diagramList, IDiagram diagram)
+					throws ClassNotFoundException, ProjectNotFoundException {
+		
+		if (diagram != null) {
+
+			if (diagram instanceof ISequenceDiagram) {
+				ISequenceDiagram classDiagram = (ISequenceDiagram) diagram;
+				diagramList.add(classDiagram);
+			}
+		}
+
+		if (element instanceof IPackage) {
+			for(INamedElement ownedNamedElement : ((IPackage)element).getOwnedElements()) {
+				IDiagram[] diagrams = ownedNamedElement.getDiagrams();
+
+				for(int i=0;i<diagrams.length;i++){
+					getAllSequenceDiagrams(ownedNamedElement, diagramList,diagrams[i]);
+				}
+			}
+		}	
+
 	}
 
 	private void getAllClassDiagrams(INamedElement element, List<IClassDiagram> diagramList ,IDiagram diagram)
@@ -83,6 +131,4 @@ public class DiagramManager {
 		}	
 
 	}
-	
-	
 }

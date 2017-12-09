@@ -4,24 +4,35 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.text.ChangedCharSetException;
 
+import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.classcheck.autosource.ClassColorChenger;
-import com.classcheck.autosource.ExportClassDiagram;
-import com.classcheck.panel.ClassImageTabbedPanel;
+import com.classcheck.autosource.ExportDiagram;
+import com.classcheck.autosource.SequenceSearcher;
+import com.classcheck.panel.Class_Sequence_ImageTabbedPanel;
 
-public class ClassDiagramViewer extends JFrame {
+public class Class_Sequence_DiagramViewer extends JFrame {
 	private static boolean isOpened = false;
 	private ClassColorChenger ccc;
+	private SequenceSearcher ss;
 	private String exportPath;
-	private ExportClassDiagram ecd;
+	private ExportDiagram ecd;
+	private ArrayList<String> classDiagramNameList;
 
-	public ClassDiagramViewer(String exportPath, ClassColorChenger ccc, ExportClassDiagram ecd) {
+	public Class_Sequence_DiagramViewer(String exportPath, ClassColorChenger ccc, SequenceSearcher ss, ExportDiagram ecd, List<IClassDiagram> findClassDiagramList) {
 		this.exportPath = exportPath;
 		this.ccc = ccc;
+		this.ss = ss;
 		this.ecd = ecd;
+		this.classDiagramNameList = new ArrayList<String>();
+		
+		for (IClassDiagram iClassDiagram : findClassDiagramList) {
+			classDiagramNameList.add(iClassDiagram.getName());
+		}
 
 		initComponent();
 		initEvent();
@@ -30,9 +41,9 @@ public class ClassDiagramViewer extends JFrame {
 	private void initComponent() {
 		Container container = getContentPane();
 		
-		container.add(new ClassImageTabbedPanel(exportPath));
+		container.add(new Class_Sequence_ImageTabbedPanel(exportPath,this.classDiagramNameList));
 		
-		setTitle("クラス図");
+		setTitle("UML図");
 		setLocationRelativeTo(null);
 		setSize(new Dimension(400,400));
 		setVisible(true);
@@ -52,6 +63,7 @@ public class ClassDiagramViewer extends JFrame {
 				//クローズしたらクラスの色を元の黒に戻し
 				//画像フォルダ(.tmp/)を削除
 				ccc.changeColor(ClassColorChenger.getDefaultColor());
+				ss.refleshChangedMessages();
 				ecd.removeImages();
 				super.windowClosed(e);
 			}
@@ -60,6 +72,7 @@ public class ClassDiagramViewer extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				isOpened = false;
 				ccc.changeColor(ClassColorChenger.getDefaultColor());
+				ss.refleshChangedMessages();
 				ecd.removeImages();
 				super.windowClosing(e);
 			}

@@ -10,9 +10,6 @@ import java.util.Map;
 
 import javax.swing.AbstractButton;
 
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
@@ -114,7 +111,6 @@ public class MakeTestFile {
 		String paramStr,constructorStr;
 		List<String> mockParamStrList = null;
 		String[] split_str = null;
-		BidiMap<String, String> inverseVariableFieldNameMap = new DualHashBidiMap<String, String>(variableFieldNameMap).inverseBidiMap();
 
 		while(buttons.hasMoreElements()){
 			button = buttons.nextElement();
@@ -130,9 +126,9 @@ public class MakeTestFile {
 			DisassemblyMethodSignature disassemblyMethod = new DisassemblyMethodSignature(methodSigNature_str);
 			mockParamStrList = new ArrayList<String>();
 			sb.append("\n");
-			sb.append("\r\t"+"@Test"+"\n");
+			sb.append("\r\t\t"+"@Test"+"\n");
 			//パラメータに@Mockedを使うかどうか
-			sb.append("\r\t"+"public " + "void " + disassemblyMethod.getMethodName() + "_" + "Test" + "(");
+			sb.append("\r\t\t"+"public " + "void " + disassemblyMethod.getMethodName() + "_" + "Test" + "(");
 
 			for(int i=0;i < mockParamsList.size();i++){
 				paramStr = mockParamsList.get(i);
@@ -150,13 +146,13 @@ public class MakeTestFile {
 			sb.append(")"+ " {" +"\n");
 
 			//try-catch
-			sb.append("\r\t"+"try {"+"\n");
+			sb.append("\r\t\t"+"try {"+"\n");
 
 			//init
 			sb.append("\n");
 			if (selectedButton != null) {
-				sb.append("\r\t\t"+"//初期化"+"\n"); 
-				sb.append("\r\t\t"+ className +" object " + "=" +" "+"new "); //objectはテストするクラスに対してのオブジェクト
+				sb.append("\r\t\t\t"+"//初期化"+"\n"); 
+				sb.append("\r\t\t\t"+ className +" object " + "=" +" "+"new "); //objectはテストするクラスに対してのオブジェクト
 
 				if (abstructBtnMap.get(selectedButton) != null) {
 					//定義したコンストラクタ
@@ -175,46 +171,47 @@ public class MakeTestFile {
 			sb.append("\n");
 
 			//reflectionを用いてフィールド(privateでも)にモックオブジェクトをセットする
-			sb.append("\r\t\t"+"//フィールドにセットする"+"\n"); 
-			sb.append("\r\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
+			sb.append("\r\t\t\t"+"//フィールドにセットする"+"\n"); 
+			sb.append("\r\t\t\t"+"Class clazz"+"="+"object.getClass();"+"\n"); //objectはテストするクラスに対してのオブジェクト
 			for(int i_paramStrList = 0 ;i_paramStrList<mockParamStrList.size();i_paramStrList++){
 				String mockFieldName = mockParamStrList.get(i_paramStrList);
-				sb.append("\r\t\t"+"Field field_"+i_paramStrList+ " = " +"clazz.getDeclaredField("+"\""+inverseVariableFieldNameMap.get(mockFieldName)+"\""+");"+"\n"); 
-				sb.append("\r\t\t"+"field_"+i_paramStrList+".setAccessible(true);"+"\n"); 
-				sb.append("\r\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
+				sb.append("\r\t\t\t"+"Field field_"+i_paramStrList+ " = " +"clazz.getDeclaredField("+"\""+mockFieldName+"\""+");"+"\n"); 
+				sb.append("\r\t\t\t"+"field_"+i_paramStrList+".setAccessible(true);"+"\n"); 
+				sb.append("\r\t\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
 			}
 
 			//record
-			sb.append("\r\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
-			sb.append("\r\t\t"+"new StrictExpectations() {"+"\n");
-			sb.append("\r\t\t\t"+"{"+"\n");
+			sb.append("\r\t\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
+			sb.append("\r\t\t\t"+"new StrictExpectations() {"+"\n");
+			sb.append("\r\t\t\t\t"+"{"+"\n");
 			sb.append(mockMethodMap.get(methodSigNature_str));
-			sb.append("\r\t\t\t"+"}"+"\n");
-			sb.append("\r\t\t"+"};"+"\n");
+			sb.append("\r\t\t\t\t"+"}"+"\n");
+			sb.append("\r\t\t\t"+"};"+"\n");
 
-			sb.append("\n");
+			sb.append("\r\t\n");
 
 			//Replay
 			//メソッドは引数がある場合もあるしない場合もあるので修正する
 			//また、引数がある場合はユーザに修正を促すようにする
 			//ex) object.methodSigNature_str() , object.methodSigNature_str(1)
 			//引数は参照型だとnull,プリミティブ型だと0にするようにする
-			sb.append("\r\t\t"+"//シーケンス図の呼び出し"+"\n");
-			sb.append("\r\t\t"+"object."+disassemblyMethod+";\n");
-			sb.append("\n");
+			sb.append("\r\t\t\t"+"//シーケンス図の呼び出し"+"\n");
+			sb.append("\r\t\t\t"+"object."+disassemblyMethod+";\n");
+			sb.append("\t\n");
 
 			//throw-error catch
-			sb.append("\r\t"+"} catch (NoSuchFieldException e) {"+"\n");
-			sb.append("\r\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t"+"} catch (SecurityException e) {"+"\n");
-			sb.append("\r\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t"+"} catch (IllegalArgumentException e) {"+"\n");
-			sb.append("\r\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t"+"} catch (IllegalAccessException e) {"+"\n");
-			sb.append("\r\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t"+"}"+"\n");
+			sb.append("\r\t\t"+"} catch (NoSuchFieldException e) {"+"\n");
+			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (SecurityException e) {"+"\n");
+			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (IllegalArgumentException e) {"+"\n");
+			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (IllegalAccessException e) {"+"\n");
+			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"}"+"\n");
 
-			sb.append("\n");
+			sb.append("\r\t\n");
+			sb.append("\r\t}\n");
 			sb.append("\r}\n");
 		}
 	}

@@ -9,15 +9,18 @@ import org.apache.commons.io.FileUtils;
 import com.change_vision.jude.api.inf.exception.InvalidExportImageException;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.model.IClassDiagram;
+import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 
-public class ExportClassDiagram {
+public class ExportDiagram {
 
 	private List<IClassDiagram> classDiagrams;
 	private String projectPath;
 	private String exportPath;
+	private List<ISequenceDiagram> sequenceDiagrams;
 
-	public ExportClassDiagram(List<IClassDiagram> findDiagramList,String projectPath) {
+	public ExportDiagram(List<IClassDiagram> findDiagramList,List<ISequenceDiagram> findSequenceDiagramList, String projectPath) {
 		this.classDiagrams = findDiagramList;
+		this.sequenceDiagrams = findSequenceDiagramList;
 		this.projectPath = projectPath; 
 		this.exportPath = projectPath + "/.tmp";
 	}
@@ -28,11 +31,22 @@ public class ExportClassDiagram {
 
 	public void exportImages() {
 		IClassDiagram classDiagram;
+		ISequenceDiagram sequenceDiagram;
 
 		for(int i_classDiagrams=0;i_classDiagrams<classDiagrams.size();i_classDiagrams++){
 			classDiagram = classDiagrams.get(i_classDiagrams);
 			try {
 				classDiagram.exportImage(exportPath, "png", 96);
+			} catch (InvalidUsingException e) {
+				e.printStackTrace();
+			} catch (InvalidExportImageException e) {
+				e.printStackTrace();
+			}
+		}
+		for(int i_sequenceDiagrams=0;i_sequenceDiagrams<sequenceDiagrams.size();i_sequenceDiagrams++){
+			sequenceDiagram = sequenceDiagrams.get(i_sequenceDiagrams);
+			try {
+				sequenceDiagram.exportImage(exportPath, "png", 96);
 			} catch (InvalidUsingException e) {
 				e.printStackTrace();
 			} catch (InvalidExportImageException e) {
