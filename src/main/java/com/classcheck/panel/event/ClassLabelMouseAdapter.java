@@ -60,7 +60,7 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 
 		if (obj instanceof JLabel) {
 			clickedLabel = (JLabel) obj;
-			ss = new SequenceSearcher(allISequenceDiagram,"#FF8B32");
+			ss = new SequenceSearcher(allISequenceDiagram,"#FF0000");
 
 			//クラス名がクリックされた時、シーケンス図は空
 			if (this.clickedLabel == ClickedLabel.ClassName) {
