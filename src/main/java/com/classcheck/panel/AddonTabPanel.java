@@ -67,6 +67,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private JButton folderBtn;
 	private JButton genBtn;
 	private JTextField folderTextField;
+	private static String sourceFolderPath = null;
 
 	private List<CodeVisitor> codeVisitorList;
 	FileTree baseDirTree;
@@ -91,6 +92,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		addProjectEventListener();
 		initVariables();
 		initDebugWindow();
+	}
+
+	public static String getSourceFolderPath() {
+		return sourceFolderPath;
 	}
 
 	private void initDebugWindow(){
@@ -262,6 +267,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 						}
 
 						javaPackage = sg.getClassList("java");
+						sourceFolderPath = folderTextField.getText();
 						ctw = new MatcherWindow(javaPackage,cb,codeVisitorList,baseDirTree);
 						ctw.setTitle("テストプログラムの生成");
 					} catch (UnExpectedException e1) {

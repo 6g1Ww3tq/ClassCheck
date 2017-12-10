@@ -45,7 +45,7 @@ public class Class_Sequence_DiagramViewer extends JFrame {
 		
 		setTitle("UML図");
 		setLocationRelativeTo(null);
-		setSize(new Dimension(400,400));
+		setSize(new Dimension(1000,650));
 		setVisible(true);
 	}
 	

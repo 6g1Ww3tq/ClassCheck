@@ -33,9 +33,63 @@ public class SequenceSearcher {
 		return defaultColor;
 	}
 
-	public List<ISequenceDiagram> findISequenceDiagram(IClass targetClass,
-			JLabel clickedLabel) {
-		String labelMethodName = from_Label_methodName(clickedLabel);
+	public List<ISequenceDiagram> findFieldFromISequenceDiagram(IClass targetClass,
+			JLabel fieldLabel) {
+		List<ISequenceDiagram> foundDiagramList = new ArrayList<ISequenceDiagram>(); 
+		ISequenceDiagram sequenceDiagram;
+		String fieldLabel_str = fieldLabel.getText();
+		String[] split = fieldLabel_str.split(" ");
+		String fieldClassName = split[split.length-2];
+		String fieldVarName = split[split.length-1];
+
+		for(int i_diagramList=0;i_diagramList<diagramList.size();i_diagramList++){
+			//ライフライン＝＞　変数名(何でも):型（targetClass)　に当てはまれば変数名を一時的に記録する
+			sequenceDiagram = diagramList.get(i_diagramList);
+
+			System.out.println("@@"+sequenceDiagram.getName()+"@@");
+
+			IInteraction interaction = sequenceDiagram.getInteraction();
+			ILifeline[] lifeLines = interaction.getLifelines();
+			for(int i_lifeLines=0;i_lifeLines<lifeLines.length;i_lifeLines++){
+				ILifeline lifeLine = lifeLines[i_lifeLines];
+				String lifeLineName = lifeLine.getName();
+				String baseName = lifeLine.getBase().getName();
+
+				//ターゲットのクラス名を発見する
+				if (baseName.equals(fieldClassName)) {
+
+					//クリックした変数名と同じ名前
+					if (lifeLineName.equals(fieldVarName)) {
+						//ターゲットのクラス名の変数名を記録する(複数可能)
+						try {
+							IPresentation[] presentations = lifeLine.getPresentations();
+
+							for (IPresentation iPresentation : presentations) {
+								System.out.println("presentation:"+iPresentation);
+								iPresentation.setProperty("font.color", color);
+								changedMessageList.add(iPresentation);
+							}
+
+							if (foundDiagramList.contains(sequenceDiagram) == false) {
+								foundDiagramList.add(sequenceDiagram);
+							}
+						} catch (InvalidUsingException e) {
+							e.printStackTrace();
+						} catch (InvalidEditingException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+		}
+
+		return foundDiagramList;
+	}
+
+	public List<ISequenceDiagram> findMethodFromISequenceDiagram(IClass targetClass,
+			JLabel methodLabel) {
+		String labelMethodName = from_Label_methodName(methodLabel);
 		List<ISequenceDiagram> foundDiagramList = new ArrayList<ISequenceDiagram>(); 
 		ISequenceDiagram sequenceDiagram;
 
@@ -117,7 +171,7 @@ public class SequenceSearcher {
 		} catch (InvalidEditingException e) {
 			e.printStackTrace();
 		}
-		
+
 		this.changedMessageList.clear();
 	}
 

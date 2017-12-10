@@ -12,6 +12,7 @@ import com.change_vision.jude.api.inf.model.INamedElement;
 import com.change_vision.jude.api.inf.model.IPackage;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
 import com.change_vision.jude.api.inf.project.ProjectAccessor;
+import com.classcheck.panel.AddonTabPanel;
 
 public class DiagramManager {
 	private AstahAPI api;
@@ -22,10 +23,9 @@ public class DiagramManager {
 		try {
 			api = AstahAPI.getAstahAPI();
 			ProjectAccessor projectAccessor = api.getProjectAccessor();
-			this.projectPath = projectAccessor.getProjectPath();
-			int last = this.projectPath.lastIndexOf("/");
+			this.projectPath = AddonTabPanel.getSourceFolderPath();
+			System.out.println("projectPath:"+projectPath);
 			//実例「/home/User/Sample.astah」->「/home/User/」
-			this.projectPath = projectPath.substring(0, last);
 			rootModel = projectAccessor.getProject();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -33,23 +33,23 @@ public class DiagramManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getProjectPath() {
 		return projectPath;
 	}
 
 	public List<IClassDiagram> getAllClassDiagramList(){
 		List<IClassDiagram> diagramList = new ArrayList<IClassDiagram>();
-		
+
 		IDiagram[] diagrams = rootModel.getDiagrams();
-		
+
 		for(int i=0;i<diagrams.length;i++){
 			if (diagrams[i] instanceof IClassDiagram) {
 				IClassDiagram classDiagram = (IClassDiagram) diagrams[i];
 				diagramList.add(classDiagram);
 			}
 		}
-		
+
 
 		try {
 			getAllClassDiagrams(rootModel, diagramList,null);
@@ -61,19 +61,19 @@ public class DiagramManager {
 
 		return diagramList;
 	}
-	
+
 	public List<ISequenceDiagram> getAllISequenceDiagramList(){
 		List<ISequenceDiagram> diagramList = new ArrayList<ISequenceDiagram>();
-		
+
 		IDiagram[] diagrams = rootModel.getDiagrams();
-		
+
 		for(int i=0;i<diagrams.length;i++){
 			if (diagrams[i] instanceof ISequenceDiagram) {
 				ISequenceDiagram classDiagram = (ISequenceDiagram) diagrams[i];
 				diagramList.add(classDiagram);
 			}
 		}
-		
+
 
 		try {
 			getAllSequenceDiagrams(rootModel, diagramList,null);
@@ -88,7 +88,7 @@ public class DiagramManager {
 	private void getAllSequenceDiagrams(INamedElement element,
 			List<ISequenceDiagram> diagramList, IDiagram diagram)
 					throws ClassNotFoundException, ProjectNotFoundException {
-		
+
 		if (diagram != null) {
 
 			if (diagram instanceof ISequenceDiagram) {

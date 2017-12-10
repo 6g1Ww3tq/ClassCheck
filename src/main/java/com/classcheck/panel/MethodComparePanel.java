@@ -25,6 +25,7 @@ import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.event.ClassLabelMouseAdapter;
+import com.classcheck.panel.event.ClickedLabel;
 import com.classcheck.type.ParamCheck;
 import com.classcheck.type.ReferenceType;
 import com.classcheck.window.DebugMessageWindow;
@@ -245,7 +246,7 @@ public class MethodComparePanel extends JPanel {
 					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					
 					//クラス図を表示
-					l.addMouseListener(new ClassLabelMouseAdapter(myClass, l, getParent()));
+					l.addMouseListener(new ClassLabelMouseAdapter(myClass, l, getParent(),ClickedLabel.MethodSig));
 					
 					p.add(l);
 					p.add(methodComboBox);

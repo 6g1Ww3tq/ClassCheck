@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -25,11 +26,13 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 	private MyClass targetClass;
 	private JLabel label;
 	private Container parent;
+	private ClickedLabel clickedLabel;
 
-	public ClassLabelMouseAdapter(MyClass targetClass,JLabel label,Container parent) {
+	public ClassLabelMouseAdapter(MyClass targetClass,JLabel label,Container parent, ClickedLabel clickedLabel) {
 		this.targetClass = targetClass;
 		this.label = label;
 		this.parent = parent;
+		this.clickedLabel = clickedLabel;
 	}
 
 	@Override
@@ -54,18 +57,28 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 		List<ISequenceDiagram> allISequenceDiagram = dm.getAllISequenceDiagramList();
 		List<ISequenceDiagram> findSequenceDiagramList = null;
 		String projectPath = dm.getProjectPath();
-		
+
 		if (obj instanceof JLabel) {
 			clickedLabel = (JLabel) obj;
-			ss = new SequenceSearcher(allISequenceDiagram,"#672A92");
-			findSequenceDiagramList = ss.findISequenceDiagram(targetClass.getIClass(),clickedLabel);
+			ss = new SequenceSearcher(allISequenceDiagram,"#FF8B32");
+
+			//クラス名がクリックされた時、シーケンス図は空
+			if (this.clickedLabel == ClickedLabel.ClassName) {
+				findSequenceDiagramList = new ArrayList<ISequenceDiagram>();
+				//フィールドがクリックされた時
+			}else if(this.clickedLabel == ClickedLabel.FieldDefinition){
+				findSequenceDiagramList = ss.findFieldFromISequenceDiagram(targetClass.getIClass(),clickedLabel);
+				//メソッドのシグネチャーがクリックされた時
+			}else if(this.clickedLabel == ClickedLabel.MethodSig){
+				findSequenceDiagramList = ss.findMethodFromISequenceDiagram(targetClass.getIClass(),clickedLabel);
+			}
 		}
 
 		cs = new ClassSearcher(allIClassDiagram);
 		findClassDiagramList = cs.findIClassDiagram(targetClass.getIClass());
 
 		ccc = new ClassColorChenger(targetClass.getIClass());
-		ccc.changeColor("#672A92");
+		ccc.changeColor("#FF8B32");
 
 		ecd = new ExportDiagram(findClassDiagramList,findSequenceDiagramList,projectPath);
 		ecd.removeDirectory(ecd.getExportPath());
@@ -84,7 +97,7 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 		super.mouseEntered(e);
 		label.setForeground(Color.red);
 	}
-	
+
 	@Override
 	public void mouseExited(MouseEvent e) {
 		super.mouseExited(e);

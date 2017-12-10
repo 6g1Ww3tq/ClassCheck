@@ -10,6 +10,7 @@ import com.change_vision.jude.api.inf.exception.InvalidExportImageException;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.change_vision.jude.api.inf.model.ISequenceDiagram;
+import com.classcheck.window.DebugMessageWindow;
 
 public class ExportDiagram {
 

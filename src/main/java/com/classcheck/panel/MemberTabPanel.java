@@ -30,6 +30,7 @@ import com.classcheck.autosource.ClassNode;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.generic.Pocket;
 import com.classcheck.panel.event.ClassLabelMouseAdapter;
+import com.classcheck.panel.event.ClickedLabel;
 
 public class MemberTabPanel extends JPanel{
 	/**
@@ -245,7 +246,7 @@ public class MemberTabPanel extends JPanel{
 						classNamePane.repaint();
 						classNamePane.add(jtrSelClass);
 						//クラス図を表示
-						jtrSelClass.addMouseListener(new ClassLabelMouseAdapter(selectedMyClass, jtrSelClass, getParent()));
+						jtrSelClass.addMouseListener(new ClassLabelMouseAdapter(selectedMyClass, jtrSelClass, getParent(),ClickedLabel.ClassName));
 
 						//説明を加える
 						popSb.append("<html>");
