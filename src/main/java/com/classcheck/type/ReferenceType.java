@@ -11,7 +11,6 @@ import com.classcheck.autosource.Field;
 import com.classcheck.autosource.Method;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 /**
@@ -47,14 +46,14 @@ public class ReferenceType {
 
 	public ReferenceType(List<IClass> javaPackage,
 			DefaultTableModel tableModel, Field umlField,
-			FieldDeclaration codeField) {
+			StringBuilder fieldDefinition_sb) {
 		this(javaPackage,tableModel);
-		initField(umlField,codeField);
+		initField(umlField,fieldDefinition_sb);
 	}
 
-	private void initField(Field umlField, FieldDeclaration codeField) {
+	private void initField(Field umlField,StringBuilder fieldDefinition_sb) {
 		this.umlType = umlField.getType();
-		this.codeType = codeField.toString();
+		this.codeType = fieldDefinition_sb.toString();
 		String splits[] = codeType.split("=");
 		splits = splits[0].split(" ");
 		//配列が「String args[]」のように後ろに［］が来るので型の後に来るように調整

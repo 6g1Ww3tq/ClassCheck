@@ -40,10 +40,10 @@ public class Class_Sequence_DiagramViewer extends JFrame {
 
 	private void initComponent() {
 		Container container = getContentPane();
+		Class_Sequence_ImageTabbedPanel tabPanel = new Class_Sequence_ImageTabbedPanel(this,exportPath,this.classDiagramNameList);
 		
-		container.add(new Class_Sequence_ImageTabbedPanel(exportPath,this.classDiagramNameList));
+		container.add(tabPanel);
 		
-		setTitle("UML図");
 		setLocationRelativeTo(null);
 		setSize(new Dimension(1000,650));
 		setVisible(true);

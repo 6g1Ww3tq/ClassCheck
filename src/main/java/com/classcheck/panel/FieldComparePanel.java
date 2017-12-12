@@ -31,6 +31,7 @@ import com.classcheck.panel.event.ClassLabelMouseAdapter;
 import com.classcheck.panel.event.ClickedLabel;
 import com.classcheck.type.ReferenceType;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 
 public class FieldComparePanel extends JPanel{
 
@@ -138,6 +139,7 @@ public class FieldComparePanel extends JPanel{
 				for (Field umlField : umlFieldList){
 
 					ArrayList<String> strList = new ArrayList<String>();
+					StringBuilder fieldDefinition_sb = new StringBuilder();
 
 					for (FieldDeclaration codeField : codeFieldList) {
 						//型を比較するメソッドを作る（型はソースコードに依存する、また基本型の場合も考えるようにする)
@@ -146,24 +148,37 @@ public class FieldComparePanel extends JPanel{
 						//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
 						String umlField_modify_str = umlField.getModifiers();
 						String codeField_modify_str = Modifier.toString(codeField.getModifiers());
-						
+
+						//初期化
+						fieldDefinition_sb.setLength(0);
+						if (Modifier.toString(codeField.getModifiers()) != null) {
+							fieldDefinition_sb.append(Modifier.toString(codeField.getModifiers()));
+							fieldDefinition_sb.append(" ");
+						}
+						if (codeField.getType() != null) {
+							fieldDefinition_sb.append(codeField.getType());
+							fieldDefinition_sb.append(" ");
+						}
+						List<VariableDeclarator> varList = codeField.getVariables();
+						for(int i_varList = 0;i_varList<varList.size();i_varList++){
+							VariableDeclarator variableDeclarator = varList.get(i_varList);
+							fieldDefinition_sb.append(variableDeclarator.getId().getName());
+
+							if (i_varList < varList.size() - 1) {
+								fieldDefinition_sb.append(" ");
+							}
+						}
+
+
 						//最後の空白スペースを取り除く
 						if (umlField_modify_str.endsWith(" ")) {
 							umlField_modify_str = umlField_modify_str.substring(0, umlField_modify_str.lastIndexOf(" "));
 						}
-						
-						if (umlField_modify_str.contains("static") || 
-								codeField_modify_str.contains("static")) {
-							System.out.println("===static===");
-							System.out.println("umlField_modify_str:"+umlField_modify_str);
-							System.out.println("codeField_modify_str:"+codeField_modify_str);
-							System.out.println("code_is_static:"+Modifier.isStatic(codeField.getModifiers()));
-						}
 
 						if (umlField_modify_str.equals(codeField_modify_str) && 
 								//型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-								new ReferenceType(this.javaPackage,this.tableModel, umlField, codeField).evaluate()){
-							strList.add(codeField.toString().replaceAll(";", ""));
+								new ReferenceType(this.javaPackage,this.tableModel, umlField, fieldDefinition_sb).evaluate()){
+							strList.add(fieldDefinition_sb.toString());
 						}
 					}
 

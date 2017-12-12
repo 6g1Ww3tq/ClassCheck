@@ -87,9 +87,11 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	ByteArrayOutputStream baos;
 
 	public AddonTabPanel() {
+		initConfig();
 		initComponents();
 		initEvents();
 		addProjectEventListener();
+		initConfig();
 		initVariables();
 		initDebugWindow();
 	}
@@ -102,18 +104,18 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		debugWindow = new DebugMessageWindow(debugCheckBox,"Debug",true);
 	}
 
-	private void initVariables() {
-		classList = new ArrayList<IClass>();
-		diagramList = new ArrayList<ISequenceDiagram>();
-
+	private void initConfig() {
 		config = new Config();
 		config.activate();
-
-		codeVisitorList = new ArrayList<CodeVisitor>();
-
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 		ToolTipManager.sharedInstance().setReshowDelay(250);
 		ToolTipManager.sharedInstance().setDismissDelay(60000);
+	}
+
+	private void initVariables() {
+		classList = new ArrayList<IClass>();
+		diagramList = new ArrayList<ISequenceDiagram>();
+		codeVisitorList = new ArrayList<CodeVisitor>();
 	}
 
 
@@ -204,6 +206,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//初期化	
+				initVariables();
 				List<IClass> javaPackage;
 				File file;
 
@@ -220,8 +224,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
 					return ;
 				}
-				
-				
+
+
 				if (!folderTextField.getText().isEmpty()) {
 					file = new File(folderTextField.getText());
 
@@ -324,9 +328,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	}
 
 	private void selectFolder(Component parentComponent) {
-		//初期化	
-		initVariables();
-
 		File file;
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setDragEnabled(true);
