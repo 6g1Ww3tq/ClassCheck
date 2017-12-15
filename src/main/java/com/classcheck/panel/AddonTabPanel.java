@@ -4,11 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +32,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.FileUtils;
 
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
@@ -53,6 +60,7 @@ import com.classcheck.tree.FileNode;
 import com.classcheck.tree.FileTree;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.MatcherWindow;
+import com.classcheck.window.MessageDialog;
 
 public class AddonTabPanel extends JPanel implements IPluginExtraTabView, ProjectEventListener {
 	/**
@@ -60,13 +68,16 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	 */
 	private static final long serialVersionUID = 1L;
 	private DebugMessageWindow debugWindow;
-	private JPanel genPane;
 	private JCheckBox debugCheckBox;
 	private JPanel folderPane;
 	private JButton expBtn;
 	private JButton folderBtn;
 	private JButton genBtn;
+	private JButton helpBtn;
+	private JButton jarSelectBtn;
+	private JButton compileBtn;
 	private JTextField folderTextField;
+	private JTextField jarPathTextField;
 	private static String sourceFolderPath = null;
 
 	private List<CodeVisitor> codeVisitorList;
@@ -120,29 +131,57 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 
 	private void initComponents() {
-		JPanel actionPane = new JPanel();
+		setLayout(new BorderLayout());
+		JPanel btnPanel = null;
 		JPanel debugPane = new JPanel();
 		JPanel northPane = new JPanel();
-
-		actionPane.setLayout(new FlowLayout());
-		debugCheckBox = new JCheckBox();
-
+		JPanel centerPane = new JPanel();
 		northPane.setLayout(new BorderLayout(3, 3));
-		setLayout(new BorderLayout());
+		JPanel compilePane = new JPanel();
+		compilePane.setLayout(new BorderLayout());
+
+		debugCheckBox = new JCheckBox();
 		baseDirTree = null;
 
-		genPane = new JPanel();
+		jarPathTextField = new JTextField(50);
+		jarPathTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+		jarPathTextField.setToolTipText("<html>"+
+				"jarファイルが存在する<br>" +
+				"ファイルを選択してください" +
+				"</html>");
+		compileBtn = new JButton("②コンパイル");
+		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
+		compileBtn.setToolTipText("<html>"+
+				"ソースコードのコンパイル" +
+				"</html>");
+		compilePane.add(new JLabel("②ライブラリを使用する場合はパスを指定 : "),BorderLayout.WEST);
+		compilePane.add(jarPathTextField,BorderLayout.CENTER);
+		jarSelectBtn = new JButton();
+		jarSelectBtn.setText("②jar選択");
+		btnPanel = new JPanel();
+		btnPanel.add(jarSelectBtn);
+		btnPanel.add(compileBtn);
+		compilePane.add(btnPanel,BorderLayout.EAST);
 
 		expBtn = new JButton("実験");
-		genPane.add(expBtn);
-
-		genBtn = new JButton("生成");
-		genPane.add(genBtn);
-
+		expBtn.setVisible(false);
+		centerPane.add(expBtn);
+		genBtn = new JButton("③生成");
+		genBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
+		genBtn.setToolTipText("<html>"+
+				"テストプログラム生成" +
+				"</html>");
+		centerPane.add(genBtn);
 		configBtn = new JButton("設定");
-		genPane.add(configBtn);
+		configBtn.setVisible(false);
+		centerPane.add(configBtn);
+		helpBtn = new JButton("ヘルプ");
+		helpBtn.setToolTipText("<html>"+
+				"ヘルプ" +
+				"</html>");
+		centerPane.add(helpBtn);
 
-		folderBtn = new JButton("選択");
+		folderBtn = new JButton("①フォルダ選択");
 		folderPane = new JPanel();
 		folderPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,3));
 		folderTextField = new JTextField(50);
@@ -157,14 +196,16 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		debugPane.add(new JLabel("デバックモード:"));
 		debugPane.add(debugCheckBox);
 
-		actionPane.add(debugPane);
-		actionPane.add(genPane);
-		northPane.add(actionPane, BorderLayout.NORTH);
+		northPane.add(debugPane, BorderLayout.NORTH);
+		northPane.add(new JLabel("①ソースコードが存在するフォルダ : "),BorderLayout.WEST);
 		northPane.add(folderTextField, BorderLayout.CENTER);
-		northPane.add(new JLabel("フォルダ : "),BorderLayout.WEST);
-		northPane.add(folderBtn,BorderLayout.EAST);
+		northPane.add(compilePane,BorderLayout.SOUTH);
+		btnPanel = new JPanel();
+		btnPanel.add(folderBtn);
+		northPane.add(btnPanel,BorderLayout.EAST);
 
 		add(northPane,BorderLayout.NORTH);
+		add(centerPane,BorderLayout.CENTER);
 		setVisible(true);
 	}
 
@@ -187,7 +228,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugMessageWindow.clearText();
-				//				new ConfigJDialog(false);
+				//new ConfigJDialog(false);
 				System.out.println("実験しました。。。");
 				DebugMessageWindow.msgToTextArea();
 			}
@@ -202,10 +243,144 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 		});
 
+		jarSelectBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectJarFile(getComponent());
+			}
+
+		});
+
+		compileBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ExecutorService executor = Executors.newSingleThreadExecutor();
+				Future<?> future;
+
+				future = executor.submit(new Callable<String>() {
+					@Override
+					public String call() throws Exception {
+						//前提条件
+						//テキストフィールド(ソースコードのパス)に書かれているディレクトリが存在しない
+						if (exsistFolderWrittenFolderText() == false) {
+							return "error";
+							//テキストフィールド(ソースコードのパス)に書かれているディレクトリが空の場合
+						}else if(folderTextField.getText().isEmpty()){
+							return "error";
+						}
+						File workSpaceDir = new File(folderTextField.getText());
+						//出力先のクラスフォルダを作成
+						File classesDir = new File(workSpaceDir+"/test/classes");
+						try {
+							FileUtils.forceMkdir(classesDir);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						String[] javacCommand = null;
+						List<String> javacList = new ArrayList<String>();
+						javacList.add("javac");
+
+						//ライブラリが必要な場合
+						if (jarPathTextField.getText() != null) {
+							javacList.add("-cp");
+							javacList.add(jarPathTextField.getText());
+						}
+
+						FileTree javaFileTree = new FileTree(new FileNode(workSpaceDir) , ".java$");
+						StringBuilder rtnMsg_sb = new StringBuilder();
+
+						//ソースコードのファイルを指定
+						List<FileNode> javaFileNode = javaFileTree.getFileNodeList();
+						for (FileNode fileNode : javaFileNode) {
+							javacList.add(fileNode.getPath());
+						}
+
+						//クラスファイルの出力先
+						javacList.add("-d");
+						javacList.add(classesDir.getPath());
+
+						javacCommand = javacList.toArray(new String[javacList.size()]);
+
+						Runtime javacRunTime = Runtime.getRuntime();
+						Process p = javacRunTime.exec(javacCommand, null, workSpaceDir);
+						p.waitFor();
+						InputStream inputStream = p.getInputStream();
+						InputStream errorStream = p.getErrorStream();
+						BufferedReader inputBufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+						BufferedReader errorBufferedReader = new BufferedReader(new InputStreamReader(errorStream));
+						String readLine = null;
+
+						//"***StandardStream
+						while((readLine = inputBufferedReader.readLine()) != null){
+							rtnMsg_sb.append(readLine+"\n");
+						}
+						//"***ErrorStream
+						while((readLine = errorBufferedReader.readLine()) != null){
+							rtnMsg_sb.append(readLine+"\n");
+						}
+
+						inputBufferedReader.close();
+						errorBufferedReader.close();
+						inputStream.close();
+						errorStream.close();
+
+
+						System.out.println(rtnMsg_sb.toString());
+						DebugMessageWindow.msgToTextArea();
+
+						//標準出力やエラー出力を文字列として返却
+						return rtnMsg_sb.toString();
+					}
+				});
+
+				try {
+					String rtnTextMsg = (String) future.get(3, TimeUnit.SECONDS);
+					MessageDialog dialogMsg = null;
+					if(rtnTextMsg.equals("error")){
+						JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+					}else{
+						if (rtnTextMsg.isEmpty()) {
+							JOptionPane.showMessageDialog(getParent(), "コンパイルに成功しました", "成功", JOptionPane.INFORMATION_MESSAGE);
+						}else{
+							dialogMsg = new MessageDialog("コンパイルに失敗しました");
+							dialogMsg.setTextArea(rtnTextMsg);
+						}
+					}
+				} catch (InterruptedException e2) {
+					e2.printStackTrace();
+				} catch (ExecutionException e2) {
+					e2.printStackTrace();
+				} catch (TimeoutException e2) {
+					System.out.println("time out!!");
+					future.cancel(true);
+					baseDirTree = null;
+					e2.printStackTrace();
+				}
+
+				executor.shutdownNow();
+
+			}
+		});
+
 		genBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//前提条件
+				//テキストフィールド(ソースコードのパス)に書かれているディレクトリが存在しない
+				if (exsistFolderWrittenFolderText() == false) {
+					JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
+					//テキストフィールド(ソースコードのパス)に書かれているディレクトリが空の場合
+				}else if(folderTextField.getText().isEmpty()){
+					JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}else if (!MatcherWindow.isClosed()) {
+					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
+					return ;
+				}
 				//初期化	
 				initVariables();
 				List<IClass> javaPackage;
@@ -219,24 +394,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				SkeltonCodeAnalyzer sca = null;
 				SkeltonCodeVisitor scv = null;
 
-
-				if (!MatcherWindow.isClosed()) {
-					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
-					return ;
-				}
-
-
-				if (!folderTextField.getText().isEmpty()) {
-					file = new File(folderTextField.getText());
-
-					if (!file.isDirectory()) {
-						JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
-						return ;
-					}
-				}else{
-					JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
-					return ;
-				}
 
 				makeCodeVisitorList(folderTextField.getText());
 
@@ -308,6 +465,23 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	}
 
+	private boolean exsistFolderWrittenFolderText(){
+		File file = null;
+		boolean exsist = true;
+
+		if (!folderTextField.getText().isEmpty()) {
+			file = new File(folderTextField.getText());
+
+			if (!file.isDirectory()) {
+				exsist = false;
+				return exsist;
+			}
+		}else{
+			return exsist;
+		}
+		return exsist;
+	}
+
 	private void create_class_sequence_list() {
 		classList = SourceGenerator.getClassList();
 		diagramList = SourceGenerator.getSequenceDiagramList();
@@ -324,6 +498,31 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			e.getMessage();
 		} catch (ProjectNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void selectJarFile(Component parentComponent) {
+		File file;
+		final JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter jarFilter = new FileNameExtensionFilter("JARファイル", "jar"); 
+		fileChooser.setDragEnabled(true);
+
+		if (!MatcherWindow.isClosed()) {
+			JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
+			return ;
+		}
+
+		//ファイルセレクトにjarファイルだけを選択するようにフィルターをかける
+		fileChooser.addChoosableFileFilter(jarFilter);
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setAcceptAllFileFilterUsed(false);
+
+		int selected = fileChooser.showOpenDialog(parentComponent);
+		if(selected == JFileChooser.FILES_ONLY) {
+			file = fileChooser.getSelectedFile();
+
+			//jarTextFiledに入力
+			jarPathTextField.setText(file.toString());
 		}
 	}
 
@@ -437,12 +636,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	@Override
 	public String getDescription() {
-		return "Show ResultTabView here";
+		return "Show TestProgramView here";
 	}
 
 	@Override
 	public String getTitle() {
-		return "ResultView";
+		return "テストプログラム生成";
 	}
 
 	@Override

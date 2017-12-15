@@ -78,7 +78,7 @@ public class Class_Sequence_ImageTabbedPanel extends JTabbedPane {
 				});
 
 				if (tabCount == firstTab) {
-					window.setTitle("クラス図");
+					window.setTitle("シーケンス図");
 				}
 			}
 			

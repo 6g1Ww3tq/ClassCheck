@@ -334,4 +334,10 @@ public class GenerateTestProgram {
 		} 
 
 	}
+
+	private void makeClassTableCSV() {
+		String exportFileName = "Interaction.csv";
+		MakeClassTableCSV mct = new MakeClassTableCSV(exportFileName,tableMap,fieldChangeMap,methodChangeMap);
+		mct.exportPath(baseDir.getPath());
+	}
 }
