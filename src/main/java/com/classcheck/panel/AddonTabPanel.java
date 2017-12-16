@@ -78,6 +78,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private JButton jarSelectBtn;
 	private JButton compileBtn;
 	private JTextField folderTextField;
+	private static String compileDirPath = new String();
+	private static boolean compileSuccess = false;
 	private static JTextField jarPathTextField;
 	private static String sourceFolderPath = null;
 
@@ -274,6 +276,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				future = executor.submit(new Callable<String>() {
 					@Override
 					public String call() throws Exception {
+						//コンパイルした時点のディレクトリを記憶
+						compileDirPath = folderTextField.getText();
 						//前提条件
 						//テキストフィールド(ソースコードのパス)に書かれているディレクトリが存在しない
 						if (exsistFolderWrittenFolderText() == false) {
@@ -352,11 +356,25 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					MessageDialog dialogMsg = null;
 					if(rtnTextMsg.equals("error")){
 						JOptionPane.showMessageDialog(getParent(), "存在するフォルダを選択してください", "error", JOptionPane.ERROR_MESSAGE);
+						compileSuccess = false;
 					}else{
 						if (rtnTextMsg.isEmpty()) {
 							JOptionPane.showMessageDialog(getParent(), "コンパイルに成功しました", "成功", JOptionPane.INFORMATION_MESSAGE);
+							compileSuccess = true;
 						}else{
+							/*
+							 * テストに失敗した場合は失敗メッセージを表示し、
+							 * testディレクトリを削除する
+							 */
 							dialogMsg = new MessageDialog("コンパイルに失敗しました");
+							compileSuccess = false;
+							File workSpaceDir = new File(folderTextField.getText());
+							File testDir = new File(workSpaceDir+"/test");
+							try {
+								FileUtils.deleteDirectory(testDir);
+							} catch (IOException fileError) {
+								fileError.printStackTrace();
+							}
 							dialogMsg.setTextArea(rtnTextMsg);
 						}
 					}
@@ -392,7 +410,14 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				}else if (!MatcherWindow.isClosed()) {
 					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
 					return ;
+				}else if (compileSuccess == false) {
+					JOptionPane.showMessageDialog(getParent(), "ソースコドをコンパイルしてください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
+				}else if (compileDirPath.equals(folderTextField.getText()) == false){
+					JOptionPane.showMessageDialog(getParent(), "一度コンパイルを行ってください", "error", JOptionPane.ERROR_MESSAGE);
+					return ;
 				}
+
 				//初期化	
 				initVariables();
 				List<IClass> javaPackage;
