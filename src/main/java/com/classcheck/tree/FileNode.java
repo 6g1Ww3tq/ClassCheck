@@ -3,6 +3,8 @@ package com.classcheck.tree;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.classcheck.type.FILETYPE;
 
@@ -56,6 +58,23 @@ public class FileNode extends File{
 
 		return fileNodes;
 	}	
+	
+	public String getFileNameRemovedFormat(){
+		String fileName = getName();
+		String fileNameRemovedFormat_str = null;
+		Pattern pattern = Pattern.compile("(.+)\\..+$"); 
+		Matcher matcher = null;
+
+		if (fileName != null) {
+			matcher = pattern.matcher(fileName);
+			
+			if (matcher.find()) {
+				fileNameRemovedFormat_str = matcher.group(1);
+			}
+		}
+		
+		return fileNameRemovedFormat_str;
+	}
 	
 	@Override
 	public String toString() {

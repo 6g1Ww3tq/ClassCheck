@@ -30,6 +30,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -77,8 +78,11 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private JButton jarSelectBtn;
 	private JButton compileBtn;
 	private JTextField folderTextField;
-	private JTextField jarPathTextField;
+	private static JTextField jarPathTextField;
 	private static String sourceFolderPath = null;
+
+	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
+	private List<FileNode> javaFileNodeList;
 
 	private List<CodeVisitor> codeVisitorList;
 	FileTree baseDirTree;
@@ -110,6 +114,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	public static String getSourceFolderPath() {
 		return sourceFolderPath;
 	}
+	
+	public static JTextField getJarPathTextField() {
+		return jarPathTextField;
+	}
 
 	private void initDebugWindow(){
 		debugWindow = new DebugMessageWindow(debugCheckBox,"Debug",true);
@@ -132,6 +140,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	private void initComponents() {
 		setLayout(new BorderLayout());
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		JScrollPane mainScrollPane = new JScrollPane(mainPanel);
 		JPanel btnPanel = null;
 		JPanel debugPane = new JPanel();
 		JPanel northPane = new JPanel();
@@ -204,8 +215,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		btnPanel.add(folderBtn);
 		northPane.add(btnPanel,BorderLayout.EAST);
 
-		add(northPane,BorderLayout.NORTH);
-		add(centerPane,BorderLayout.CENTER);
+		mainPanel.add(northPane,BorderLayout.NORTH);
+		mainPanel.add(centerPane,BorderLayout.CENTER);
+		add(mainScrollPane);
 		setVisible(true);
 	}
 
@@ -429,7 +441,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 						javaPackage = sg.getClassList("java");
 						sourceFolderPath = folderTextField.getText();
-						ctw = new MatcherWindow(javaPackage,cb,codeVisitorList,baseDirTree);
+						ctw = new MatcherWindow(javaPackage,cb,codeVisitorList,baseDirTree,javaFileNodeList);
 						ctw.setTitle("テストプログラムの生成");
 					} catch (UnExpectedException e1) {
 						e1.printStackTrace();
@@ -570,6 +582,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				baseDirTree = new FileTree(new FileNode(projectPath) , ".java$");
 				StringBuilder sb = new StringBuilder();
 				Iterator<FileNode> it = baseDirTree.iterator();
+				//javaファイルのパスやデータのリストを用意する
+				javaFileNodeList = new ArrayList<FileNode>();
 
 				while (it.hasNext()) {
 					fileNode = (FileNode) it.next();
@@ -581,6 +595,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 							sa.doAnalyze();
 
 							sb.append(fileNode+"\n");
+							//javaファイルのパスやデータを格納するリストに追加する
+							if (javaFileNodeList.contains(fileNode) == false) {
+								javaFileNodeList.add(fileNode);
+							}
 							codeVisitorList.add(sa.getCodeVisitor());
 
 						} catch (IOException e) {

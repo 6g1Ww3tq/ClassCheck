@@ -1,23 +1,32 @@
 package com.classcheck.gen;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
+import com.classcheck.tree.FileNode;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 
 public class MakeTestFile {
+	//ソースコードの基準となるディレクトリ
+	private File baseDir;
+	//ソースコードがあるパスを格納したリスト
+	private List<FileNode> javaFileNodeList;
+
 	//テーブルの対応付け
 	private Map<MyClass,CodeVisitor> tableMap;
 
@@ -32,12 +41,14 @@ public class MakeTestFile {
 	private List<ConstructorPanel> cPanelList;
 	private Collection<CodeVisitor> codeCollection;
 
-	public MakeTestFile(Map<MyClass, CodeVisitor> tableMap,
+	public MakeTestFile(File baseDir, List<FileNode> javaFileNodeList, Map<MyClass, CodeVisitor> tableMap,
 			Map<MyClass, Map<String, String>> methodChangeMap,
 			Map<MyClass, Map<String, String>> fieldChangeMap,
 			Map<CodeVisitor, String> generatedCodesMap,
 			List<ConstructorPanel> cPaneList,
 			Collection<CodeVisitor> codeCollection) {
+		this.baseDir = baseDir;
+		this.javaFileNodeList = javaFileNodeList;
 		this.tableMap = tableMap;
 		this.methodChangeMap = methodChangeMap;
 		this.fieldChangeMap = fieldChangeMap;
@@ -220,7 +231,63 @@ public class MakeTestFile {
 		sb.append("public class " + className + "Test" + " {" +"\n");
 	}
 
+	//FIXME
+	//コンパイルしたソースコードのクラスをimportする
+	//ex.) import hoge.Hoge;
+	//NEXT
+	//実行するスクリプトファイルにはクラスパスを指定する -cp classes:<jar指定がある場合>
 	private void makeHeader(StringBuilder sb) {
+		Map<String, String> javaFileMap = new HashMap<String, String>();
+		Pattern pattern = Pattern.compile("(.+)\\..+$"); 
+		Matcher matcher = null;
+
+		for (FileNode fileNode : javaFileNodeList) {
+			//ファイル名をインポートするクラス名とする
+			String className_str = fileNode.getFileNameRemovedFormat();
+			String packageFullPath_str = fileNode.getPath();
+			String packagePath_str = null;
+			String importPackage_str = null;
+
+			packagePath_str = packageFullPath_str.replaceAll(baseDir.getPath(), "");
+
+			try{
+				if (className_str == null || packagePath_str.isEmpty()) {
+					continue;
+				}
+				// /main/hoge/Hoge.java -> /main/hoge/Hoge
+				matcher = pattern.matcher(packagePath_str);
+				if (matcher.find()) {
+					packagePath_str = matcher.group(1);
+				}else{
+					//置換に失敗
+					continue;
+				}
+				// /main/hoge/Hoge -> main/hoge/Hoge
+				packagePath_str = packagePath_str.substring(1, packagePath_str.length());
+				
+				// main/hoge/Hoge -> main.hoge.Hoge
+				importPackage_str = packagePath_str.replaceAll("/", ".");
+				
+				//import Hoge;の場合はインポートしない
+				if (importPackage_str.contains(".") == false) {
+					continue;
+				}
+				
+				javaFileMap.put(className_str, importPackage_str);
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				continue;
+			}
+
+		}
+		
+		for (String className_str : javaFileMap.keySet()) {
+			String importPackage_str = javaFileMap.get(className_str);
+			sb.append("import "+importPackage_str+";\n");
+		}
+		
+		sb.append("\n");
+
 		sb.append("import mockit.StrictExpectations;\n" +
 				"import mockit.Mocked;\n" +
 				"\n"+

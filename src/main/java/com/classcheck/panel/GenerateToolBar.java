@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -23,13 +24,16 @@ public class GenerateToolBar extends JToolBar {
 	ImageIcon genIcon;
 	private File baseDir;
 	private MemberTabPanel mtp;
+	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
+	private List<FileNode> javaFileNodeList;
 
 	public GenerateToolBar(String name, MemberTabPanel mtp,
-			int operation, FileNode baseDir) {
+			int operation, FileNode baseDir, List<FileNode> javaFileNodeList) {
 		super(name, operation);
 
 		this.mtp = mtp;
 		this.baseDir = baseDir;
+		this.javaFileNodeList = javaFileNodeList;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 3));
 		add(Box.createHorizontalGlue());
 		setBorder(new LineBorder(Color.LIGHT_GRAY,1));
@@ -100,7 +104,7 @@ public class GenerateToolBar extends JToolBar {
 				}
 
 				if (gs == GenerateState.NORMAL) {
-					if(new GenerateTestProgram(baseDir,mtp).doExec()){
+					if(new GenerateTestProgram(baseDir,mtp,javaFileNodeList).doExec()){
 						JOptionPane.showMessageDialog(getParent(), "テストプログラムを生成しました","成功",JOptionPane.INFORMATION_MESSAGE);
 					}else{
 						//JOptionPane.showMessageDialog(getParent(), "テストプログラムに失敗しました","失敗",JOptionPane.ERROR_MESSAGE);

@@ -3,6 +3,7 @@ package com.classcheck.gen;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,13 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
+import com.classcheck.panel.AddonTabPanel;
 import com.classcheck.panel.ClassTablePanel;
 import com.classcheck.panel.ConstructorPanel;
 import com.classcheck.panel.FieldComparePanel;
 import com.classcheck.panel.MemberTabPanel;
 import com.classcheck.panel.MethodComparePanel;
+import com.classcheck.tree.FileNode;
 import com.classcheck.window.DebugMessageWindow;
 import com.classcheck.window.SelectConstructorViewer;
 import com.classcheck.window.TestCodeEditWindow;
@@ -31,7 +34,9 @@ public class GenerateTestProgram {
 	//出力元となるディレクトリ
 	File baseDir;
 	//出力先テストディレクトリ
-	File outDir;
+	File oustTestDir;
+	//出力するテストファイル名のリスト
+	List<String> testJavaFileNameList;
 
 	//テーブルの対応付け
 	private Map<MyClass,CodeVisitor> tableMap;
@@ -42,17 +47,22 @@ public class GenerateTestProgram {
 	//フィールドの前と後を表す対応関係を抽出
 	private Map<MyClass, Map<String, String>> fieldChangeMap;
 
+	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
+	private List<FileNode> javaFileNodeList;
+
 	private MemberTabPanel mtp;
 	private FieldComparePanel fcp;
 	private MethodComparePanel mcp;
 	private ClassTablePanel tablePane;
 
-	public GenerateTestProgram(File baseDir, MemberTabPanel mtp) {
+	public GenerateTestProgram(File baseDir, MemberTabPanel mtp, List<FileNode> javaFileNodeList) {
 		this.baseDir = baseDir;
 		this.mtp = mtp;
 		this.fcp = mtp.getFcp();
 		this.mcp = mtp.getMcp();
 		this.tablePane = mtp.getTablePane();
+		this.javaFileNodeList = javaFileNodeList;
+		this.testJavaFileNameList = new ArrayList<String>();
 	}
 
 	public boolean doExec(){
@@ -64,6 +74,10 @@ public class GenerateTestProgram {
 
 		if (successed) {
 			makeLibDir();
+		}
+		
+		if (successed) {
+			makeRunScriptFile();
 		}
 
 		DebugMessageWindow.msgToTextArea();
@@ -231,12 +245,10 @@ public class GenerateTestProgram {
 				//last
 				fieldChangeMap.put(myClass, fieldsMap);
 				methodChangeMap.put(myClass, methodsMap);
-				//System.out.println(methodsMap);
 			}
 
 		}
 
-		//System.out.println(methodChangeMap);
 	}
 
 	private boolean makeFile() {
@@ -267,7 +279,7 @@ public class GenerateTestProgram {
 
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			cPaneList = scv.getCtp().getConstructorPaneList();
-			makeFile = new MakeTestFile(tableMap,methodChangeMap,fieldChangeMap,generatedCodesMap,cPaneList,tableMap.values());
+			makeFile = new MakeTestFile(baseDir,javaFileNodeList,tableMap,methodChangeMap,fieldChangeMap,generatedCodesMap,cPaneList,tableMap.values());
 			makeFile.make();
 			fileMap = makeFile.getFileMap();
 
@@ -282,19 +294,16 @@ public class GenerateTestProgram {
 			//ユーザーがテストコードを修正したあとのテストコード
 			exportEditCodeMap = tced.getExportEditCodeMap();
 
-			for(String fileName : fileMap.keySet()){
-				System.out.println("FileName : " + fileName);
-				System.out.println(fileMap.get(fileName));
-			}
-
 			//テストディレクトリの作成
 			makeTestDir();
 
 			//テストコードを出力していく
 			for (String exportFileName : exportEditCodeMap.keySet()) {
 				RSyntaxTextArea userEditCode_Str = exportEditCodeMap.get(exportFileName);
+				//テストファイル名を記録する
+				testJavaFileNameList.add(exportFileName);
 				//ファイル出力
-				FileUtils.writeStringToFile(new File(outDir.getPath()+"/"+exportFileName), userEditCode_Str.getText());
+				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportFileName), userEditCode_Str.getText());
 			}
 
 			DebugMessageWindow.msgToTextArea();
@@ -310,10 +319,10 @@ public class GenerateTestProgram {
 	 * テストコードを生成する
 	 */
 	private void makeTestDir() {
-		outDir = new File(baseDir.getPath()+"/test");
-		System.out.println(outDir);
+		oustTestDir = new File(baseDir.getPath()+"/test");
+		System.out.println(oustTestDir);
 		try {
-			FileUtils.forceMkdir(outDir);
+			FileUtils.forceMkdir(oustTestDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -333,6 +342,71 @@ public class GenerateTestProgram {
 			e.printStackTrace();
 		} 
 
+	}
+
+	/*
+	 * 実行＆コンパイルのスクリプトファイルを生成する
+	 * 
+	 * FIXME
+	 * Windows　Linux　の環境に合わせたスクリプトファイルを生成する
+	 */
+	private void makeRunScriptFile() {
+		String os_name = System.getProperty("os.name").toLowerCase();
+		String buildFileName = null;
+		String runFileName = null;
+		StringBuilder build_sb = new StringBuilder();
+		StringBuilder run_sb = new StringBuilder();
+
+		try {
+			if (os_name.startsWith("linux")) {
+				buildFileName = "build.sh";
+				runFileName = "run.sh";
+				makeShellScript(build_sb,run_sb);
+				//ファイル出力
+				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+buildFileName), build_sb.toString());
+				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+runFileName), run_sb.toString());
+			}else if (os_name.startsWith("windows")) {
+				buildFileName = "build.bat";
+				runFileName = "run.bat";
+				makeBatScript(build_sb,run_sb);
+				//ファイル出力
+				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+buildFileName), build_sb.toString());
+				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+runFileName), run_sb.toString());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void makeShellScript(StringBuilder build_sb, StringBuilder run_sb) {
+		String jarPath_str = AddonTabPanel.getJarPathTextField().getText();
+		build_sb.append("javac ");
+		build_sb.append("-cp ");
+
+		//外部ライブラリの追加
+		if (jarPath_str.isEmpty() == false) {
+			build_sb.append(jarPath_str + ":");
+		}
+		build_sb.append("classes/:.:lib/jmockit/jmockit-1.33.jar:lib/junit/junit-4.12.jar:lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar: ");
+		for (String testFileName : testJavaFileNameList) {
+			build_sb.append(testFileName+" ");
+		}
+
+		run_sb.append("java ");
+		run_sb.append("-cp ");
+		//外部ライブラリの追加
+		if (jarPath_str.isEmpty() == false) {
+			run_sb.append(jarPath_str + ":");
+		}
+		run_sb.append("classes/:.:lib/jmockit/jmockit-1.33.jar:lib/junit/junit-4.12.jar:lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar: ");
+		run_sb.append("org.junit.runner.JUnitCore ");
+		for (String testFileName : testJavaFileNameList) {
+			run_sb.append(testFileName.replaceAll("\\.java$", "")+" ");
+		}
+	}
+
+	private void makeBatScript(StringBuilder build_sb,StringBuilder run_sb) {
+		// TODO 自動生成されたメソッド・スタブ
 	}
 
 	private void makeClassTableCSV() {

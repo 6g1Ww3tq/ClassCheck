@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.classcheck</groupId>
 	<artifactId>ClassCheck</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.4-SNAPSHOT</version>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>local_astah_repository</id>
@@ -355,5 +355,5 @@
 	<name>ClassCheck</name>
 	<description>クラス図とシーケンス図を基準にソースコードのテストプログラムを生成。
 テストプログラムはシーケンス図の振る舞い系列を想定。
-テスト環境はEclipseを用いる。</description>
+Eclipseやコマンドラインでテスト実行を行う</description>
 </project>
