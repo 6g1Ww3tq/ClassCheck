@@ -210,15 +210,21 @@ public class MakeTestFile {
 			sb.append("\r\t\t\t"+"object."+disassemblyMethod+";\n");
 			sb.append("\t\n");
 
+			//テスト成功メッセージ
+			sb.append("\r\t\t\t"+"System.out.println(" + "\"" + "    "
+					+className+"の"+methodSigNature_str+"の呼び出しに成功しました"
+					+ "\""+");\n");
+			sb.append("\t\n");
+
 			//throw-error catch
-			sb.append("\r\t\t"+"} catch (NoSuchFieldException e) {"+"\n");
-			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t\t"+"} catch (SecurityException e) {"+"\n");
-			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t\t"+"} catch (IllegalArgumentException e) {"+"\n");
-			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
-			sb.append("\r\t\t"+"} catch (IllegalAccessException e) {"+"\n");
-			sb.append("\r\t\t"+"e.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (NoSuchFieldException __error) {"+"\n");
+			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (SecurityException __error) {"+"\n");
+			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (IllegalArgumentException __error) {"+"\n");
+			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t"+"} catch (IllegalAccessException __error) {"+"\n");
+			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
 			sb.append("\r\t\t"+"}"+"\n");
 
 			sb.append("\r\t\n");
