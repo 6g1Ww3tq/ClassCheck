@@ -379,7 +379,10 @@ public class GenerateTestProgram {
 	}
 
 	private void makeShellScript(StringBuilder build_sb, StringBuilder run_sb) {
+		//ライブラリのパス文字列
 		String jarPath_str = AddonTabPanel.getJarPathTextField().getText();
+		//エンコーディングの文字列
+		String encoding_str = AddonTabPanel.getEncodingTextField().getText();
 		build_sb.append("javac ");
 		build_sb.append("-cp ");
 
@@ -388,6 +391,12 @@ public class GenerateTestProgram {
 			build_sb.append(jarPath_str + ":");
 		}
 		build_sb.append("classes/:.:lib/jmockit/jmockit-1.33.jar:lib/junit/junit-4.12.jar:lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar: ");
+		
+		//エンコーディングの追加
+		if (encoding_str.isEmpty() == false) {
+			build_sb.append("-encoding ");
+			build_sb.append(encoding_str +" ");
+		}
 		for (String testFileName : testJavaFileNameList) {
 			build_sb.append(testFileName+" ");
 		}
@@ -398,6 +407,11 @@ public class GenerateTestProgram {
 		if (jarPath_str.isEmpty() == false) {
 			run_sb.append(jarPath_str + ":");
 		}
+		//エンコーディングの追加
+		if (encoding_str.isEmpty() == false) {
+			build_sb.append("-encoding ");
+			build_sb.append(encoding_str +" ");
+		}
 		run_sb.append("classes/:.:lib/jmockit/jmockit-1.33.jar:lib/junit/junit-4.12.jar:lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar: ");
 		run_sb.append("org.junit.runner.JUnitCore ");
 		for (String testFileName : testJavaFileNameList) {
@@ -406,7 +420,7 @@ public class GenerateTestProgram {
 	}
 
 	private void makeBatScript(StringBuilder build_sb,StringBuilder run_sb) {
-		// TODO 自動生成されたメソッド・スタブ
+		// FIXME 自動生成されたメソッド・スタブ
 	}
 
 	private void makeClassTableCSV() {

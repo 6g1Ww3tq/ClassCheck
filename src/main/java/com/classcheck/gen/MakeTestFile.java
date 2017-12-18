@@ -101,6 +101,9 @@ public class MakeTestFile {
 					}
 				}
 
+				//public class ?Test の　ブロック閉
+				sb.append("\r}\n");
+
 				fileMap.put(fileName, sb.toString());
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -210,11 +213,8 @@ public class MakeTestFile {
 			sb.append("\r\t\t\t"+"object."+disassemblyMethod+";\n");
 			sb.append("\t\n");
 
+			//TODO
 			//テスト成功メッセージ
-			sb.append("\r\t\t\t"+"System.out.println(" + "\"" + "    "
-					+className+"の"+methodSigNature_str+"の呼び出しに成功しました"
-					+ "\""+");\n");
-			sb.append("\t\n");
 
 			//throw-error catch
 			sb.append("\r\t\t"+"} catch (NoSuchFieldException __error) {"+"\n");
@@ -229,7 +229,6 @@ public class MakeTestFile {
 
 			sb.append("\r\t\n");
 			sb.append("\r\t}\n");
-			sb.append("\r}\n");
 		}
 	}
 
@@ -270,15 +269,15 @@ public class MakeTestFile {
 				}
 				// /main/hoge/Hoge -> main/hoge/Hoge
 				packagePath_str = packagePath_str.substring(1, packagePath_str.length());
-				
+
 				// main/hoge/Hoge -> main.hoge.Hoge
 				importPackage_str = packagePath_str.replaceAll("/", ".");
-				
+
 				//import Hoge;の場合はインポートしない
 				if (importPackage_str.contains(".") == false) {
 					continue;
 				}
-				
+
 				javaFileMap.put(className_str, importPackage_str);
 			} catch (NullPointerException e) {
 				e.printStackTrace();
@@ -286,12 +285,12 @@ public class MakeTestFile {
 			}
 
 		}
-		
+
 		for (String className_str : javaFileMap.keySet()) {
 			String importPackage_str = javaFileMap.get(className_str);
 			sb.append("import "+importPackage_str+";\n");
 		}
-		
+
 		sb.append("\n");
 
 		sb.append("import mockit.StrictExpectations;\n" +

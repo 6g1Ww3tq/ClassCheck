@@ -320,15 +320,6 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 
-			<dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-lang3</artifactId> 
-			<version>3.4</version> </dependency> -->
-
-
-		<!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
-		<!-- <dependency> <groupId>org.jmockit</groupId> <artifactId>jmockit</artifactId> 
-			<version>1.17</version> <scope>test</scope> </dependency> -->
-
 		<!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
 		<dependency>
 			<groupId>org.jmockit</groupId>
@@ -353,7 +344,5 @@
 
 	</dependencies>
 	<name>ClassCheck</name>
-	<description>クラス図とシーケンス図を基準にソースコードのテストプログラムを生成。
-テストプログラムはシーケンス図の振る舞い系列を想定。
-Eclipseやコマンドラインでテスト実行を行う</description>
+	<description>クラス図とシーケンス図を基準にソースコードのテストプログラムを生成</description>
 </project>

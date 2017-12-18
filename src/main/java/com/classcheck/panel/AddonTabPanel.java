@@ -3,7 +3,7 @@ package com.classcheck.panel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -70,7 +71,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private static final long serialVersionUID = 1L;
 	private DebugMessageWindow debugWindow;
 	private JCheckBox debugCheckBox;
-	private JPanel folderPane;
 	private JButton expBtn;
 	private JButton folderBtn;
 	private JButton genBtn;
@@ -81,6 +81,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private static String compileDirPath = new String();
 	private static boolean compileSuccess = false;
 	private static JTextField jarPathTextField;
+	private static JTextField encodingTextField;
 	private static String sourceFolderPath = null;
 
 	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
@@ -120,6 +121,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	public static JTextField getJarPathTextField() {
 		return jarPathTextField;
 	}
+	
+	public static JTextField getEncodingTextField() {
+		return encodingTextField;
+	}
 
 	private void initDebugWindow(){
 		debugWindow = new DebugMessageWindow(debugCheckBox,"Debug",true);
@@ -141,62 +146,26 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 
 	private void initComponents() {
-		setLayout(new BorderLayout());
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+		setLayout(new BorderLayout(3,3));
+		JPanel mainPanel = new JPanel(new BorderLayout());
 		JScrollPane mainScrollPane = new JScrollPane(mainPanel);
-		JPanel btnPanel = null;
-		JPanel debugPane = new JPanel();
-		JPanel northPane = new JPanel();
-		JPanel centerPane = new JPanel();
-		northPane.setLayout(new BorderLayout(3, 3));
-		JPanel compilePane = new JPanel();
-		compilePane.setLayout(new BorderLayout());
-
-		debugCheckBox = new JCheckBox();
+		JPanel debugPane = new JPanel(new BorderLayout());
+		JPanel folderPane = new JPanel(new BorderLayout());
+		JPanel boxPane = new JPanel();
+		boxPane.setLayout(new BoxLayout(boxPane, BoxLayout.Y_AXIS));
+		JPanel encodingPane = new JPanel(new BorderLayout());
+		JPanel jarPane = new JPanel(new BorderLayout());
+		JPanel compilePane = new JPanel(new BorderLayout());
+		JPanel generatePane = new JPanel();
 		baseDirTree = null;
 
-		jarPathTextField = new JTextField(50);
-		jarPathTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-		jarPathTextField.setToolTipText("<html>"+
-				"jarファイルが存在する<br>" +
-				"ファイルを選択してください" +
-				"</html>");
-		compileBtn = new JButton("②コンパイル");
-		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
-		compileBtn.setToolTipText("<html>"+
-				"ソースコードのコンパイル" +
-				"</html>");
-		compilePane.add(new JLabel("②ライブラリを使用する場合はパスを指定 : "),BorderLayout.WEST);
-		compilePane.add(jarPathTextField,BorderLayout.CENTER);
-		jarSelectBtn = new JButton();
-		jarSelectBtn.setText("②jar選択");
-		btnPanel = new JPanel();
-		btnPanel.add(jarSelectBtn);
-		btnPanel.add(compileBtn);
-		compilePane.add(btnPanel,BorderLayout.EAST);
-
+		debugCheckBox = new JCheckBox();
 		expBtn = new JButton("実験");
 		expBtn.setVisible(false);
-		centerPane.add(expBtn);
-		genBtn = new JButton("③生成");
-		genBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
-		genBtn.setToolTipText("<html>"+
-				"テストプログラム生成" +
-				"</html>");
-		centerPane.add(genBtn);
-		configBtn = new JButton("設定");
-		configBtn.setVisible(false);
-		centerPane.add(configBtn);
-		helpBtn = new JButton("ヘルプ");
-		helpBtn.setToolTipText("<html>"+
-				"ヘルプ" +
-				"</html>");
-		centerPane.add(helpBtn);
+		debugPane.add(new JLabel("デバックモード:"),BorderLayout.WEST);
+		debugPane.add(debugCheckBox,BorderLayout.CENTER);
+		debugPane.add(expBtn,BorderLayout.EAST);
 
-		folderBtn = new JButton("①フォルダ選択");
-		folderPane = new JPanel();
-		folderPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,3));
 		folderTextField = new JTextField(50);
 		folderTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		folderTextField.setDragEnabled(true);
@@ -204,21 +173,69 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"ソースコードが存在する<br>" +
 				"フォルダを選択してください" +
 				"</html>");
-		folderPane.add(folderTextField);
+		folderBtn = new JButton("①フォルダ選択");
+		folderPane.add(new JLabel("①ソースコードが存在するフォルダ : "),BorderLayout.WEST);
+		folderPane.add(folderTextField, BorderLayout.CENTER);
+		folderPane.add(folderBtn,BorderLayout.EAST);
 
-		debugPane.add(new JLabel("デバックモード:"));
-		debugPane.add(debugCheckBox);
+		jarPathTextField = new JTextField(50);
+		jarPathTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+		jarPathTextField.setToolTipText("<html>"+
+				"jarファイルが存在する<br>" +
+				"ファイルを選択してください" +
+				"</html>");
+		jarSelectBtn = new JButton();
+		jarSelectBtn.setText("jar選択");
+		jarPane.add(new JLabel("ライブラリを使用する場合はパスを指定 : "),BorderLayout.WEST);
+		jarPane.add(jarPathTextField,BorderLayout.CENTER);
+		jarPane.add(jarSelectBtn,BorderLayout.EAST);
 
-		northPane.add(debugPane, BorderLayout.NORTH);
-		northPane.add(new JLabel("①ソースコードが存在するフォルダ : "),BorderLayout.WEST);
-		northPane.add(folderTextField, BorderLayout.CENTER);
-		northPane.add(compilePane,BorderLayout.SOUTH);
-		btnPanel = new JPanel();
-		btnPanel.add(folderBtn);
-		northPane.add(btnPanel,BorderLayout.EAST);
+		encodingTextField = new JTextField(50);
+		encodingTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+		encodingTextField.setToolTipText("<html>"+
+				"文字コードを指定してください	" +
+				"</html>");
+		encodingPane.add(new JLabel("文字コードの指定 : "),BorderLayout.WEST);
+		encodingPane.add(encodingTextField,BorderLayout.CENTER);
 
-		mainPanel.add(northPane,BorderLayout.NORTH);
-		mainPanel.add(centerPane,BorderLayout.CENTER);
+		compileBtn = new JButton("②コンパイル");
+		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
+		compileBtn.setToolTipText("<html>"+
+				"ソースコードのコンパイル" +
+				"</html>");
+		compilePane.add(compileBtn,BorderLayout.EAST);
+
+		genBtn = new JButton("③生成");
+		genBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
+		genBtn.setToolTipText("<html>"+
+				"テストプログラム生成" +
+				"</html>");
+		configBtn = new JButton("設定");
+		configBtn.setVisible(false);
+		helpBtn = new JButton("ヘルプ");
+		helpBtn.setToolTipText("<html>"+
+				"ヘルプ" +
+				"</html>");
+		generatePane.add(genBtn);
+		generatePane.add(configBtn);
+		generatePane.add(helpBtn);
+
+
+		boxPane.add(jarPane);
+		boxPane.add(encodingPane);
+		boxPane.add(compilePane);
+
+		JPanel northPane = new JPanel(new BorderLayout());
+		JPanel northPane_2 = new JPanel(new BorderLayout());
+		northPane.add(folderPane,BorderLayout.NORTH);
+		northPane.add(boxPane,BorderLayout.CENTER);
+		northPane_2.add(northPane,BorderLayout.NORTH);
+		northPane_2.add(generatePane,BorderLayout.SOUTH);
+
+		mainPanel.add(northPane_2,BorderLayout.NORTH);
+		
+		
+		
 		add(mainScrollPane);
 		setVisible(true);
 	}
@@ -411,7 +428,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 					JOptionPane.showMessageDialog(getParent(), "テストプログラム生成ウィンドウを閉じてください", "info", JOptionPane.INFORMATION_MESSAGE);
 					return ;
 				}else if (compileSuccess == false) {
-					JOptionPane.showMessageDialog(getParent(), "ソースコドをコンパイルしてください", "error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getParent(), "ソースコードをコンパイルしてください", "error", JOptionPane.ERROR_MESSAGE);
 					return ;
 				}else if (compileDirPath.equals(folderTextField.getText()) == false){
 					JOptionPane.showMessageDialog(getParent(), "一度コンパイルを行ってください", "error", JOptionPane.ERROR_MESSAGE);
