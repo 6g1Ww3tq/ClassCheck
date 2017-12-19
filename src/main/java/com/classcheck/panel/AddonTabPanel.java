@@ -712,7 +712,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	public void deactivated() {
 	}
 
-
 	public static void setConfig(Config c) {
 		config = c;
 	}

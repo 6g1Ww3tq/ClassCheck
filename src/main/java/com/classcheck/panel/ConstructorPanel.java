@@ -82,26 +82,6 @@ public class ConstructorPanel extends JPanel {
 				radioConstMap.put(radioButton, constructor);
 
 				/*
-				 *パラメータの変数名だけを取得するアルゴリズム
-				 *
-				StringBuilder sb = new StringBuilder();
-				sb.append(constructor.getName());
-				sb.append("(");
-				paramList = constructor.getParameters();
-				for(int i=0;i<paramList.size();i++){
-					Parameter param = paramList.get(i);
-					splits = param.toString().split(" ");
-					sb.append(splits[splits.length - 1]);
-
-					if(i<paramList.size() -1){
-						sb.append(",");
-					}
-				}
-				sb.append(")");
-				abstractBtnMap.put((AbstractButton)radioButton, sb.toString());
-				*/
-				
-				/*
 				 * パラメータの型と変数名を取得するアルゴリズム
 				 */
 				abstractBtnMap.put((AbstractButton)radioButton, radioButton.getText());

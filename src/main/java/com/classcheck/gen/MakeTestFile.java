@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,7 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
 import com.classcheck.tree.FileNode;
+import com.classcheck.window.SequentialOrderOptionWindow;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -62,7 +64,7 @@ public class MakeTestFile {
 		return fileMap;
 	}
 
-	public void make(){
+	public boolean make(){
 		String skeltonCode = null;
 		String fileName = null;
 		StringBuilder sb = null;
@@ -87,12 +89,21 @@ public class MakeTestFile {
 
 				mockParamsList = skeVisitor.getMockFieldList();
 				mockMethodMap = skeVisitor.getMockMethodMap();
+				
+				//テストするメソッドに対して順番を厳守するかどうかの選択を行うUIを表示
+				Set<String> testMethodSet = mockMethodMap.keySet();
+				SequentialOrderOptionWindow soow = new SequentialOrderOptionWindow(codeVisitor.getClassName(),testMethodSet);
+				//キャンセルボタンが押されたら中断
+				if (soow.isCanceled()) {
+					return false;
+				}
 
 				makeClassName(sb,codeVisitor.getClassName());
 
 				for(int i=0;i<cPanelList.size();i++){
 					if(cPanelList.get(i).getCodeVisitor().equals(codeVisitor)){
-						makeMethod(sb,
+						makeMethod(soow,
+								sb,
 								codeVisitor.getClassName(),
 								variableFieldNameMap,
 								mockMethodMap,
@@ -110,9 +121,13 @@ public class MakeTestFile {
 			}
 
 		}
+		
+		//テストプログラムの生成が成功
+		return true;
 	}
 
-	private void makeMethod(StringBuilder sb,
+	private void makeMethod(SequentialOrderOptionWindow soow,
+			StringBuilder sb,
 			String className,
 			HashMap<String, String> variableFieldNameMap,
 			HashMap<String, String> mockMethodMap,
@@ -196,7 +211,18 @@ public class MakeTestFile {
 
 			//record
 			sb.append("\r\t\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
-			sb.append("\r\t\t\t"+"new StrictExpectations() {"+"\n");
+			
+			/*
+			 * StrictExpectationsとExpectationの切り替え
+			 * if : シーケンス図の順番を厳守する
+			 * else : シーケンス図の順番を厳守しない
+			 */
+			if (soow.isProtected(methodSigNature_str)) {
+				sb.append("\r\t\t\t"+"new StrictExpectations() {"+"\n");
+			}else{
+				sb.append("\r\t\t\t"+"new Expectations() {"+"\n");
+			}
+
 			sb.append("\r\t\t\t\t"+"{"+"\n");
 			sb.append(mockMethodMap.get(methodSigNature_str));
 			sb.append("\r\t\t\t\t"+"}"+"\n");
@@ -293,7 +319,8 @@ public class MakeTestFile {
 
 		sb.append("\n");
 
-		sb.append("import mockit.StrictExpectations;\n" +
+		sb.append("import mockit.Expectations;\n" +
+				"import mockit.StrictExpectations;\n" +
 				"import mockit.Mocked;\n" +
 				"\n"+
 				"import org.junit.Test;\n\n"+

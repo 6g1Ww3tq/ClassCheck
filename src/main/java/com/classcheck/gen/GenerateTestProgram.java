@@ -280,7 +280,12 @@ public class GenerateTestProgram {
 			//加工後の文字列をテスト用にする(javaparserを使用する)
 			cPaneList = scv.getCtp().getConstructorPaneList();
 			makeFile = new MakeTestFile(baseDir,javaFileNodeList,tableMap,methodChangeMap,fieldChangeMap,generatedCodesMap,cPaneList,tableMap.values());
-			makeFile.make();
+			//途中でテストプログラムの生成をキャンセルした場合は中断する
+			if (makeFile.make() == false) {
+				successed = false;
+				return successed;
+			}
+
 			fileMap = makeFile.getFileMap();
 
 			//ユーザによるテストプログラムの編集
