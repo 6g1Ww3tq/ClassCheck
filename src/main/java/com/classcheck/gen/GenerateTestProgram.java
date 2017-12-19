@@ -387,7 +387,7 @@ public class GenerateTestProgram {
 		//ライブラリのパス文字列
 		String jarPath_str = AddonTabPanel.getJarPathTextField().getText();
 		//エンコーディングの文字列
-		String encoding_str = AddonTabPanel.getEncodingTextField().getText();
+		String encoding_str = AddonTabPanel.getEncodingFormat();
 		build_sb.append("javac ");
 		build_sb.append("-cp ");
 

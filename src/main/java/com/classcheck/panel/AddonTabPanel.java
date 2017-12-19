@@ -3,7 +3,6 @@ package com.classcheck.panel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -81,8 +81,14 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private static String compileDirPath = new String();
 	private static boolean compileSuccess = false;
 	private static JTextField jarPathTextField;
-	private static JTextField encodingTextField;
 	private static String sourceFolderPath = null;
+
+	private static String[] encodingsArray = {
+		"",
+		"utf-8",
+		"sjis"
+	};
+	private static JComboBox<String> encodingBox;
 
 	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
 	private List<FileNode> javaFileNodeList;
@@ -122,8 +128,15 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		return jarPathTextField;
 	}
 	
-	public static JTextField getEncodingTextField() {
-		return encodingTextField;
+	public static String getEncodingFormat() {
+		Object obj = encodingBox.getSelectedItem();
+		String format = null;
+		
+		if (obj instanceof String) {
+			format = (String) obj;
+		}
+		
+		return format;
 	}
 
 	private void initDebugWindow(){
@@ -151,6 +164,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		JScrollPane mainScrollPane = new JScrollPane(mainPanel);
 		JPanel debugPane = new JPanel(new BorderLayout());
 		JPanel folderPane = new JPanel(new BorderLayout());
+		JLabel folderLabel = null;
 		JPanel boxPane = new JPanel();
 		boxPane.setLayout(new BoxLayout(boxPane, BoxLayout.Y_AXIS));
 		JPanel encodingPane = new JPanel(new BorderLayout());
@@ -174,7 +188,10 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"フォルダを選択してください" +
 				"</html>");
 		folderBtn = new JButton("①フォルダ選択");
-		folderPane.add(new JLabel("①ソースコードが存在するフォルダ : "),BorderLayout.WEST);
+		folderBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+		folderLabel = new JLabel("①ソースコードが存在するフォルダ : ");
+		folderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+		folderPane.add(folderLabel,BorderLayout.WEST);
 		folderPane.add(folderTextField, BorderLayout.CENTER);
 		folderPane.add(folderBtn,BorderLayout.EAST);
 
@@ -190,13 +207,13 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		jarPane.add(jarPathTextField,BorderLayout.CENTER);
 		jarPane.add(jarSelectBtn,BorderLayout.EAST);
 
-		encodingTextField = new JTextField(50);
-		encodingTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-		encodingTextField.setToolTipText("<html>"+
+		encodingBox = new JComboBox<String>(encodingsArray);
+		encodingBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		encodingBox.setToolTipText("<html>"+
 				"文字コードを指定してください	" +
 				"</html>");
-		encodingPane.add(new JLabel("文字コードの指定 : "),BorderLayout.WEST);
-		encodingPane.add(encodingTextField,BorderLayout.CENTER);
+		encodingPane.add(new JLabel("コンパイル時の文字コードの指定 : "),BorderLayout.WEST);
+		encodingPane.add(encodingBox,BorderLayout.CENTER);
 
 		compileBtn = new JButton("②コンパイル");
 		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -216,11 +233,13 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		helpBtn.setToolTipText("<html>"+
 				"ヘルプ" +
 				"</html>");
+
 		generatePane.add(genBtn);
 		generatePane.add(configBtn);
 		generatePane.add(helpBtn);
 
-
+		debugPane.setVisible(false);
+		boxPane.add(debugPane);
 		boxPane.add(jarPane);
 		boxPane.add(encodingPane);
 		boxPane.add(compilePane);
