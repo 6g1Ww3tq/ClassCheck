@@ -3,6 +3,7 @@ package com.classcheck.panel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,7 +72,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	private static final long serialVersionUID = 1L;
 	private DebugMessageWindow debugWindow;
 	private JCheckBox debugCheckBox;
-	private JButton expBtn;
+	private JButton outStreamDebugWindowBtn;
 	private JButton folderBtn;
 	private JButton genBtn;
 	private JButton helpBtn;
@@ -100,7 +101,9 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	List<ISequenceDiagram> diagramList;
 
 	ProjectAccessor projectAccessor;
-	String projectPath;
+	private String projectPath;
+	private String projectDir;
+
 	private JButton configBtn;
 
 	AstahAPI api;
@@ -123,19 +126,19 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 	public static String getSourceFolderPath() {
 		return sourceFolderPath;
 	}
-	
+
 	public static JTextField getJarPathTextField() {
 		return jarPathTextField;
 	}
-	
+
 	public static String getEncodingFormat() {
 		Object obj = encodingBox.getSelectedItem();
 		String format = null;
-		
+
 		if (obj instanceof String) {
 			format = (String) obj;
 		}
-		
+
 		return format;
 	}
 
@@ -167,18 +170,19 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		JLabel folderLabel = null;
 		JPanel boxPane = new JPanel();
 		boxPane.setLayout(new BoxLayout(boxPane, BoxLayout.Y_AXIS));
-		JPanel encodingPane = new JPanel(new BorderLayout());
 		JPanel jarPane = new JPanel(new BorderLayout());
 		JPanel compilePane = new JPanel(new BorderLayout());
 		JPanel generatePane = new JPanel();
 		baseDirTree = null;
 
 		debugCheckBox = new JCheckBox();
-		expBtn = new JButton("実験");
-		expBtn.setVisible(false);
-		debugPane.add(new JLabel("デバックモード:"),BorderLayout.WEST);
-		debugPane.add(debugCheckBox,BorderLayout.CENTER);
-		debugPane.add(expBtn,BorderLayout.EAST);
+		outStreamDebugWindowBtn = new JButton("標準出力");
+		outStreamDebugWindowBtn.setVisible(true);
+		JPanel panel = new JPanel();
+		panel.add(new JLabel("デバックモード:"));
+		panel.add(debugCheckBox);
+		panel.add(outStreamDebugWindowBtn);
+		debugPane.add(panel,BorderLayout.CENTER);
 
 		folderTextField = new JTextField(50);
 		folderTextField.setCursor(new Cursor(Cursor.TEXT_CURSOR));
@@ -187,7 +191,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"ソースコードが存在する<br>" +
 				"フォルダを選択してください" +
 				"</html>");
-		folderBtn = new JButton("①フォルダ選択");
+		folderBtn = new JButton("フォルダ選択 ..");
 		folderBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
 		folderLabel = new JLabel("①ソースコードが存在するフォルダ : ");
 		folderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -202,7 +206,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"ファイルを選択してください" +
 				"</html>");
 		jarSelectBtn = new JButton();
-		jarSelectBtn.setText("jar選択");
+		jarSelectBtn.setText("jar選択 ..");
 		jarPane.add(new JLabel("ライブラリを使用する場合はパスを指定 : "),BorderLayout.WEST);
 		jarPane.add(jarPathTextField,BorderLayout.CENTER);
 		jarPane.add(jarSelectBtn,BorderLayout.EAST);
@@ -212,15 +216,16 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		encodingBox.setToolTipText("<html>"+
 				"文字コードを指定してください	" +
 				"</html>");
-		encodingPane.add(new JLabel("コンパイル時の文字コードの指定 : "),BorderLayout.WEST);
-		encodingPane.add(encodingBox,BorderLayout.CENTER);
-
 		compileBtn = new JButton("②コンパイル");
 		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
 		compileBtn.setToolTipText("<html>"+
 				"ソースコードのコンパイル" +
 				"</html>");
-		compilePane.add(compileBtn,BorderLayout.EAST);
+		panel = new JPanel();
+		panel.add(new JLabel("コンパイル時の文字コードの指定 : "));
+		panel.add(encodingBox);
+		panel.add(compileBtn);
+		compilePane.add(panel,BorderLayout.EAST);
 
 		genBtn = new JButton("③生成");
 		genBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -238,10 +243,11 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		generatePane.add(configBtn);
 		generatePane.add(helpBtn);
 
-		debugPane.setVisible(false);
+		//デバックモード
+		debugPane.setVisible(true);
+
 		boxPane.add(debugPane);
 		boxPane.add(jarPane);
-		boxPane.add(encodingPane);
 		boxPane.add(compilePane);
 
 		JPanel northPane = new JPanel(new BorderLayout());
@@ -252,14 +258,33 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		northPane_2.add(generatePane,BorderLayout.SOUTH);
 
 		mainPanel.add(northPane_2,BorderLayout.NORTH);
-		
-		
-		
+
+
+
 		add(mainScrollPane);
 		setVisible(true);
 	}
 
 	private void initEvents() {
+
+		helpBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Desktop desktop = Desktop.getDesktop();
+				String resourcePath = "/doc/help.pdf";
+
+				try {
+					File helpFile = new File(projectDir + "/.help.pdf");
+					ClassLoader classLoader = getClass().getClassLoader();
+					FileUtils.copyURLToFile(classLoader.getResource(resourcePath),helpFile);
+
+					desktop.open(helpFile);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 
 		debugCheckBox.addActionListener(new ActionListener() {
 
@@ -273,13 +298,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			}
 		});
 
-		expBtn.addActionListener(new ActionListener() {
+		outStreamDebugWindowBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugMessageWindow.clearText();
-				//new ConfigJDialog(false);
-				System.out.println("実験しました。。。");
+				//System.out.println("標準出力.....");
 				DebugMessageWindow.msgToTextArea();
 			}
 		});
@@ -457,7 +481,6 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				//初期化	
 				initVariables();
 				List<IClass> javaPackage;
-				File file;
 
 				SourceGenerator sg = null;
 				MatcherWindow ctw = null;
@@ -563,9 +586,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	private void addProjectEventListener() {
 		try {
+			int lastIndex = 0;
 			api = AstahAPI.getAstahAPI();
 			projectAccessor = api.getProjectAccessor();
 			projectPath = projectAccessor.getProjectPath();
+			lastIndex = projectPath.lastIndexOf("/");
+			projectDir = projectPath.substring(0, lastIndex);
 			projectAccessor.addProjectEventListener(this);
 		} catch (ClassNotFoundException e) {
 			e.getMessage();
@@ -698,6 +724,13 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	@Override
 	public void projectClosed(ProjectEvent e) {
+		File helpFile = new File(projectDir + "/.help.pdf");
+		File tmpFolder = new File(projectPath + "/.tmp");
+		if (helpFile.exists()) {
+			helpFile.delete();
+		}else if(tmpFolder.exists()){
+			tmpFolder.delete();
+		}
 	}
 
 	@Override
