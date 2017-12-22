@@ -65,7 +65,7 @@ public class SequentialOrderOptionWindow extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
 		JPanel methodsPanel = null;
 		JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel label = new JLabel("シーケンス図の順番を厳守するかどうか設定を行います");
+		JLabel label = new JLabel("シーケンス図で定義されている振る舞い系列の順番を守るかどうか設定を行います");
 		label.setFont(new Font("SansSerif", Font.BOLD, 14));
 		titlePanel.add(label);
 
@@ -154,7 +154,7 @@ public class SequentialOrderOptionWindow extends JDialog {
 		for(int i_panelList = 0;i_panelList < panelList.size() ; i_panelList++){
 			SequentialOptionPanel panel = panelList.get(i_panelList);
 			
-			//見つけた場合、シーケンス図の順番を厳守するかしないか判定を返却する
+			//見つけた場合、シーケンス図の順番を守るかしないか判定を返却する
 			if (panel.getMethodSigNature_str().equals(targetMethodSigNature)) {
 				return panel.yesChecked();
 			}

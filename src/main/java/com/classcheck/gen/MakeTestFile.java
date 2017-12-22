@@ -89,7 +89,7 @@ public class MakeTestFile {
 
 				mockParamsList = skeVisitor.getMockFieldList();
 				mockMethodMap = skeVisitor.getMockMethodMap();
-				
+
 				//テストするメソッドに対して順番を厳守するかどうかの選択を行うUIを表示
 				Set<String> testMethodSet = mockMethodMap.keySet();
 				SequentialOrderOptionWindow soow = new SequentialOrderOptionWindow(codeVisitor.getClassName(),testMethodSet);
@@ -98,6 +98,7 @@ public class MakeTestFile {
 					return false;
 				}
 
+				//クラス部分を作る
 				makeClassName(sb,codeVisitor.getClassName());
 
 				for(int i=0;i<cPanelList.size();i++){
@@ -121,7 +122,7 @@ public class MakeTestFile {
 			}
 
 		}
-		
+
 		//テストプログラムの生成が成功
 		return true;
 	}
@@ -209,27 +210,6 @@ public class MakeTestFile {
 				sb.append("\r\t\t\t"+"field_"+i_paramStrList+".set(object,"+mockFieldName+")"+";"+"\n"); 
 			}
 
-			//record
-			sb.append("\r\t\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
-			
-			/*
-			 * StrictExpectationsとExpectationの切り替え
-			 * if : シーケンス図の順番を厳守する
-			 * else : シーケンス図の順番を厳守しない
-			 */
-			if (soow.isProtected(methodSigNature_str)) {
-				sb.append("\r\t\t\t"+"new StrictExpectations() {"+"\n");
-			}else{
-				sb.append("\r\t\t\t"+"new Expectations() {"+"\n");
-			}
-
-			sb.append("\r\t\t\t\t"+"{"+"\n");
-			sb.append(mockMethodMap.get(methodSigNature_str));
-			sb.append("\r\t\t\t\t"+"}"+"\n");
-			sb.append("\r\t\t\t"+"};"+"\n");
-
-			sb.append("\r\t\n");
-
 			//Replay
 			//メソッドは引数がある場合もあるしない場合もあるので修正する
 			//また、引数がある場合はユーザに修正を促すようにする
@@ -239,8 +219,59 @@ public class MakeTestFile {
 			sb.append("\r\t\t\t"+"object."+disassemblyMethod+";\n");
 			sb.append("\t\n");
 
-			//TODO
+			//record
+			sb.append("\r\t\t\t"+"//シーケンス図のメッセージ呼び出し系列"+"\n");
+			/*
+			 * MyVerificationsInOrderとMyExpectationの切り替え
+			 * if : シーケンス図の順番を厳守する
+			 * else : シーケンス図の順番を厳守しない
+			 */
+			boolean isProtected = soow.isProtected(methodSigNature_str);
+			if (isProtected) {
+				sb.append("\r\t\t\t"+ "MyVerificationsInOrder test =" + " new MyVerificationsInOrder() {"+"\n");
+			}else{
+				sb.append("\r\t\t\t"+ "MyVerifications test ="+"new MyVerifications() {"+"\n");
+			}
+
+			sb.append("\r\t\t\t\t"+"{"+"\n");
+			sb.append(mockMethodMap.get(methodSigNature_str));
+			sb.append("\r\t\t\t\t"+"setSuccess(true);"+"\n");
+			sb.append("\r\t\t\t\t"+"}"+"\n");
+			sb.append("\r\t\t\t"+"};"+"\n");
+
+			sb.append("\r\t\t\n");
+
 			//テスト成功メッセージ
+			sb.append("\r\t\t"+"if (test.isSuccess()) {"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
+					" "+className+" :: " + methodSigNature_str +
+					" のテストに成功しました\");"+"\n");
+			if (isProtected) {
+				sb.append("\r\t\t\t"+"System.out.println(\"---" +
+						"シーケンス図の振る舞い系列の以下が守られています!!"+"\\n" +
+						"・回数 ○"+ "\\n" +
+						"・順番 ○"+ "\\n" +
+						"\");"+"\n");
+			}else{
+				sb.append("\r\t\t\t"+"System.out.println(\"---" +
+						"シーケンス図の振る舞い系列の以下が守られています!!"+"\\n" +
+						"・回数 ○"+ "\\n" +
+						"・順番 ×"+ "\\n" +
+						"\");"+"\n");
+			}
+			sb.append("\r\t\t"+"}else{"+"\n");
+			//テスト失敗メッセージ
+			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
+					" "+className+" :: " + methodSigNature_str +
+					" のテストに失敗しました\");"+"\n");
+			/*
+			if (isProtected == false) {
+			}else{
+			}
+			*/
+			sb.append("\r\t\t"+"}"+"\n");
+
+			sb.append("\r\t\t\n");
 
 			//throw-error catch
 			sb.append("\r\t\t"+"} catch (NoSuchFieldException __error) {"+"\n");
@@ -256,10 +287,6 @@ public class MakeTestFile {
 			sb.append("\r\t\n");
 			sb.append("\r\t}\n");
 		}
-	}
-
-	private void makeClassName(StringBuilder sb, String className) {
-		sb.append("public class " + className + "Test" + " {" +"\n");
 	}
 
 	//FIXME
@@ -319,12 +346,14 @@ public class MakeTestFile {
 
 		sb.append("\n");
 
-		sb.append("import mockit.Expectations;\n" +
-				"import mockit.StrictExpectations;\n" +
-				"import mockit.Mocked;\n" +
+		sb.append("import mockit.Mocked;\n" +
 				"\n"+
 				"import org.junit.Test;\n\n"+
 				"import java.lang.reflect.Field;\n\n");
+
 	}
 
+	private void makeClassName(StringBuilder sb, String className) {
+		sb.append("public class " + className + "Test" + " {" +"\n");
+	}
 }

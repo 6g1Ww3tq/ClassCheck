@@ -70,7 +70,6 @@ public class DebugMessageWindow extends JFrame {
 
 	@Override
 	public void setVisible(boolean b) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.setVisible(b);
 	}
 

@@ -25,7 +25,7 @@ public class SequentialOptionPanel extends JPanel {
 	private void initComponents() {
 		JLabel classLabel = new JLabel(className);
 		classLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-		JLabel label = new JLabel("  ::  " +  this.methodSigNature_str + "   の順番を厳守しますか？");
+		JLabel label = new JLabel("  ::  " +  this.methodSigNature_str + "   の順番を守りますか？");
 		group = new CheckboxGroup();
 		Checkbox sequentialCB = new Checkbox("Yes", true, group);
 		Checkbox non_sequentialCB = new Checkbox("No", false, group);

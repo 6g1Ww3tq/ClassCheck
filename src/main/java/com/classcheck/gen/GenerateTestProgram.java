@@ -49,6 +49,12 @@ public class GenerateTestProgram {
 
 	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
 	private List<FileNode> javaFileNodeList;
+	
+	//検証用のモッククラス
+	private static String[] myMockVerificationClassNames = {
+		"MyVerificationsInOrder",
+		"MyVerifications"
+	};
 
 	private MemberTabPanel mtp;
 	private FieldComparePanel fcp;
@@ -73,10 +79,8 @@ public class GenerateTestProgram {
 		successed = makeFile();
 
 		if (successed) {
+			makeInnerClass();
 			makeLibDir();
-		}
-		
-		if (successed) {
 			makeRunScriptFile();
 		}
 
@@ -319,6 +323,56 @@ public class GenerateTestProgram {
 		return successed;
 	}
 
+	private void makeInnerClass() {
+		StringBuilder inOrder_sb = new StringBuilder();
+		StringBuilder verifications_sb = new StringBuilder();
+		String exportMyVerificationsInOrder = myMockVerificationClassNames[0]+".java";
+		String exportMyVerifications = myMockVerificationClassNames[1]+".java";
+		
+		inOrder_sb.append("import mockit.VerificationsInOrder;"+"\n");
+		inOrder_sb.append("\n");
+		inOrder_sb.append("\r\t"+"public class MyVerificationsInOrder extends VerificationsInOrder{"+"\n");
+		inOrder_sb.append("\r\t\t"+"private boolean success;"+"\n");
+		inOrder_sb.append("\r\t\t"+"public MyVerificationsInOrder() {"+"\n");
+		inOrder_sb.append("\r\t\t\t"+"super();"+"\n");
+		inOrder_sb.append("\r\t\t\t"+"success = false;"+"\n");
+		inOrder_sb.append("\r\t\t"+"}"+"\n");
+		inOrder_sb.append("\r\t\t\t"+"public boolean isSuccess() {"+"\n");
+		inOrder_sb.append("\r\t\t\t"+"return success;"+"\n");
+		inOrder_sb.append("\r\t\t"+"}"+"\n");
+		inOrder_sb.append("\r\t\t"+"public void setSuccess(boolean success) {"+"\n");
+		inOrder_sb.append("\r\t\t\t"+"this.success = success;"+"\n");
+		inOrder_sb.append("\r\t\t"+"}"+"\n");
+		inOrder_sb.append("\r\t"+"}"+"\n");
+		inOrder_sb.append("\n");
+
+		
+		verifications_sb.append("import mockit.Verifications;"+"\n");
+		verifications_sb.append("\n");
+		verifications_sb.append("\r\t"+"public class MyVerifications extends Verifications{"+"\n");
+		verifications_sb.append("\r\t\t"+"private boolean success;"+"\n");
+		verifications_sb.append("\r\t\t"+"public MyVerifications() {"+"\n");
+		verifications_sb.append("\r\t\t\t"+"super();"+"\n");
+		verifications_sb.append("\r\t\t\t"+"success = false;"+"\n");
+		verifications_sb.append("\r\t\t"+"}"+"\n");
+		verifications_sb.append("\r\t\t\t"+"public boolean isSuccess() {"+"\n");
+		verifications_sb.append("\r\t\t\t"+"return success;"+"\n");
+		verifications_sb.append("\r\t\t"+"}"+"\n");
+		verifications_sb.append("\r\t\t"+"public void setSuccess(boolean success) {"+"\n");
+		verifications_sb.append("\r\t\t\t"+"this.success = success;"+"\n");
+		verifications_sb.append("\r\t\t"+"}"+"\n");
+		verifications_sb.append("\r\t"+"}"+"\n");
+		verifications_sb.append("\n");
+
+		//ファイル出力
+		try {
+			FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerificationsInOrder), inOrder_sb.toString());
+			FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerifications), verifications_sb.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * テストフォルダを作成し、
 	 * テストコードを生成する
@@ -396,12 +450,13 @@ public class GenerateTestProgram {
 			build_sb.append(jarPath_str + ":");
 		}
 		build_sb.append("classes/:.:lib/jmockit/jmockit-1.33.jar:lib/junit/junit-4.12.jar:lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar: ");
-		
+
 		//エンコーディングの追加
 		if (encoding_str.isEmpty() == false) {
 			build_sb.append("-encoding ");
 			build_sb.append(encoding_str +" ");
 		}
+		//テストコード(検証用のモッククラスは同じディレクトリにあるのでコンパイルされる)
 		for (String testFileName : testJavaFileNameList) {
 			build_sb.append(testFileName+" ");
 		}

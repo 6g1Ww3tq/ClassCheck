@@ -303,7 +303,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				DebugMessageWindow.clearText();
-				//System.out.println("標準出力.....");
+				System.out.println("標準出力.....");
 				DebugMessageWindow.msgToTextArea();
 			}
 		});

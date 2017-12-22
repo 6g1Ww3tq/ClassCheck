@@ -23,6 +23,18 @@ public class SkeltonCodeVisitor extends VoidVisitorAdapter<Void> {
 		this.writtenNewSt = false;
 	}
 	
+	/*
+	 * TODO: メソッドローカルなインスタンスが生成されているスケルトンコードの対処 -> autosource の修正
+	 * LineSegmentクラスを継承したThickLineSegmentクラスの一部メソッド内にて..
+	 * 
+	 * Point start = new Point();
+	 * start.linearTransfer();
+	 * 
+	 * と書かれている場合は
+	 * Point start = new Point();
+	 * を削除し
+	 * フィールドのインスタンスがメソッドをコールしているとする
+	 */
 	@Override
 	public void visit(ClassOrInterfaceDeclaration n, Void arg) {
 		List<BodyDeclaration> list = n.getMembers();
