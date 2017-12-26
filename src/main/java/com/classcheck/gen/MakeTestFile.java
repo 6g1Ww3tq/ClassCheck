@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +17,6 @@ import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
 import com.classcheck.tree.FileNode;
-import com.classcheck.window.SequentialOrderOptionWindow;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -90,21 +88,25 @@ public class MakeTestFile {
 				mockParamsList = skeVisitor.getMockFieldList();
 				mockMethodMap = skeVisitor.getMockMethodMap();
 
+				/*
+				 *	シーケンス図の順番を守るかどうかを尋ねるウィンドウの表示
+				 */
 				//テストするメソッドに対して順番を厳守するかどうかの選択を行うUIを表示
+				/*
 				Set<String> testMethodSet = mockMethodMap.keySet();
 				SequentialOrderOptionWindow soow = new SequentialOrderOptionWindow(codeVisitor.getClassName(),testMethodSet);
 				//キャンセルボタンが押されたら中断
 				if (soow.isCanceled()) {
 					return false;
 				}
+				*/
 
 				//クラス部分を作る
 				makeClassName(sb,codeVisitor.getClassName());
 
 				for(int i=0;i<cPanelList.size();i++){
 					if(cPanelList.get(i).getCodeVisitor().equals(codeVisitor)){
-						makeMethod(soow,
-								sb,
+						makeMethod(sb,
 								codeVisitor.getClassName(),
 								variableFieldNameMap,
 								mockMethodMap,
@@ -127,7 +129,7 @@ public class MakeTestFile {
 		return true;
 	}
 
-	private void makeMethod(SequentialOrderOptionWindow soow,
+	private void makeMethod(
 			StringBuilder sb,
 			String className,
 			HashMap<String, String> variableFieldNameMap,
@@ -226,12 +228,15 @@ public class MakeTestFile {
 			 * if : シーケンス図の順番を厳守する
 			 * else : シーケンス図の順番を厳守しない
 			 */
+			/*
 			boolean isProtected = soow.isProtected(methodSigNature_str);
 			if (isProtected) {
 				sb.append("\r\t\t\t"+ "MyVerificationsInOrder test =" + " new MyVerificationsInOrder() {"+"\n");
 			}else{
 				sb.append("\r\t\t\t"+ "MyVerifications test ="+"new MyVerifications() {"+"\n");
 			}
+			*/
+			sb.append("\r\t\t\t"+ "MyVerificationsInOrder test =" + " new MyVerificationsInOrder() {"+"\n");
 
 			sb.append("\r\t\t\t\t"+"{"+"\n");
 			sb.append(mockMethodMap.get(methodSigNature_str));
@@ -246,6 +251,7 @@ public class MakeTestFile {
 			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
 					" "+className+" :: " + methodSigNature_str +
 					" のテストに成功しました\");"+"\n");
+			/*
 			if (isProtected) {
 				sb.append("\r\t\t\t"+"System.out.println(\"---" +
 						"シーケンス図の振る舞い系列の以下が守られています!!"+"\\n" +
@@ -259,6 +265,12 @@ public class MakeTestFile {
 						"・順番 ×"+ "\\n" +
 						"\");"+"\n");
 			}
+			*/
+			sb.append("\r\t\t\t"+"System.out.println(\"---" +
+					"シーケンス図の振る舞い系列の以下が守られています!!"+"\\n" +
+					"・回数"+ "\\n" +
+					"・順番"+ "\\n" +
+					"\");"+"\n");
 			sb.append("\r\t\t"+"}else{"+"\n");
 			//テスト失敗メッセージ
 			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +

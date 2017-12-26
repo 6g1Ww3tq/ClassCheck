@@ -275,6 +275,7 @@ public class GenerateTestProgram {
 			//初期化コンストラクタの指定
 			generatedCodesMap = cmc.getGeneratedCodesMap();
 			scv = new SelectConstructorViewer(generatedCodesMap);
+
 			successed = !scv.isCanceled();
 			if (scv.isCanceled()) {
 				successed = false;
@@ -367,7 +368,7 @@ public class GenerateTestProgram {
 		//ファイル出力
 		try {
 			FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerificationsInOrder), inOrder_sb.toString());
-			FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerifications), verifications_sb.toString());
+			//FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerifications), verifications_sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

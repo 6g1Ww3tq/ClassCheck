@@ -320,14 +320,6 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
-		<dependency>
-			<groupId>org.jmockit</groupId>
-			<artifactId>jmockit</artifactId>
-			<version>1.33</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
 		<dependency>
 			<groupId>com.fifesoft</groupId>

@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class SelectConstructorViewer extends JDialog {
 		pack();
 		setVisible(true);
 	}
-	
+
 	public boolean isCanceled() {
 		return canceled;
 	}
@@ -54,11 +53,11 @@ public class SelectConstructorViewer extends JDialog {
 	public HashMap<CodeVisitor, String> getConstructorMap() {
 		return constructorMap;
 	}
-	
+
 	public ConstructorTabbedPanel getCtp() {
 		return ctp;
 	}
-	
+
 	private void initCompoenent() {
 		JPanel contentPane = (JPanel) getContentPane();
 		JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
@@ -68,18 +67,18 @@ public class SelectConstructorViewer extends JDialog {
 		this.cancelButton = new JButton("Cancel");
 		this.opened = true;
 		this.canceled = false;
-		
+
 		buttonPane.add(okButton);
 		buttonPane.add(cancelButton);
 
 		contentPane.add(ctp,BorderLayout.CENTER);
 		contentPane.add(buttonPane,BorderLayout.SOUTH);
-		
+
 	}
 
 	private void initEvent() {
 		okButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Component c = (Component)e.getSource();
@@ -89,9 +88,9 @@ public class SelectConstructorViewer extends JDialog {
 				opened = false;
 			}
 		});
-		
+
 		cancelButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Component c = (Component)e.getSource();
@@ -100,7 +99,7 @@ public class SelectConstructorViewer extends JDialog {
 				canceled = true;
 			}
 		});
-		
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -114,7 +113,7 @@ public class SelectConstructorViewer extends JDialog {
 				canceled = true;
 				super.windowClosed(e);
 			}
-			
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				opened = false;
