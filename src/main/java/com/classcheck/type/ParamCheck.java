@@ -9,19 +9,22 @@ import com.change_vision.jude.api.inf.model.IClass;
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.autosource.MyClassCell;
-import com.classcheck.window.DebugMessageWindow;
 import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.type.Type;
 
 public class ParamCheck {
+
+	//ソースコードの引数とUMLのクラスのメソッドのシグネチャ
+	//引数の個数が同じかどうか真偽値を表す
+	private boolean isCorrectLength;
 
 	private List<IClass> javaPackage;
 	private DefaultTableModel tableModel;
 	private String[] umlMethodParams;
 	private List<Parameter> codeMethodParams;
 
-	public ParamCheck(List<IClass> javaPackage, DefaultTableModel tableModel,
+	public ParamCheck(boolean isCorrentLength, List<IClass> javaPackage, DefaultTableModel tableModel,
 			String[] umlMethodParams, List<Parameter> codeMethodParams) {
+		this.isCorrectLength = isCorrentLength;
 		this.javaPackage = javaPackage;
 		this.tableModel = tableModel;
 		this.umlMethodParams = umlMethodParams;
@@ -43,15 +46,20 @@ public class ParamCheck {
 				codeMethodParams.isEmpty()) {
 			rtnVal = true;
 			return rtnVal;
+
+			//引数の個数が同じでない場合
+		}else if (this.isCorrectLength == false) {
+			rtnVal = false;
+			return rtnVal;
 		}
-		
+
 		try{
 			System.out.println("umlMethodParams : "+umlMethodParams);
 			System.out.println("codeMethodParams : "+codeMethodParams);
 			for(int i=0;i<umlMethodParams.length;i++){
 				umlType = umlMethodParams[i];
 				codeType = codeMethodParams.get(i);
-				
+
 				//配列が「String args[]」のように後ろに［］が来るので型の後に来るように調整
 				if (codeType.toString().contains("[]")) {
 					codeTypeStr = codeType.toString().split(" ")[0] + "[]";

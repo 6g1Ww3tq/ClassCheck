@@ -99,8 +99,6 @@ public class MethodComparePanel extends JPanel {
 		List<MethodDeclaration> codeMethodList = null;
 		List<ConstructorDeclaration> codeConstructorList = null;
 		CodeVisitor codeVisitor = this.codeMap.get(myClass);
-		JLabel l = null;
-		JPanel p = null;
 		JComboBox<String> methodComboBox = null;
 
 		//同じシグネチャーが選択されているかどうかを調べる
@@ -115,71 +113,145 @@ public class MethodComparePanel extends JPanel {
 		Pattern patern = Pattern.compile(regex);
 		Matcher matcher;
 
-		//System.out.println("***initCompoenent***(myClass):"+myClass.getName());
-		//System.out.println("***initCompoenent***(CodeVisitor):"+codeVisitor.getClassName());
 		if (isAllChange) {
 			panelList.clear();
 
 			//説明のパネルを加える
 			//（左）astah	:（右)	ソースコード
-			p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			l = new JLabel("(左)スケルトンコードのメソッド : (右)ソースコードのメソッド");
-			l.setFont(new Font("SansSerif", Font.BOLD, 12));
-			l.setAlignmentX(CENTER_ALIGNMENT);
-			p.add(l);
-			panelList.add(p);
+			JPanel explainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			JLabel explainLabel = new JLabel("(左)スケルトンコードのフィールド : (右)ソースコードのフィールド");
+			explainLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+			explainLabel.setAlignmentX(CENTER_ALIGNMENT);
+			explainPanel.add(explainLabel);
+			panelList.add(explainPanel);
 
 			if (codeVisitor != null){
 				codeMethodList = codeVisitor.getMethodList();
 				codeConstructorList = codeVisitor.getConstructorList();
+			}
 
-				for (Method umlMethod : umlMethodList) {
-					popSb = new StringBuilder();
+			for (Method umlMethod : umlMethodList) {
+				boolean isUmlConstructor = false;
+				/*
+				 * メソッドの名前がクラスの名前と同じ場合 => メソッドはコンストラクタとする
+				 */
+				if (umlMethod.getName().equals(myClass.getName())) {
+					isUmlConstructor = true;
+				}
+
+				matcher = patern.matcher(umlMethod.getSignature());
+				JLabel l = new JLabel(matcher.replaceAll(""));
+				JPanel p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				String popToolTip_str = popToolTips_UML(umlMethod);
+
+				l.setAlignmentX(CENTER_ALIGNMENT);
+				l.setToolTipText(popToolTip_str);
+				l.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+				//クラス図を表示
+				l.addMouseListener(new ClassLabelMouseAdapter(myClass, l, getParent(),ClickedLabel.MethodSig));
+
+				//ソースコードが定義されていない場合
+				if (codeVisitor == null) {
+					//空のボックスを作成
+					methodComboBox = new JComboBox<String>();
+					methodComboBox.setToolTipText("<html>"+
+							"<p>"+
+							"対応するフィールドがありません<br>"+
+							"</p>"+
+							"</html>");
+				}else{
 					ArrayList<String> strList = new ArrayList<String>();
 					String umlMethod_modify_str = umlMethod.getModifiers();
+					StringBuilder methodError_sb = new StringBuilder();
+					int itemCount = 0;
+
 					//最後の空白スペースを取り除く
 					if (umlMethod_modify_str.endsWith(" ")) {
 						umlMethod_modify_str = umlMethod_modify_str.substring(0, umlMethod_modify_str.lastIndexOf(" "));
 					}
 
-					//ソースコードのコンストラクタを追加
-					for (ConstructorDeclaration codeConstructor : codeConstructorList) {
-						String codeConstructor_modify_str = Modifier.toString(codeConstructor.getModifiers());
+					//umlMethodがコンストラクタである場合
+					if (isUmlConstructor) {
+						//ソースコードのコンストラクタを追加
+						for (ConstructorDeclaration codeConstructor : codeConstructorList) {
+							String codeConstructor_modify_str = Modifier.toString(codeConstructor.getModifiers());
+							//ソースコードのメソッドのパラメータ数と
+							//スケルトンコードのパラメータ個数の一致
+							boolean isCorrentLength = codeConstructor.getParameters().size() == umlMethod.getParams().length;
+							//ソースコードのコンストラクタの修飾子と
+							//スケルトンコードの修飾子の一致
+							//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
+							boolean isCorrectModifiy = umlMethod_modify_str.equals(codeConstructor_modify_str);
+							//パラメータの型の一致
+							boolean isCorrectParam = new ParamCheck(isCorrentLength,this.javaPackage, this.tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate();
 
-						//ソースコードのメソッドのパラメータ数と
-						//スケルトンコードのパラメータ個数の一致
-						if (codeConstructor.getParameters().size() == umlMethod.getParams().length && 
-								//ソースコードのコンストラクタの修飾子と
-								//スケルトンコードの修飾子の一致
-								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
-								umlMethod_modify_str.equals(codeConstructor_modify_str) && 
-								//パラメータの型の一致
-								new ParamCheck(this.javaPackage, this.tableModel, umlMethod.getParams(), codeConstructor.getParameters()).evaluate()){
-							strList.add(codeConstructor.getDeclarationAsString());
+							if (isCorrentLength && isCorrectModifiy && isCorrectParam){
+								strList.add(codeConstructor.getDeclarationAsString());
+								itemCount++;
+							}else{
+								methodError_sb.append(codeConstructor.getDeclarationAsString()+"<br>");
+								if (isCorrentLength == false) {
+									methodError_sb.append("=>"+"パラメータの個数が合っていません"+"<br>");
+								}
+								if (isCorrectModifiy == false) {
+									methodError_sb.append("=>"+"修飾子が合っていません"+"<br>");
+								}
+								if (isCorrectParam == false) {
+									methodError_sb.append("=>"+"パラメータの型が合っていません"+"<br>");
+								}
+							}
 						}
+						
+					//umlMethodがメソッドである場合
+					}else{
+
+						//ソースコードのメソッドを追加
+						for (MethodDeclaration codeMethod : codeMethodList) {
+							String codeMethod_modify_str = Modifier.toString(codeMethod.getModifiers());
+							//ソースコードのメソッドのパラメータ数と
+							//スケルトンコードのパラメータ個数の一致
+							//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
+							boolean isCorrentLength = codeMethod.getParameters().size() == umlMethod.getParams().length;
+							//ソースコードのメソッドの修飾子と
+							//スケルトンコードの修飾子の一致
+							//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
+							boolean isCorrectModifiy = umlMethod_modify_str.equals(codeMethod_modify_str);
+							//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
+							boolean isCorrectRtnType = new ReferenceType(this.javaPackage,this.tableModel, umlMethod, codeMethod).evaluate();
+							//パラメータの型の一致
+							boolean isCorrectParam = new ParamCheck(isCorrentLength,this.javaPackage,this.tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate();
+
+							if (isCorrentLength && isCorrectModifiy&& isCorrectRtnType && isCorrectParam){
+								strList.add(codeMethod.getDeclarationAsString());
+								itemCount++;
+							}else{
+								methodError_sb.append(codeMethod.getDeclarationAsString()+"<br>");
+								if (isCorrentLength == false) {
+									methodError_sb.append("=>"+"パラメータの個数が合っていません"+"<br>");
+								}
+								if (isCorrectModifiy == false) {
+									methodError_sb.append("=>"+"修飾子が合っていません"+"<br>");
+								}
+								if (isCorrectParam == false) {
+									methodError_sb.append("=>"+"パラメータの型が合っていません"+"<br>");
+								}
+							}
+						}					
 					}
 
-					//ソースコードのメソッドを追加
-					for (MethodDeclaration codeMethod : codeMethodList) {
-						String codeMethod_modify_str = Modifier.toString(codeMethod.getModifiers());
-
-						//ソースコードのメソッドのパラメータ数と
-						//スケルトンコードのパラメータ個数の一致
-						//パラメータの型も一致させる（型はソースコードに依存する、また基本型の場合も考えるようにする)
-						if (codeMethod.getParameters().size() == umlMethod.getParams().length && 
-								//ソースコードのメソッドの修飾子と
-								//スケルトンコードの修飾子の一致
-								//スケルトンコードの修飾子には「public 」のようにスペースが入り込むので削除する
-								umlMethod_modify_str.equals(codeMethod_modify_str) &&
-								//返り値の型一致（型はソースコードに依存する、また基本型の場合も考えるようにする)
-								new ReferenceType(this.javaPackage,this.tableModel, umlMethod, codeMethod).evaluate() && 
-								//パラメータの型の一致
-								new ParamCheck(this.javaPackage,this.tableModel,umlMethod.getParams(),codeMethod.getParameters()).evaluate()){
-							strList.add(codeMethod.getDeclarationAsString());
-						}
-					}
 
 					methodComboBox = new JComboBox<String>(strList.toArray(new String[strList.size()]));
+					//ボックスに一つも選択するアイテムがない場合はヒントを表示する用意をする
+					if (itemCount == 0) {
+						String tooltipText = "";
+						tooltipText +="<html>";
+						tooltipText +="<p>";
+						tooltipText +=methodError_sb.toString();
+						tooltipText +="</p>";
+						tooltipText +="</html>";
+						methodComboBox.setToolTipText(tooltipText);
+					}
 					methodComboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					boxList.add(methodComboBox);
 					//レーベンシュタイン距離を初期化
@@ -195,65 +267,14 @@ public class MethodComparePanel extends JPanel {
 						}
 					}
 					methodComboBox.setSelectedItem(keyStr);
-					p = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-					matcher = patern.matcher(umlMethod.getSignature());
-					l = new JLabel(matcher.replaceAll(""));
-					l.setAlignmentX(CENTER_ALIGNMENT);
 
-					//ポップアップテキストを加える
-					popSb.append("<html>");
-					//popSb.append("<p width=\"500\">");
-					popSb.append("<p>");
-
-					popSb.append("定義:<br>");
-					if (umlMethod.getOperation().getDefinition().length() == 0) {
-						popSb.append("なし<br>");
-					}else{
-						String[] comments = umlMethod.getOperation().getDefinition().split("\\n", 0);
-
-						for (String comment : comments) {
-							popSb.append(comment + "<br>");
-						}
-					}
-
-					popSb.append("本体条件:<br>");
-					if (umlMethod.getOperation().getBodyCondition().length() == 0) {
-						popSb.append("なし<br>");
-					}else{
-						popSb.append("・"+umlMethod.getOperation().getBodyCondition()+"<br>");
-					}
-
-					popSb.append("事前条件:<br>");
-					if (umlMethod.getOperation().getPreConditions().length == 0) {
-						popSb.append("なし<br>");
-					}else{
-						for(String text : umlMethod.getOperation().getPreConditions()){
-							popSb.append("・"+text+"<br>");
-						}
-					}
-					popSb.append("事後条件:<br>");
-					if (umlMethod.getOperation().getPostConditions().length == 0) {
-						popSb.append("なし<br>");
-					}else{
-						for(String text : umlMethod.getOperation().getPostConditions()){
-							popSb.append("・"+text+"<br>");
-						}
-					}
-					popSb.append("</p>");
-					popSb.append("</html>");
-
-					l.setToolTipText(popSb.toString());
-					l.setCursor(new Cursor(Cursor.HAND_CURSOR));
-					
-					//クラス図を表示
-					l.addMouseListener(new ClassLabelMouseAdapter(myClass, l, getParent(),ClickedLabel.MethodSig));
-					
-					p.add(l);
-					p.add(methodComboBox);
-					panelList.add(p);
 				}
 
+				p.add(l);
+				p.add(methodComboBox);
+				panelList.add(p);
 			}
+
 
 		}
 
@@ -311,6 +332,54 @@ public class MethodComparePanel extends JPanel {
 
 		DebugMessageWindow.msgToTextArea();
 		return isSameMethodSelected;
+	}
+
+	private String popToolTips_UML(Method umlMethod){
+		StringBuilder popSb = new StringBuilder();
+
+		//ポップアップテキストを加える
+		popSb.append("<html>");
+		//popSb.append("<p width=\"500\">");
+		popSb.append("<p>");
+
+		popSb.append("定義:<br>");
+		if (umlMethod.getOperation().getDefinition().length() == 0) {
+			popSb.append("なし<br>");
+		}else{
+			String[] comments = umlMethod.getOperation().getDefinition().split("\\n", 0);
+
+			for (String comment : comments) {
+				popSb.append(comment + "<br>");
+			}
+		}
+
+		popSb.append("本体条件:<br>");
+		if (umlMethod.getOperation().getBodyCondition().length() == 0) {
+			popSb.append("なし<br>");
+		}else{
+			popSb.append("・"+umlMethod.getOperation().getBodyCondition()+"<br>");
+		}
+
+		popSb.append("事前条件:<br>");
+		if (umlMethod.getOperation().getPreConditions().length == 0) {
+			popSb.append("なし<br>");
+		}else{
+			for(String text : umlMethod.getOperation().getPreConditions()){
+				popSb.append("・"+text+"<br>");
+			}
+		}
+		popSb.append("事後条件:<br>");
+		if (umlMethod.getOperation().getPostConditions().length == 0) {
+			popSb.append("なし<br>");
+		}else{
+			for(String text : umlMethod.getOperation().getPostConditions()){
+				popSb.append("・"+text+"<br>");
+			}
+		}
+		popSb.append("</p>");
+		popSb.append("</html>");
+
+		return popSb.toString();
 	}
 
 	/**
