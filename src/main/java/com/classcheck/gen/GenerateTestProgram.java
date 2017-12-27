@@ -49,7 +49,7 @@ public class GenerateTestProgram {
 
 	//javaファイルのパスやデータを格納するリストを用意する(import文に使用する)
 	private List<FileNode> javaFileNodeList;
-	
+
 	//検証用のモッククラス
 	private static String[] myMockVerificationClassNames = {
 		"MyVerificationsInOrder",
@@ -184,9 +184,10 @@ public class GenerateTestProgram {
 
 						if (component instanceof JLabel) {
 							label = (JLabel) component;
+							String labelText = label.getText();
 
-							if (!label.getText().
-									contains("(左)スケルトンコードのフィールド")) {
+							if (!labelText.contains("(左)スケルトンコードのメソッド") ||
+									!labelText.contains("ヒント")){
 								befFieldStr = label.getText().replaceAll("^\\s+","");
 							}else{
 								continue;
@@ -221,9 +222,10 @@ public class GenerateTestProgram {
 
 						if (component instanceof JLabel) {
 							label = (JLabel) component;
+							String labelText = label.getText();
 
-							if (!label.getText().
-									contains("(左)スケルトンコードのメソッド")) {
+							if (!labelText.contains("(左)スケルトンコードのメソッド") ||
+									!labelText.contains("ヒント")){
 								befMethodStr = label.getText().replaceAll("^\\s+","");
 							}else{
 								continue;
@@ -329,7 +331,7 @@ public class GenerateTestProgram {
 		StringBuilder verifications_sb = new StringBuilder();
 		String exportMyVerificationsInOrder = myMockVerificationClassNames[0]+".java";
 		String exportMyVerifications = myMockVerificationClassNames[1]+".java";
-		
+
 		inOrder_sb.append("import mockit.VerificationsInOrder;"+"\n");
 		inOrder_sb.append("\n");
 		inOrder_sb.append("\r\t"+"public class MyVerificationsInOrder extends VerificationsInOrder{"+"\n");
@@ -347,7 +349,7 @@ public class GenerateTestProgram {
 		inOrder_sb.append("\r\t"+"}"+"\n");
 		inOrder_sb.append("\n");
 
-		
+
 		verifications_sb.append("import mockit.Verifications;"+"\n");
 		verifications_sb.append("\n");
 		verifications_sb.append("\r\t"+"public class MyVerifications extends Verifications{"+"\n");

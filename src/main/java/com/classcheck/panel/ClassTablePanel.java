@@ -243,6 +243,7 @@ public class ClassTablePanel extends JPanel implements Serializable{
 				Map<MyClass, CodeVisitor> codeMap = null;
 				MyClassCell myClassCell = null;
 				CodeVisitor visitor = null;
+				String defaultVal = null;
 
 				if (eventType == TableModelEvent.UPDATE) {
 					DebugMessageWindow.clearText();
@@ -255,6 +256,8 @@ public class ClassTablePanel extends JPanel implements Serializable{
 
 					if (obj instanceof CodeVisitor) {
 						visitor = (CodeVisitor) obj;
+					}else if (obj instanceof String) {
+						defaultVal = (String) obj;
 					}
 
 					if (obj_2 instanceof MyClassCell) {
@@ -266,6 +269,18 @@ public class ClassTablePanel extends JPanel implements Serializable{
 						//umlのクラスに対応するソースコード側のクラスを結びつけているので確認する
 						codeMap.remove(myClassCell.getMyClass());
 						codeMap.put(myClassCell.getMyClass(),visitor);
+						//メソッドパネルの更新
+						mtp.reLoadMemberPane(myClassCell.getMyClass(),true);
+						//同じメソッドが選択されていないかチェック
+						mtp.checkSameMethod(myClassCell.getMyClass());
+						
+						/*
+						 * -Select Class - をテーブルで選択した場合
+						 */
+					}else if (defaultVal != null && myClassCell != null && codeMap != null) {
+						//umlのクラスに対応するソースコード側のクラスを結びつけているので確認する
+						codeMap.remove(myClassCell.getMyClass());
+						codeMap.put(myClassCell.getMyClass(),null);
 						//メソッドパネルの更新
 						mtp.reLoadMemberPane(myClassCell.getMyClass(),true);
 						//同じメソッドが選択されていないかチェック
