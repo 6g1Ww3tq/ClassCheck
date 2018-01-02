@@ -136,7 +136,7 @@ public class ClassTablePanel extends JPanel implements Serializable{
 	}
 
 	private void initComponent() {
-		String[] columnNames = {"Skelton Code Class","Your Class"};
+		String[] columnNames = {"Class","Your Class"};
 		tableModel = null;
 
 		if (isConfigFileExist()) {

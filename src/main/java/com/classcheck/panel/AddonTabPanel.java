@@ -244,7 +244,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		generatePane.add(helpBtn);
 
 		//デバックモード
-		debugPane.setVisible(true);
+		debugPane.setVisible(false);
 
 		boxPane.add(debugPane);
 		boxPane.add(jarPane);
@@ -346,6 +346,12 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 						}else if(folderTextField.getText().isEmpty()){
 							return "error";
 						}
+						//testディレクトリが存在する場合は削除する
+						File testDir = new File(folderTextField.getText() + "/test");
+						if (testDir.isDirectory()) {
+							FileUtils.forceDelete(testDir);
+						}
+						
 						File workSpaceDir = new File(folderTextField.getText());
 						//出力先のクラスフォルダを作成
 						File classesDir = new File(workSpaceDir+"/test/classes");

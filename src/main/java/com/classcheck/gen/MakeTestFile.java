@@ -266,11 +266,15 @@ public class MakeTestFile {
 						"\");"+"\n");
 			}
 			*/
+			
+			//シーケンス図の説明
+			/*
 			sb.append("\r\t\t\t"+"System.out.println(\"---" +
 					"シーケンス図の振る舞い系列の以下が守られています!!"+"\\n" +
 					"・回数"+ "\\n" +
 					"・順番"+ "\\n" +
 					"\");"+"\n");
+			 */
 			sb.append("\r\t\t"+"}else{"+"\n");
 			//テスト失敗メッセージ
 			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +

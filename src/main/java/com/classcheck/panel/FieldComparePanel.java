@@ -119,7 +119,7 @@ public class FieldComparePanel extends JPanel{
 			//説明のパネルを加える
 			//（左）astah	:（右)	ソースコード
 			JPanel explainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JLabel explainLabel = new JLabel("(左)スケルトンコードのフィールド : (右)ソースコードのフィールド");
+			JLabel explainLabel = new JLabel("(左)クラス図で定義したィールド : (右)ソースコードのフィールド");
 			explainLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 			explainLabel.setAlignmentX(CENTER_ALIGNMENT);
 			explainPanel.add(explainLabel);

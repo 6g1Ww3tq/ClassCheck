@@ -117,7 +117,7 @@ public class MemberTabPanel extends JPanel{
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		compVerticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-		astahRoot = new DefaultMutableTreeNode("SkeltonCodeClass");
+		astahRoot = new DefaultMutableTreeNode("Class");
 		jtree = new JTree(astahRoot);
 		jtree.setMinimumSize(new Dimension(150,200));
 
@@ -157,7 +157,7 @@ public class MemberTabPanel extends JPanel{
 		//astah tree(左)
 		panel = new JPanel(new BorderLayout());
 		panel.add(jtree,BorderLayout.CENTER);
-		astahTreeStatus = new StatusBar(panel, "SkeltonCode-Class");
+		astahTreeStatus = new StatusBar(panel, "Class");
 		panel.add(astahTreeStatus,BorderLayout.SOUTH);
 		JScrollPane treeScrollPane = new JScrollPane(panel);
 		treeScrollPane.setMinimumSize(new Dimension(150, 200));	
@@ -332,7 +332,7 @@ public class MemberTabPanel extends JPanel{
 		mcp.revalidate();
 		mcp.initComponent(myClass,isAllChange);
 
-		astahTreeStatus.setText("SkeltonCode-Class:"+myClass.getName());
+		astahTreeStatus.setText("Class:"+myClass.getName());
 
 		//ステータスバーによるエラーチェック(メソッド)
 		for (JPanel panel : methodPanelList) {

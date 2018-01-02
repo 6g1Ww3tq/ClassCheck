@@ -186,7 +186,7 @@ public class GenerateTestProgram {
 							label = (JLabel) component;
 							String labelText = label.getText();
 
-							if (!labelText.contains("(左)スケルトンコードのメソッド") ||
+							if (!labelText.contains("(左)クラス図で定義したメソッド") ||
 									!labelText.contains("ヒント")){
 								befFieldStr = label.getText().replaceAll("^\\s+","");
 							}else{
@@ -224,7 +224,7 @@ public class GenerateTestProgram {
 							label = (JLabel) component;
 							String labelText = label.getText();
 
-							if (!labelText.contains("(左)スケルトンコードのメソッド") ||
+							if (!labelText.contains("(左)クラス図で定義したメソッド") ||
 									!labelText.contains("ヒント")){
 								befMethodStr = label.getText().replaceAll("^\\s+","");
 							}else{
