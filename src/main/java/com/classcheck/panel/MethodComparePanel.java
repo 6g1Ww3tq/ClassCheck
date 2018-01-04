@@ -157,7 +157,7 @@ public class MethodComparePanel extends JPanel {
 					methodComboBox = new JComboBox<String>();
 					methodComboBox.setToolTipText("<html>"+
 							"<p>"+
-							"対応するフィールドがありません<br>"+
+							"対応するメソッドがありません<br>"+
 							"</p>"+
 							"</html>");
 				}else{
@@ -232,6 +232,9 @@ public class MethodComparePanel extends JPanel {
 								}
 								if (isCorrectModifiy == false) {
 									methodError_sb.append("=>"+"修飾子が合っていません"+"<br>");
+								}
+								if (isCorrectRtnType == false) {
+									methodError_sb.append("=>"+"返り値の型が合っていません"+"<br>");
 								}
 								if (isCorrectParam == false) {
 									methodError_sb.append("=>"+"パラメータの型が合っていません"+"<br>");

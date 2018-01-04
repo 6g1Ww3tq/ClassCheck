@@ -136,13 +136,10 @@ public class CodeViewTabPanel extends JPanel{
 		panel.add(rScrollPane,BorderLayout.CENTER);
 		userSourceStatus = new StatusBar(panel, "Your Source Code");
 		panel.add(userSourceStatus,BorderLayout.SOUTH);
-		JScrollPane textAreaScrollPane = new JScrollPane(panel);
-		textAreaScrollPane.setMinimumSize(new Dimension(180, 150));	
-		textAreaScrollPane.setSize(new Dimension(180, 150));	
 
 		//左右をセット
 		userHolizontalSplitePane.setLeftComponent(treeScrollPane);
-		userHolizontalSplitePane.setRightComponent(textAreaScrollPane);
+		userHolizontalSplitePane.setRightComponent(panel);
 		userHolizontalSplitePane.setContinuousLayout(true);
 
 		//下の左右パネル
@@ -162,13 +159,10 @@ public class CodeViewTabPanel extends JPanel{
 		panel.add(rScrollPane,BorderLayout.CENTER);
 		astahSourceStatus = new StatusBar(panel, "Skelton Code");
 		panel.add(astahSourceStatus,BorderLayout.SOUTH);
-		JScrollPane astahTextAreaScrollPane = new JScrollPane(panel);
-		astahTextAreaScrollPane.setMinimumSize(new Dimension(180, 150));	
-		astahTextAreaScrollPane.setSize(new Dimension(180, 150));	
 
 		//左右をセット
 		astahHolizontalSplitePane.setLeftComponent(astahTreeScrollPane);
-		astahHolizontalSplitePane.setRightComponent(astahTextAreaScrollPane);
+		astahHolizontalSplitePane.setRightComponent(panel);
 		astahHolizontalSplitePane.setContinuousLayout(true);
 
 

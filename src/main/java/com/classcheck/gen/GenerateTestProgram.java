@@ -483,7 +483,45 @@ public class GenerateTestProgram {
 	}
 
 	private void makeBatScript(StringBuilder build_sb,StringBuilder run_sb) {
-		// FIXME 自動生成されたメソッド・スタブ
+		//ライブラリのパス文字列
+		String jarPath_str = AddonTabPanel.getJarPathTextField().getText();
+		//エンコーディングの文字列
+		String encoding_str = AddonTabPanel.getEncodingFormat();
+		build_sb.append("javac ");
+		build_sb.append("-cp ");
+
+		//外部ライブラリの追加
+		if (jarPath_str.isEmpty() == false) {
+			build_sb.append(jarPath_str + ":");
+		}
+		build_sb.append("classes/;.;lib/jmockit/jmockit-1.33.jar;lib/junit/junit-4.12.jar;lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar; ");
+
+		//エンコーディングの追加
+		if (encoding_str.isEmpty() == false) {
+			build_sb.append("-encoding ");
+			build_sb.append(encoding_str +" ");
+		}
+		//テストコード(検証用のモッククラスは同じディレクトリにあるのでコンパイルされる)
+		for (String testFileName : testJavaFileNameList) {
+			build_sb.append(testFileName+" ");
+		}
+
+		run_sb.append("java ");
+		run_sb.append("-cp ");
+		//外部ライブラリの追加
+		if (jarPath_str.isEmpty() == false) {
+			run_sb.append(jarPath_str + ":");
+		}
+		//エンコーディングの追加
+		if (encoding_str.isEmpty() == false) {
+			build_sb.append("-encoding ");
+			build_sb.append(encoding_str +" ");
+		}
+		run_sb.append("classes/;.;lib/jmockit/jmockit-1.33.jar;lib/junit/junit-4.12.jar;lib/hamcrest/hamcrest-core/hamcrest-core-1.3.jar; ");
+		run_sb.append("org.junit.runner.JUnitCore ");
+		for (String testFileName : testJavaFileNameList) {
+			run_sb.append(testFileName.replaceAll("\\.java$", "")+" ");
+		}
 	}
 
 	private void makeClassTableCSV() {
