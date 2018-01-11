@@ -34,7 +34,7 @@ public class GenerateTestProgram {
 	//出力元となるディレクトリ
 	File baseDir;
 	//出力先テストディレクトリ
-	File oustTestDir;
+	File outTestDir;
 	//出力するテストファイル名のリスト
 	List<String> testJavaFileNameList;
 
@@ -315,7 +315,7 @@ public class GenerateTestProgram {
 				//テストファイル名を記録する
 				testJavaFileNameList.add(exportFileName);
 				//ファイル出力
-				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportFileName), userEditCode_Str.getText());
+				FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+exportFileName), userEditCode_Str.getText());
 			}
 
 			DebugMessageWindow.msgToTextArea();
@@ -369,8 +369,8 @@ public class GenerateTestProgram {
 
 		//ファイル出力
 		try {
-			FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerificationsInOrder), inOrder_sb.toString());
-			//FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+exportMyVerifications), verifications_sb.toString());
+			FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+exportMyVerificationsInOrder), inOrder_sb.toString());
+			//FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+exportMyVerifications), verifications_sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -381,10 +381,10 @@ public class GenerateTestProgram {
 	 * テストコードを生成する
 	 */
 	private void makeTestDir() {
-		oustTestDir = new File(baseDir.getPath()+"/test");
-		System.out.println(oustTestDir);
+		outTestDir = new File(baseDir.getPath()+"/test");
+		System.out.println(outTestDir);
 		try {
-			FileUtils.forceMkdir(oustTestDir);
+			FileUtils.forceMkdir(outTestDir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -425,15 +425,15 @@ public class GenerateTestProgram {
 				runFileName = "run.sh";
 				makeShellScript(build_sb,run_sb);
 				//ファイル出力
-				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+buildFileName), build_sb.toString());
-				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+runFileName), run_sb.toString());
+				FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+buildFileName), build_sb.toString());
+				FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+runFileName), run_sb.toString());
 			}else if (os_name.startsWith("windows")) {
 				buildFileName = "build.bat";
 				runFileName = "run.bat";
 				makeBatScript(build_sb,run_sb);
 				//ファイル出力
-				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+buildFileName), build_sb.toString());
-				FileUtils.writeStringToFile(new File(oustTestDir.getPath()+"/"+runFileName), run_sb.toString());
+				FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+buildFileName), build_sb.toString());
+				FileUtils.writeStringToFile(new File(outTestDir.getPath()+"/"+runFileName), run_sb.toString());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

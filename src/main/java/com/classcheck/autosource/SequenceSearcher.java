@@ -33,7 +33,7 @@ public class SequenceSearcher {
 		return defaultColor;
 	}
 
-	public List<ISequenceDiagram> findFieldFromISequenceDiagram(IClass targetClass,
+	public List<ISequenceDiagram> findFieldFromISequenceDiagram(String targetClassName,
 			JLabel fieldLabel) {
 		List<ISequenceDiagram> foundDiagramList = new ArrayList<ISequenceDiagram>(); 
 		ISequenceDiagram sequenceDiagram;
@@ -43,7 +43,7 @@ public class SequenceSearcher {
 		String fieldVarName = split[split.length-1];
 
 		for(int i_diagramList=0;i_diagramList<diagramList.size();i_diagramList++){
-			//ライフライン＝＞　変数名(何でも):型（targetClass)　に当てはまれば変数名を一時的に記録する
+			//ライフライン＝＞　変数名(何でも):型（targetClassName)　に当てはまれば変数名を一時的に記録する
 			sequenceDiagram = diagramList.get(i_diagramList);
 
 			System.out.println("@@"+sequenceDiagram.getName()+"@@");
@@ -87,14 +87,14 @@ public class SequenceSearcher {
 		return foundDiagramList;
 	}
 
-	public List<ISequenceDiagram> findMethodFromISequenceDiagram(IClass targetClass,
+	public List<ISequenceDiagram> findMethodFromISequenceDiagram(String targetClassName,
 			JLabel methodLabel) {
 		String labelMethodName = from_Label_methodName(methodLabel);
 		List<ISequenceDiagram> foundDiagramList = new ArrayList<ISequenceDiagram>(); 
 		ISequenceDiagram sequenceDiagram;
 
 		for(int i_diagramList=0;i_diagramList<diagramList.size();i_diagramList++){
-			//ライフライン＝＞　変数名(何でも):型（targetClass)　に当てはまれば変数名を一時的に記録する
+			//ライフライン＝＞　変数名(何でも):型（targetClassName)　に当てはまれば変数名を一時的に記録する
 			List<String> instanceVarNameList = new ArrayList<String>();
 			boolean classFound = false;
 			sequenceDiagram = diagramList.get(i_diagramList);
@@ -107,7 +107,7 @@ public class SequenceSearcher {
 				ILifeline lifeLine = lifeLines[i_lifeLines];
 
 				//ターゲットのクラス名を発見する
-				if (lifeLine.getBase().getName().equals(targetClass.getName())) {
+				if (lifeLine.getBase().getName().equals(targetClassName)) {
 					classFound = true;
 					//ターゲットのクラス名の変数名を記録する(複数可能)
 					instanceVarNameList.add(lifeLine.getName());

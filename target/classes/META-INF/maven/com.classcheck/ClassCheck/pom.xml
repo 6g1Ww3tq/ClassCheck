@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.classcheck</groupId>
 	<artifactId>ClassCheck</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>local_astah_repository</id>
@@ -138,6 +138,8 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<!-- <filtering>true</filtering> -->
+				<!-- you can define here more than one resource -->
 			</resource>
 		</resources>
 		<testResources>
@@ -318,19 +320,6 @@
 			<version>2.6</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 
-			<dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-lang3</artifactId> 
-			<version>3.4</version> </dependency> -->
-
-
-		<!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
-		<dependency>
-			<groupId>org.jmockit</groupId>
-			<artifactId>jmockit</artifactId>
-			<version>1.17</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
 		<dependency>
 			<groupId>com.fifesoft</groupId>
@@ -338,7 +327,14 @@
 			<version>2.5.8</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.0</version>
+		</dependency>
+
 	</dependencies>
-	<name>SouceCheck</name>
-	<description>UMLを元にソースコードのチェック</description>
+	<name>ClassCheck</name>
+	<description>クラス図とシーケンス図を基準にソースコードのテストプログラムを生成</description>
 </project>

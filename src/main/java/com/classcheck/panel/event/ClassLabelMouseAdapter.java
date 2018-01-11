@@ -67,10 +67,10 @@ public class ClassLabelMouseAdapter extends MouseAdapter {
 				findSequenceDiagramList = new ArrayList<ISequenceDiagram>();
 				//フィールドがクリックされた時
 			}else if(this.clickedLabel == ClickedLabel.FieldDefinition){
-				findSequenceDiagramList = ss.findFieldFromISequenceDiagram(targetClass.getIClass(),clickedLabel);
+				findSequenceDiagramList = ss.findFieldFromISequenceDiagram(targetClass.getIClass().getName(),clickedLabel);
 				//メソッドのシグネチャーがクリックされた時
 			}else if(this.clickedLabel == ClickedLabel.MethodSig){
-				findSequenceDiagramList = ss.findMethodFromISequenceDiagram(targetClass.getIClass(),clickedLabel);
+				findSequenceDiagramList = ss.findMethodFromISequenceDiagram(targetClass.getIClass().getName(),clickedLabel);
 			}
 		}
 

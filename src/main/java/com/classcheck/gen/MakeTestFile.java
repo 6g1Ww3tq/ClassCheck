@@ -12,11 +12,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
+import javax.swing.JLabel;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
 import com.classcheck.tree.FileNode;
+import com.classcheck.uml.search.SequenceDiagramSearch;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -249,8 +251,10 @@ public class MakeTestFile {
 			//テスト成功メッセージ
 			sb.append("\r\t\t"+"if (test.isSuccess()) {"+"\n");
 			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
-					" "+className+" :: " + methodSigNature_str +
+					" クラス「"+className+"」 の 「" + methodSigNature_str + "」 メソッド"+
 					" のテストに成功しました\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println(\"参考シーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, methodSigNature_str)+"\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println();"+"\n");
 			/*
 			if (isProtected) {
 				sb.append("\r\t\t\t"+"System.out.println(\"---" +
@@ -290,14 +294,34 @@ public class MakeTestFile {
 			sb.append("\r\t\t\n");
 
 			//throw-error catch
+			//テスト失敗した時のメッセージ	ここから->
+			sb.append("\r\t\t"+"//テストが失敗した時のメッセージ"+"\n");
+			sb.append("\r\t\t"+"} catch (Error __error) {"+"\n");
+			/*
+			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
+					" "+className+" :: " + methodSigNature_str +
+					" のテストに失敗しました!!!\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println(\"===>メソッドの呼び出しが足りないか、" +
+					"順番が守られていない可能性があります\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println(\"参考シーケンス図:"+createSequenceMessage(className, methodSigNature_str)+"\");"+"\n");
+			*/
+			sb.append("\r\t\t\t"+"fail(\"++++++" +
+					" クラス「"+className+"」 の 「" + methodSigNature_str + "」 メソッド"+
+					" のテストに失敗しました!!!"+"\\n");
+			sb.append("===>メソッドの呼び出しが足りないか、" +
+					"順番が守られていない可能性があります"+"\\n");
+			sb.append("参考にして欲しいシーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, methodSigNature_str)+"\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println();"+"\n");
+			// <-ここまで
+
 			sb.append("\r\t\t"+"} catch (NoSuchFieldException __error) {"+"\n");
-			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t\t"+"__error.printStackTrace();"+"\n");
 			sb.append("\r\t\t"+"} catch (SecurityException __error) {"+"\n");
-			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t\t"+"__error.printStackTrace();"+"\n");
 			sb.append("\r\t\t"+"} catch (IllegalArgumentException __error) {"+"\n");
-			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t\t"+"__error.printStackTrace();"+"\n");
 			sb.append("\r\t\t"+"} catch (IllegalAccessException __error) {"+"\n");
-			sb.append("\r\t\t"+"__error.printStackTrace();"+"\n");
+			sb.append("\r\t\t\t"+"__error.printStackTrace();"+"\n");
 			sb.append("\r\t\t"+"}"+"\n");
 
 			sb.append("\r\t\n");
@@ -364,9 +388,16 @@ public class MakeTestFile {
 
 		sb.append("import mockit.Mocked;\n" +
 				"\n"+
-				"import org.junit.Test;\n\n"+
+				"import org.junit.Test;\n"+
+				"import static org.junit.Assert.fail;\n\n"+
+				"import java.lang.Error;\n\n"+
 				"import java.lang.reflect.Field;\n\n");
 
+	}
+	
+	private String createSequenceMessage(String className,String methodSig){
+		SequenceDiagramSearch sds = new SequenceDiagramSearch(className, new JLabel(methodSig));
+		return sds.getSequenceList().toString();
 	}
 
 	private void makeClassName(StringBuilder sb, String className) {
