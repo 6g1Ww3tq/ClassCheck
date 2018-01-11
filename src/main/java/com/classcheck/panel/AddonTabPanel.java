@@ -193,7 +193,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 				"</html>");
 		folderBtn = new JButton("フォルダ選択 ..");
 		folderBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
-		folderLabel = new JLabel("①ソースコードが存在するフォルダ : ");
+		folderLabel = new JLabel("1.ソースコードが存在するフォルダ : ");
 		folderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 		folderPane.add(folderLabel,BorderLayout.WEST);
 		folderPane.add(folderTextField, BorderLayout.CENTER);
@@ -216,7 +216,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		encodingBox.setToolTipText("<html>"+
 				"文字コードを指定してください	" +
 				"</html>");
-		compileBtn = new JButton("②コンパイル");
+		compileBtn = new JButton("2.コンパイル");
 		compileBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
 		compileBtn.setToolTipText("<html>"+
 				"ソースコードのコンパイル" +
@@ -227,7 +227,7 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 		panel.add(compileBtn);
 		compilePane.add(panel,BorderLayout.EAST);
 
-		genBtn = new JButton("③生成");
+		genBtn = new JButton("3.生成");
 		genBtn.setFont(new Font("SansSerif", Font.BOLD, 16));
 		genBtn.setToolTipText("<html>"+
 				"テストプログラム生成" +

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.TextArea;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +18,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import com.classcheck.panel.TestCodeTabbedPane;
 
@@ -61,7 +60,7 @@ public class TestCodeEditWindow extends JDialog {
 		return exportFileMap;
 	}
 	
-	public HashMap<String, RSyntaxTextArea> getExportEditCodeMap() {
+	public HashMap<String, TextArea> getExportEditCodeMap() {
 		return this.tctp.getExportEditCodeMap();
 	}
 

@@ -1,6 +1,7 @@
 package com.classcheck.gen;
 
 import java.awt.Component;
+import java.awt.TextArea;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.FileUtils;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
@@ -266,7 +266,7 @@ public class GenerateTestProgram {
 		SelectConstructorViewer scv = null;
 		List<ConstructorPanel> cPaneList = null;
 		TestCodeEditWindow tced = null;
-		HashMap<String, RSyntaxTextArea> exportEditCodeMap;
+		HashMap<String, TextArea> exportEditCodeMap;
 
 		try {
 			//アスタと学生のソースコードを元にしたプログラムの生成
@@ -311,7 +311,7 @@ public class GenerateTestProgram {
 
 			//テストコードを出力していく
 			for (String exportFileName : exportEditCodeMap.keySet()) {
-				RSyntaxTextArea userEditCode_Str = exportEditCodeMap.get(exportFileName);
+				TextArea userEditCode_Str = exportEditCodeMap.get(exportFileName);
 				//テストファイル名を記録する
 				testJavaFileNameList.add(exportFileName);
 				//ファイル出力

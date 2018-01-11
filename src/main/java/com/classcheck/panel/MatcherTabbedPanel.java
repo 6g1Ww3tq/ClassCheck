@@ -51,7 +51,7 @@ public class MatcherTabbedPanel extends JTabbedPane {
 		 
 		//２つのタブを生成
 		cvtp = new CodeViewTabPanel(cb,userFileTree);
-		cvtp.setTextAreaEditable(false);
+		cvtp.setTextAreaEditable(true);
 		mtp = new MemberTabPanel(fcp,mcp, cb);
 		mtp.setTableEditable(false);
 		

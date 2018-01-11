@@ -2,6 +2,7 @@ package com.classcheck.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.TextArea;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -15,9 +16,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.commons.io.FileUtils;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.classcheck.autosource.ClassBuilder;
 import com.classcheck.autosource.ClassNode;
@@ -39,8 +37,8 @@ public class CodeViewTabPanel extends JPanel{
 	JTree astahJTree;
 	DefaultMutableTreeNode astahRoot;
 	MutableFileNode userRoot;
-	RSyntaxTextArea userEditor;
-	RSyntaxTextArea skeltonEditor;
+	TextArea userEditor;
+	TextArea skeltonEditor;
 
 	StatusBar userTreeStatus;
 	StatusBar userSourceStatus;
@@ -87,18 +85,12 @@ public class CodeViewTabPanel extends JPanel{
 	private void initComponent(){
 		JPanel panel;
 		ClassNode child = null;
-		RTextScrollPane rScrollPane = null;
+		JScrollPane rScrollPane = null;
 		userHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		astahHolizontalSplitePane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		verticalSplitePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		userEditor = new RSyntaxTextArea(20, 60);
-		skeltonEditor = new RSyntaxTextArea(20, 60);
-		userEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		userEditor.setBracketMatchingEnabled(false);
-		userEditor.setCodeFoldingEnabled(true);
-		skeltonEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		skeltonEditor.setCodeFoldingEnabled(true);
-		skeltonEditor.setBracketMatchingEnabled(false);
+		userEditor = new TextArea();
+		skeltonEditor = new TextArea();
 
 
 		//astah tree logic
@@ -130,8 +122,10 @@ public class CodeViewTabPanel extends JPanel{
 		treeScrollPane.setSize(new Dimension(180, 150));	
 
 		//user textArea(右）
-		rScrollPane = new RTextScrollPane(userEditor);
-		rScrollPane.setLineNumbersEnabled(true);
+		panel = new JPanel(new BorderLayout());
+		panel.add(userEditor);
+		rScrollPane = new JScrollPane();
+		rScrollPane.setViewportView(panel);
 		panel = new JPanel(new BorderLayout());
 		panel.add(rScrollPane,BorderLayout.CENTER);
 		userSourceStatus = new StatusBar(panel, "Your Source Code");
@@ -153,8 +147,10 @@ public class CodeViewTabPanel extends JPanel{
 		astahTreeScrollPane.setSize(new Dimension(180, 150));	
 
 		//astah textArea(右）
-		rScrollPane = new RTextScrollPane(skeltonEditor);
-		rScrollPane.setLineNumbersEnabled(true);
+		panel = new JPanel(new BorderLayout());
+		panel.add(skeltonEditor);
+		rScrollPane = new JScrollPane();
+		rScrollPane.setViewportView(panel);
 		panel = new JPanel(new BorderLayout());
 		panel.add(rScrollPane,BorderLayout.CENTER);
 		astahSourceStatus = new StatusBar(panel, "Skelton Code");

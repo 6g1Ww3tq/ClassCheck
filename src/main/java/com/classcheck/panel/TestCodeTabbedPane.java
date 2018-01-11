@@ -1,5 +1,7 @@
 package com.classcheck.panel;
 
+import java.awt.BorderLayout;
+import java.awt.TextArea;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -8,44 +10,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class TestCodeTabbedPane extends JTabbedPane {
 
 	private Map<String, String> exportFileMap;
-	private HashMap<String, RSyntaxTextArea> exportEditCodeMap;
+	private HashMap<String, TextArea> exportEditCodeMap;
 
 	public TestCodeTabbedPane(Map<String, String> exportFileMap) {
 		this.exportFileMap = exportFileMap;
-		this.exportEditCodeMap = new HashMap<String, RSyntaxTextArea>();
+		this.exportEditCodeMap = new HashMap<String, TextArea>();
 		initComponent();
 	}
 
-	public HashMap<String, RSyntaxTextArea> getExportEditCodeMap() {
+	public HashMap<String, TextArea> getExportEditCodeMap() {
 		return exportEditCodeMap;
 	}
 
 	private void initComponent() {
-		RSyntaxTextArea editTextArea = null;
-		RTextScrollPane scrollPane = null;
+		JPanel panel = null;
+		TextArea editTextArea = null;
+		JScrollPane scrollPane = null;
 		ImageIcon icon = new ImageIcon(getClass().getResource("/icons/sequence_image.png"));
 
 		for (String exportFileName : exportFileMap.keySet()) {
 			String defaultTestCode = exportFileMap.get(exportFileName);
 			int currentLineNumber = getEditLineNumber(defaultTestCode);
-			editTextArea = new RSyntaxTextArea(20, 60);
-			editTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-			editTextArea.setCodeFoldingEnabled(true);
-			editTextArea.setText(defaultTestCode);
 			//ユーザーが修正する行数に移動する
+			editTextArea = new TextArea(20,60);
+			editTextArea.setText(defaultTestCode);
 			editTextArea.setCaretPosition(currentLineNumber);
-			scrollPane = new RTextScrollPane();
-			scrollPane.setViewportView(editTextArea);
-			scrollPane.setLineNumbersEnabled(true);
+			panel = new JPanel(new BorderLayout());
+			panel.add(editTextArea);
+			scrollPane = new JScrollPane(panel);
 			addTab(exportFileName, icon, scrollPane);
 			exportEditCodeMap.put(exportFileName, editTextArea);
 		}
