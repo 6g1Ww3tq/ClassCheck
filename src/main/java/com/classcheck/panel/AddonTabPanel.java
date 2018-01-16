@@ -86,8 +86,8 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 	private static String[] encodingsArray = {
 		"",
-		"utf-8",
-		"sjis"
+		"UTF-8",
+		"SJIS"
 	};
 	private static JComboBox<String> encodingBox;
 
@@ -372,6 +372,13 @@ public class AddonTabPanel extends JPanel implements IPluginExtraTabView, Projec
 
 						FileTree javaFileTree = new FileTree(new FileNode(workSpaceDir) , ".java$");
 						StringBuilder rtnMsg_sb = new StringBuilder();
+						
+						//エンコーディングを指定
+						String encodingFormat = getEncodingFormat();
+						if (encodingFormat.isEmpty() == false) {
+							javacList.add("-encoding");
+							javacList.add(encodingFormat);
+						}
 
 						//ソースコードのファイルを指定
 						List<FileNode> javaFileNode = javaFileTree.getFileNodeList();
