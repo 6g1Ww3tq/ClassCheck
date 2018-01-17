@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
 
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
+
 import com.classcheck.analyzer.source.CodeVisitor;
 import com.classcheck.autosource.MyClass;
 import com.classcheck.panel.ConstructorPanel;
@@ -73,8 +75,13 @@ public class MakeTestFile {
 		TestSkeltonCodeVisitor skeVisitor= null;
 		CompilationUnit cu = null;
 		HashMap<String, String> variableFieldNameMap;
+		//テーブルを入れ替える
+		Map<CodeVisitor, MyClass> bidiTableMap =
+				new DualHashBidiMap<MyClass, CodeVisitor>(tableMap).inverseBidiMap();
 
 		for(CodeVisitor codeVisitor : generatedCodesMap.keySet()){
+			//テーブルからクラス図のクラスを抽出
+			MyClass myClass = bidiTableMap.get(codeVisitor);
 			fileName = codeVisitor.getClassName() + "Test" + ".java";
 			sb = new StringBuilder();
 			makeHeader(sb);
@@ -109,6 +116,7 @@ public class MakeTestFile {
 				for(int i=0;i<cPanelList.size();i++){
 					if(cPanelList.get(i).getCodeVisitor().equals(codeVisitor)){
 						makeMethod(sb,
+								myClass,
 								codeVisitor.getClassName(),
 								variableFieldNameMap,
 								mockMethodMap,
@@ -133,11 +141,17 @@ public class MakeTestFile {
 
 	private void makeMethod(
 			StringBuilder sb,
+			MyClass myClass,
 			String className,
 			HashMap<String, String> variableFieldNameMap,
 			HashMap<String, String> mockMethodMap,
 			List<String> mockParamsList,
 			ConstructorPanel constructorPane) {
+		//あるクラスの
+		//ソースコードのメソッドに対応する
+		//クラス図の定義のメソッドを取り出す
+		Map<String, String> bidiMethodChangeMap =
+				new DualHashBidiMap<String, String>(methodChangeMap.get(myClass)).inverseBidiMap();
 		Enumeration<AbstractButton> buttons = constructorPane.getGroup().getElements();
 		Map<AbstractButton, String> abstructBtnMap = constructorPane.getAbstractBtnMap();
 		AbstractButton button;
@@ -253,7 +267,7 @@ public class MakeTestFile {
 			sb.append("\r\t\t\t"+"System.out.println(\"++++++" +
 					" クラス「"+className+"」 の 「" + methodSigNature_str + "」 メソッド"+
 					" のテストに成功しました\");"+"\n");
-			sb.append("\r\t\t\t"+"System.out.println(\"参考シーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, methodSigNature_str)+"\");"+"\n");
+			sb.append("\r\t\t\t"+"System.out.println(\"参考シーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, bidiMethodChangeMap.get(methodSigNature_str))+"\");"+"\n");
 			sb.append("\r\t\t\t"+"System.out.println();"+"\n");
 			/*
 			if (isProtected) {
@@ -310,7 +324,7 @@ public class MakeTestFile {
 					" のテストに失敗しました!!!"+"\\n");
 			sb.append("===>メソッドの呼び出しが足りないか、" +
 					"順番が守られていない可能性があります"+"\\n");
-			sb.append("参考にして欲しいシーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, methodSigNature_str)+"\");"+"\n");
+			sb.append("参考にして欲しいシーケンス図（テストプログラムの参考元）:"+createSequenceMessage(className, bidiMethodChangeMap.get(methodSigNature_str))+"\");"+"\n");
 			sb.append("\r\t\t\t"+"System.out.println();"+"\n");
 			// <-ここまで
 
