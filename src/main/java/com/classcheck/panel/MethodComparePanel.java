@@ -119,7 +119,7 @@ public class MethodComparePanel extends JPanel {
 			//説明のパネルを加える
 			//（左）astah	:（右)	ソースコード
 			JPanel explainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JLabel explainLabel = new JLabel("(左)クラス図で定義したメソッド : (右)ソースコードのフィールド");
+			JLabel explainLabel = new JLabel("(左)クラス図で定義したメソッド : (右)ソースコードのメソッド");
 			explainLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 			explainLabel.setAlignmentX(CENTER_ALIGNMENT);
 			explainPanel.add(explainLabel);
